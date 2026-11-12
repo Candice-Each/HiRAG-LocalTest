@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HiRAG · 知识图谱检索终端</title>
+  <script src="https://unpkg.com/force-graph@1.43.5/dist/force-graph.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --bg-deep: #070b14;
+      --surface: rgba(16, 24, 40, 0.78);
+      --surface-solid: #101828;
+      --card: rgba(255, 255, 255, 0.035);
+      --card-hover: rgba(96, 165, 250, 0.10);
+      --border: rgba(148, 163, 184, 0.14);
+      --border-strong: rgba(148, 163, 184, 0.28);
+      --accent: #3b82f6;
+      --accent-2: #6366f1;
+      --accent-soft: rgba(59, 130, 246, 0.14);
+      --highlight: #f59e0b;
+      --highlight-soft: rgba(245, 158, 11, 0.14);
+      --text: #e6edf7;
+      --text-2: #9aa8bd;
+      --text-3: #61718a;
+      --radius: 12px;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      user-select: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(820px 560px at 16% 10%, rgba(59, 130, 246, 0.16), transparent 62%),
+        radial-gradient(760px 560px at 84% 92%, rgba(99, 102, 241, 0.13), transparent 62%),
+        radial-gradient(600px 400px at 50% 50%, rgba(14, 165, 233, 0.05), transparent 70%),
+        linear-gradient(180deg, #070b14 0%, #05080f 100%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(circle at 50% 46%, #000 22%, transparent 76%);
+      mask-image: radial-gradient(circle at 50% 46%, #000 22%, transparent 76%);
+      opacity: 0.85;
+    }
+
+    #graph-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      cursor: default;
+    }
+
+    .command-bar {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      width: min(680px, calc(100vw - 32px));
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 7px 7px 13px;
+      background: linear-gradient(180deg, rgba(24, 34, 54, 0.92), rgba(14, 21, 36, 0.90));
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow:
+        0 18px 46px -14px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+      transition: border-color 0.22s var(--ease), box-shadow 0.22s var(--ease);
+    }
+
+    .command-bar:focus-within {
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow:
+        0 18px 46px -14px rgba(0, 0, 0, 0.85),
+        0 0 0 3px rgba(59, 130, 246, 0.13);
+    }
+
+    #search-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      padding: 4px 2px;
+    }
+
+    #search-input::placeholder {
+      color: var(--text-3);
+    }
+
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.16s var(--ease);
+    }
+
+    .icon-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border);
+    }
+
+    #search-btn {
+      flex-shrink: 0;
+      border: none;
+      cursor: pointer;
+      padding: 9px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #fff;
+      background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+      box-shadow: 0 5px 16px -5px rgba(59, 130, 246, 0.9);
+      transition: filter 0.16s var(--ease), transform 0.12s var(--ease),
+                  box-shadow 0.16s var(--ease);
+    }
+
+    #search-btn:hover:not(:disabled) {
+      filter: brightness(1.12);
+      box-shadow: 0 7px 20px -5px rgba(59, 130, 246, 1);
+    }
+
+    #search-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    #search-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      filter: grayscale(0.35);
+      box-shadow: none;
+    }
+
+    .bottom-left {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 16;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .glass-panel {
+      background: var(--surface);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.8);
+    }
+
+    .legend {
+      padding: 10px 12px 9px;
+      min-width: 176px;
+    }
+
+    .legend-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px 12px;
+    }
+
+    .legend-grid span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+
+    .legend-grid i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--c);
+      box-shadow: 0 0 8px -1px var(--c);
+      flex-shrink: 0;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 6px;
+    }
+
+    .ctrl-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: var(--text-2);
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.16s var(--ease);
+    }
+
+    .ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+    }
+
+    .ctrl-btn:active {
+      transform: scale(0.94);
+    }
+
+    .divider-v {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      margin: 0 3px;
+    }
+
+    .graph-stats {
+      font-size: 11.5px;
+      color: var(--text-3);
+      padding: 0 8px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .graph-stats.loading {
+      color: #60a5fa;
+      animation: breathe 1.6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 1; }
+    }
+
+    .side-drawer {
+      position: fixed;
+      top: 74px;
+      bottom: 16px;
+      z-index: 18;
+      width: min(420px, calc(100vw - 32px));
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, rgba(18, 27, 44, 0.94), rgba(12, 19, 32, 0.94));
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.9);
+      transition: transform 0.32s var(--ease), opacity 0.28s var(--ease);
+      user-select: text;
+      overflow: hidden;
+    }
+
+    #node-drawer {
+      left: 16px;
+      width: min(368px, calc(100vw - 32px));
+      transform: translateX(calc(-100% - 24px));
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #node-drawer.open {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #answer-drawer {
+      right: 16px;
+      transform: translateX(calc(100% + 24px));
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #answer-drawer.open {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-2);
+    }
+
+    .drawer-title::before {
+      content: "";
+      width: 3px;
+      height: 13px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #60a5fa, #6366f1);
+    }
+
+    .close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: transparent;
+      border: none;
+      border-radius: 7px;
+      color: var(--text-3);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.16s var(--ease);
+    }
+
+    .close-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 16px;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .drawer-body::-webkit-scrollbar,
+    .evidence-pre::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .drawer-body::-webkit-scrollbar-track,
+    .evidence-pre::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .drawer-body::-webkit-scrollbar-thumb,
+    .evidence-pre::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.22);
+      border-radius: 4px;
+    }
+
+    .drawer-body::-webkit-scrollbar-thumb:hover,
+    .evidence-pre::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.4);
+    }
+
+    .type-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.22);
+    }
+
+    .node-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #fff;
+      margin: 8px 0 6px;
+      word-break: break-word;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11.5px;
+      color: var(--text-3);
+    }
+
+    .meta-row b {
+      color: var(--text-2);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin: 20px 0 9px;
+    }
+
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    .surface-block {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.045);
+      border-radius: 9px;
+      padding: 11px 13px;
+      margin-bottom: 8px;
+      color: var(--text);
+      word-break: break-word;
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.72;
+    }
+
+    .neighbor-row {
+      padding: 9px 11px;
+      background: var(--card);
+      border: 1px solid transparent;
+      border-radius: 8px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: all 0.16s var(--ease);
+    }
+
+    .neighbor-row:hover {
+      background: var(--card-hover);
+      border-color: rgba(96, 165, 250, 0.25);
+      transform: translateX(2px);
+    }
+
+    .neighbor-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .neighbor-name::before {
+      content: "→";
+      color: #60a5fa;
+      flex-shrink: 0;
+    }
+
+    .neighbor-desc {
+      margin-top: 3px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--text-2);
+      word-break: break-word;
+    }
+
+    .chunk-id {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 10.5px;
+      color: #60a5fa;
+      margin-bottom: 5px;
+      letter-spacing: 0.03em;
+    }
+
+    .chunk-text {
+      font-size: 12px;
+      line-height: 1.68;
+      color: var(--text-2);
+      white-space: pre-wrap;
+    }
+
+    .chip-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .node-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 500;
+      background: var(--highlight-soft);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.24);
+      cursor: pointer;
+      transition: all 0.16s var(--ease);
+      max-width: 100%;
+    }
+
+    .node-chip:hover {
+      background: rgba(245, 158, 11, 0.28);
+      border-color: rgba(245, 158, 11, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .query-echo {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.14), rgba(99, 102, 241, 0.09));
+      border: 1px solid rgba(96, 165, 250, 0.22);
+      border-radius: 9px;
+      padding: 11px 13px;
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.6;
+      color: #dbeafe;
+      word-break: break-word;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4 {
+      color: #93c5fd;
+      font-weight: 600;
+      line-height: 1.45;
+      margin: 16px 0 8px;
+    }
+
+    .markdown-body h1 { font-size: 15.5px; }
+    .markdown-body h2 { font-size: 14.5px; }
+    .markdown-body h3,
+    .markdown-body h4 { font-size: 13.5px; }
+
+    .markdown-body > *:first-child { margin-top: 0; }
+
+    .markdown-body p {
+      margin-bottom: 10px;
+      line-height: 1.75;
+    }
+
+    .markdown-body ul,
+    .markdown-body ol {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    .markdown-body li {
+      margin-bottom: 5px;
+      line-height: 1.7;
+    }
+
+    .markdown-body li::marker {
+      color: #60a5fa;
+    }
+
+    .markdown-body strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .markdown-body em {
+      color: #cbd5e1;
+    }
+
+    .markdown-body code {
+      background: rgba(96, 165, 250, 0.12);
+      color: #93c5fd;
+      padding: 1.5px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    .markdown-body pre {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      overflow-x: auto;
+      margin-bottom: 10px;
+    }
+
+    .markdown-body pre code {
+      background: transparent;
+      padding: 0;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .markdown-body blockquote {
+      border-left: 3px solid rgba(96, 165, 250, 0.5);
+      padding-left: 12px;
+      margin: 10px 0;
+      color: var(--text-2);
+    }
+
+    .markdown-body hr {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+    }
+
+    .markdown-body th,
+    .markdown-body td {
+      border: 1px solid var(--border);
+      padding: 6px 9px;
+      text-align: left;
+    }
+
+    .markdown-body th {
+      background: rgba(96, 165, 250, 0.1);
+      color: #93c5fd;
+      font-weight: 600;
+    }
+
+    details.raw-evidence {
+      margin-top: 18px;
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+
+    details.raw-evidence summary {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 13px;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-2);
+      list-style: none;
+      transition: color 0.16s var(--ease), background 0.16s var(--ease);
+    }
+
+    details.raw-evidence summary::-webkit-details-marker { display: none; }
+
+    details.raw-evidence summary::before {
+      content: "▸";
+      font-size: 10px;
+      color: #60a5fa;
+      transition: transform 0.2s var(--ease);
+    }
+
+    details.raw-evidence[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    details.raw-evidence summary:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .evidence-pre {
+      margin: 0;
+      padding: 12px 13px;
+      border-top: 1px solid var(--border);
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 11px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text-2);
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .empty-hint {
+      padding: 14px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-3);
+      border: 1px dashed var(--border);
+      border-radius: 9px;
+    }
+
+    .skeleton {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+    }
+
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.14), transparent);
+      animation: shimmer 1.4s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(4, 7, 13, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: opacity 0.24s var(--ease);
+    }
+
+    .modal-backdrop.hidden {
+      display: none;
+    }
+
+    .modal-card {
+      width: min(420px, 100%);
+      background: linear-gradient(180deg, #131d31 0%, #0e1626 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      padding: 26px 24px 24px;
+      box-shadow: 0 32px 80px -24px rgba(0, 0, 0, 0.95);
+      position: relative;
+      overflow: hidden;
+      animation: modalIn 0.34s var(--ease);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #3b82f6, #6366f1, transparent);
+    }
+
+    .modal-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(99, 102, 241, 0.18));
+      border: 1px solid rgba(96, 165, 250, 0.28);
+      color: #93c5fd;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .modal-desc {
+      font-size: 12.5px;
+      line-height: 1.68;
+      color: var(--text-2);
+      margin-bottom: 20px;
+    }
+
+    .modal-desc code {
+      background: rgba(96, 165, 250, 0.12);
+      color: #93c5fd;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+
+    .modal-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.34);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 11px 13px;
+      color: var(--text);
+      font-size: 13.5px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      letter-spacing: 0.02em;
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+    }
+
+    .modal-input::placeholder {
+      color: var(--text-3);
+      font-family: -apple-system, "Segoe UI", sans-serif;
+    }
+
+    .modal-input:focus {
+      border-color: rgba(59, 130, 246, 0.65);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+    }
+
+    .modal-btn {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 11px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+      box-shadow: 0 8px 22px -8px rgba(59, 130, 246, 0.95);
+      transition: filter 0.16s var(--ease), transform 0.12s var(--ease);
+    }
+
+    .modal-btn:hover { filter: brightness(1.1); }
+    .modal-btn:active { transform: translateY(1px); }
+
+    .modal-hint {
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-3);
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .command-bar {
+        width: calc(100vw - 20px);
+        top: 10px;
+        padding: 6px 6px 6px 11px;
+      }
+      #search-input { font-size: 13px; }
+      #search-btn { padding: 8px 14px; font-size: 12.5px; }
+      .legend { display: none; }
+      .bottom-left { left: 10px; bottom: 10px; }
+      .side-drawer {
+        top: 66px;
+        bottom: 10px;
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+      }
+      #node-drawer { transform: translateX(calc(-100% - 20px)); }
+      #answer-drawer { transform: translateX(calc(100% + 20px)); }
+      #node-drawer.open, #answer-drawer.open { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="graph-container"></div>
+
+  <div class="command-bar">
+    <input
+      id="search-input"
+      type="text"
+      placeholder="输入问题检索图谱，自动提取证据链交由 agnes-2.5-flash 分析…"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button id="key-btn" class="icon-btn" title="配置 API Key">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.9"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="15" r="4"/>
+        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
+      </svg>
+    </button>
+    <button id="search-btn">提问</button>
+  </div>
+
+  <div class="bottom-left">
+    <div class="legend glass-panel">
+      <div class="legend-title">Entity Types</div>
+      <div class="legend-grid">
+        <span><i style="--c:#38bdf8"></i>组织</span>
+        <span><i style="--c:#60a5fa"></i>人物</span>
+        <span><i style="--c:#34d399"></i>地理</span>
+        <span><i style="--c:#818cf8"></i>事件</span>
+        <span><i style="--c:#f472b6"></i>合同</span>
+        <span><i style="--c:#64748b"></i>其他</span>
+      </div>
+    </div>
+
+    <div class="controls glass-panel">
+      <button class="ctrl-btn" id="zoom-in-btn" title="放大">+</button>
+      <button class="ctrl-btn" id="zoom-out-btn" title="缩小">−</button>
+      <button class="ctrl-btn" id="zoom-fit-btn" title="重置视角并清除高亮">⟲</button>
+      <div class="divider-v"></div>
+      <span class="graph-stats loading" id="graph-stats">加载图谱中…</span>
+    </div>
+  </div>
+
+  <aside id="node-drawer" class="side-drawer">
+    <div class="drawer-header">
+      <span class="drawer-title">节点详情</span>
+      <button class="close-btn" id="close-node-btn" title="关闭">×</button>
+    </div>
+    <div class="drawer-body" id="node-drawer-body"></div>
+  </aside>
+
+  <aside id="answer-drawer" class="side-drawer">
+    <div class="drawer-header">
+      <span class="drawer-title">检索分析回答</span>
+      <button class="close-btn" id="close-answer-btn" title="关闭">×</button>
+    </div>
+    <div class="drawer-body" id="answer-drawer-body"></div>
+  </aside>
+
+  <div id="apikey-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="15" r="4"/>
+          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
+        </svg>
+      </div>
+      <div class="modal-title">配置 API Key</div>
+      <div class="modal-desc">
+        请输入 Agnes AI <code>agnes-2.5-flash</code> 的 API Key。
+        系统将使用图谱检索出的证据链交由该模型生成回答，
+        Key 仅保存在当前浏览器会话中。
+      </div>
+      <input
+        id="apikey-input"
+        type="password"
+        class="modal-input"
+        placeholder="sk-xxxxxxxxxxxxxxxx"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button id="save-apikey-btn" class="modal-btn">进入图谱终端</button>
+      <div class="modal-hint">按 Enter 快速确认</div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8000";
+    const AGNES_CHAT_URL = "https://apihub.agnes-ai.com/v1/chat/completions";
+    const AGNES_MODEL = "agnes-2.5-flash";
+    const STORAGE_KEY = "HIRAG_API_KEY";
+
+    let apiKey = sessionStorage.getItem(STORAGE_KEY) || "";
+
+    let graphInstance = null;
+    let graphData = { nodes: [], links: [] };
+    let pendingGraphData = null;
+    let simulationStarted = false;
+    let hasAutoFit = false;
+
+    const nodeMap = new Map();
+    const neighborMap = new Map();
+    let textChunksMap = {};
+    let communityReportsMap = {};
+
+    const highlightedNodes = new Set();
+    const highlightedLinks = new Set();
+    let selectedNode = null;
+    let hoverNode = null;
+
+    const placedLabelBoxes = [];
+
+    const PALETTE = {
+      ORGANIZATION: "#38bdf8",
+      PERSON: "#60a5fa",
+      GEO: "#34d399",
+      EVENT: "#818cf8",
+      CONTRACT: "#f472b6",
+      DEFAULT: "#64748b"
+    };
+
+    const STOP_ENTITIES = new Set([
+      "CONTRACTOR", "THE CONTRACTOR", "MAIN CONTRACTOR", "SUB-CONTRACTOR",
+      "SUBCONTRACTOR", "SUB-CONTRACTORS", "EMPLOYER", "WORKS", "THE WORKS",
+      "HONG KONG", "GOVERNMENT", "GOVERNMENT OF HONG KONG", "TENDERER",
+      "TENDERERS", "SAMPLES", "DRAWINGS", "MATERIAL", "SITE", "PROJECT SITE",
+      "CONTRACT", "TENDER", "CLAUSE 2", "SUB-CLAUSE (A)", "SUB-CLAUSE (B)", "SUB-CLAUSE (C)"
+    ]);
+
+    function cleanStr(val) {
+      if (!val) return "";
+      return String(val)
+        .replace(/^"+|"+$/g, "")
+        .replace(/<SEP>/g, "\n• ")
+        .trim();
+    }
+
+    function escapeHtml(str) {
+      return String(str == null ? "" : str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function truncateLabel(str, maxLen = 24) {
+      if (!str) return "";
+      return str.length > maxLen ? str.slice(0, maxLen) + "…" : str;
+    }
+
+    function getNodeColor(node) {
+      const t = (node.entity_type || "").toUpperCase();
+      for (const [k, color] of Object.entries(PALETTE)) {
+        if (k !== "DEFAULT" && t.includes(k)) return color;
+      }
+      return PALETTE.DEFAULT;
+    }
+
+    function getNodeRadius(node) {
+      return Math.max(3.5, Math.min(10, 3 + Math.sqrt(node.degree || 1) * 1.1));
+    }
+
+    function tryRegisterLabelBox(box, forceShow) {
+      if (!forceShow) {
+        for (let i = 0; i < placedLabelBoxes.length; i++) {
+          const b = placedLabelBoxes[i];
+          const overlap = !(
+            box.right < b.left ||
+            box.left > b.right ||
+            box.bottom < b.top ||
+            box.top > b.bottom
+          );
+          if (overlap) return false;
+        }
+      }
+      placedLabelBoxes.push(box);
+      return true;
+    }
+
+    // 静态模式下点击合同节点自动聚合同一 full_doc_id 的全部切片
+    function expandSiblingChunkIds(nodeId, initialChunkIds) {
+      const result = new Set(initialChunkIds);
+      const upperId = (nodeId || "").toUpperCase();
+      if (upperId.includes("HDIL-2026-MC-01") || upperId.includes("APEX-2026-SUB-MEP-01")) {
+        const targetDocIds = new Set();
+        for (const [_, cdata] of Object.entries(textChunksMap)) {
+          const content = (cdata && cdata.content) || "";
+          if (
+            (upperId.includes("HDIL-2026-MC-01") && content.includes("Contract_A_Main_Works_Agreement")) ||
+            (upperId.includes("APEX-2026-SUB-MEP-01") && content.includes("Contract_B_MEP_Subcontract_Agreement"))
+          ) {
+            if (cdata.full_doc_id) targetDocIds.add(cdata.full_doc_id);
+          }
+        }
+        const siblingEntries = Object.entries(textChunksMap)
+          .filter(([_, cdata]) => cdata && targetDocIds.has(cdata.full_doc_id))
+          .sort((a, b) => (a[1].chunk_order_index || 0) - (b[1].chunk_order_index || 0));
+        siblingEntries.forEach(([cid]) => result.add(cid));
+      }
+      return Array.from(result);
+    }
+
+    function parseGraphML(xmlText) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+
+      const keyMap = {};
+      xmlDoc.querySelectorAll("key").forEach(k => {
+        keyMap[k.getAttribute("id")] = k.getAttribute("attr.name") || k.getAttribute("id");
+      });
+
+      const nodes = [];
+      const links = [];
+      nodeMap.clear();
+      neighborMap.clear();
+
+      xmlDoc.querySelectorAll("node").forEach(nEl => {
+        const id = cleanStr(nEl.getAttribute("id") || "");
+        if (!id) return;
+
+        const attrs = {};
+        nEl.querySelectorAll("data").forEach(dEl => {
+          const k = keyMap[dEl.getAttribute("key")] || dEl.getAttribute("key");
+          attrs[k] = dEl.textContent || "";
+        });
+
+        const nodeObj = {
+          id,
+          label: id,
+          entity_type: cleanStr(attrs.entity_type || attrs.type || "ENTITY"),
+          description: cleanStr(attrs.description || ""),
+          source_id: cleanStr(attrs.source_id || ""),
+          degree: 0
+        };
+        nodes.push(nodeObj);
+        nodeMap.set(id, nodeObj);
+        neighborMap.set(id, []);
+      });
+
+      xmlDoc.querySelectorAll("edge").forEach(eEl => {
+        const src = cleanStr(eEl.getAttribute("source") || "");
+        const tgt = cleanStr(eEl.getAttribute("target") || "");
+        if (!nodeMap.has(src) || !nodeMap.has(tgt)) return;
+
+        const attrs = {};
+        eEl.querySelectorAll("data").forEach(dEl => {
+          const k = keyMap[dEl.getAttribute("key")] || dEl.getAttribute("key");
+          attrs[k] = dEl.textContent || "";
+        });
+
+        const weight = parseFloat(attrs.weight || "1") || 1;
+        const desc = cleanStr(attrs.description || "");
+
+        links.push({ source: src, target: tgt, weight, description: desc });
+        nodeMap.get(src).degree++;
+        nodeMap.get(tgt).degree++;
+        neighborMap.get(src).push({ targetId: tgt, description: desc, weight });
+        neighborMap.get(tgt).push({ targetId: src, description: desc, weight });
+      });
+
+      return { nodes, links };
+    }
+
+    function initGraph() {
+      const container = document.getElementById("graph-container");
+
+      graphInstance = ForceGraph()(container)
+        .backgroundColor("rgba(0,0,0,0)")
+        .nodeId("id")
+        .d3VelocityDecay(0.35)
+        .autoPauseRedraw(false)
+        .linkWidth(link => (highlightedLinks.has(link) ? 2.0 : 0.6))
+        .linkColor(link => {
+          if (highlightedNodes.size > 0) {
+            return highlightedLinks.has(link)
+              ? "rgba(245, 158, 11, 0.75)"
+              : "rgba(148, 163, 184, 0.055)";
+          }
+          return "rgba(148, 163, 184, 0.13)";
+        })
+        .linkDirectionalParticles(link => (highlightedLinks.has(link) ? 2 : 0))
+        .linkDirectionalParticleWidth(1.7)
+        .linkDirectionalParticleSpeed(0.006)
+        .linkDirectionalParticleColor(() => "#fbbf24")
+        .nodePointerAreaPaint((node, color, ctx) => {
+          const zoom = graphInstance.zoom() || 1;
+          const r = getNodeRadius(node) + 6 / zoom;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
+          ctx.fill();
+        })
+        .onRenderFramePre(() => {
+          placedLabelBoxes.length = 0;
+        })
+        .nodeCanvasObject((node, ctx, globalScale) => {
+          if (typeof node.x !== "number" || typeof node.y !== "number") return;
+
+          const isMatched = highlightedNodes.has(node.id);
+          const isSelected = selectedNode && selectedNode.id === node.id;
+          const isHovered = hoverNode && hoverNode.id === node.id;
+          const dimmed =
+            highlightedNodes.size > 0 && !isMatched && !isSelected && !isHovered;
+
+          const r = getNodeRadius(node);
+          const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.006);
+
+          ctx.save();
+
+          if (isMatched || isSelected) {
+            const haloRadius = r * (1.6 + pulse * 0.9);
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, haloRadius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = isMatched
+              ? `rgba(245, 158, 11, ${0.13 + pulse * 0.22})`
+              : `rgba(59, 130, 246, ${0.16 + pulse * 0.2})`;
+            ctx.fill();
+          }
+
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, isMatched ? r * 1.15 : r, 0, 2 * Math.PI, false);
+          if (isMatched) {
+            ctx.fillStyle = pulse > 0.5 ? "#fbbf24" : "#f59e0b";
+          } else if (isSelected || isHovered) {
+            ctx.fillStyle = "#f8fafc";
+          } else {
+            ctx.fillStyle = dimmed ? "rgba(71, 85, 105, 0.25)" : getNodeColor(node);
+          }
+          ctx.fill();
+
+          if (isSelected || isHovered) {
+            ctx.lineWidth = 1.4 / globalScale;
+            ctx.strokeStyle = "rgba(147, 197, 253, 0.9)";
+            ctx.stroke();
+          }
+
+          const isForcedLabel = isSelected || isHovered;
+          const shouldTryDrawLabel =
+            isForcedLabel ||
+            isMatched ||
+            (!dimmed && globalScale > 1.75 && node.degree >= 2) ||
+            (!dimmed && globalScale > 2.8);
+
+          if (shouldTryDrawLabel) {
+            const displayStr = isForcedLabel ? node.label : truncateLabel(node.label, 24);
+            const screenFontSize = isForcedLabel || isMatched ? 12.5 : 11;
+            const fontSize = screenFontSize / globalScale;
+
+            ctx.font = `${isForcedLabel || isMatched ? "600" : "400"} ${fontSize}px -apple-system, "Segoe UI", sans-serif`;
+            const textWidth = ctx.measureText(displayStr).width;
+            const padX = 5 / globalScale;
+            const padY = 3 / globalScale;
+            const labelY = node.y + r + 7 / globalScale;
+
+            const screenCoords = graphInstance.graph2ScreenCoords(node.x, labelY);
+            const halfW = (textWidth * globalScale) / 2 + 8;
+            const halfH = screenFontSize / 2 + 5;
+            const screenBox = {
+              left: screenCoords.x - halfW,
+              right: screenCoords.x + halfW,
+              top: screenCoords.y - halfH,
+              bottom: screenCoords.y + halfH
+            };
+
+            if (tryRegisterLabelBox(screenBox, isForcedLabel)) {
+              ctx.fillStyle = "rgba(7, 11, 20, 0.85)";
+              ctx.fillRect(
+                node.x - textWidth / 2 - padX,
+                labelY - fontSize / 2 - padY,
+                textWidth + padX * 2,
+                fontSize + padY * 2
+              );
+
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillStyle = isMatched
+                ? "#fcd34d"
+                : isForcedLabel
+                ? "#ffffff"
+                : "#cbd5e1";
+              ctx.fillText(displayStr, node.x, labelY);
+            }
+          }
+
+          ctx.restore();
+        })
+        .onNodeHover(node => {
+          hoverNode = node || null;
+          container.style.cursor = node ? "pointer" : "default";
+        })
+        .onNodeClick(node => {
+          openNodeDrawer(node);
+          graphInstance.centerAt(node.x, node.y, 500);
+          if (graphInstance.zoom() < 2.0) {
+            graphInstance.zoom(2.2, 500);
+          }
+        })
+        .onBackgroundClick(() => {
+          selectedNode = null;
+          document.getElementById("node-drawer").classList.remove("open");
+        })
+        .onEngineStop(() => {
+          if (simulationStarted && !hasAutoFit) {
+            hasAutoFit = true;
+            graphInstance.zoomToFit(800, 90);
+          }
+        });
+
+      graphInstance.d3Force("charge").strength(-160);
+      graphInstance.d3Force("link").distance(70);
+
+      window.addEventListener("resize", () => {
+        graphInstance.width(window.innerWidth).height(window.innerHeight);
+      });
+    }
+
+    function maybeStartSimulation() {
+      if (simulationStarted) return;
+      if (!pendingGraphData) return;
+      if (!apiKey) return;
+
+      simulationStarted = true;
+      graphData = pendingGraphData;
+      pendingGraphData = null;
+      graphInstance.graphData(graphData);
+    }
+
+    function openNodeDrawer(node) {
+      selectedNode = node;
+      const drawer = document.getElementById("node-drawer");
+      const body = document.getElementById("node-drawer-body");
+
+      const neighbors = neighborMap.get(node.id) || [];
+      const rawChunkIds = node.source_id
+        ? node.source_id.split(/\n• |\||,|<SEP>/).map(s => s.trim()).filter(Boolean)
+        : [];
+      const chunkIds = expandSiblingChunkIds(node.id, rawChunkIds);
+
+      const chunksHtml = chunkIds.length
+        ? chunkIds
+            .map(cid => {
+              const c = textChunksMap[cid];
+              return `<div class="surface-block" style="white-space:normal;">
+                <div class="chunk-id">${escapeHtml(cid)}</div>
+                <div class="chunk-text">${c ? escapeHtml(c.content) : "未找到对应原文切片"}</div>
+              </div>`;
+            })
+            .join("")
+        : `<div class="empty-hint">无关联切片</div>`;
+
+      const neighborsHtml = neighbors.length
+        ? neighbors
+            .slice(0, 25)
+            .map(
+              nb => `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
+                nb.targetId.replace(/'/g, "\\'")
+              )}')">
+                <div class="neighbor-name">${escapeHtml(nb.targetId)}</div>
+                <div class="neighbor-desc">${escapeHtml(nb.description || "")}</div>
+              </div>`
+            )
+            .join("")
+        : `<div class="empty-hint">无关联节点</div>`;
+
+      body.innerHTML = `
+        <span class="type-badge">${escapeHtml(node.entity_type)}</span>
+        <h3 class="node-title">${escapeHtml(node.label)}</h3>
+        <div class="meta-row">
+          <span>关联边数 <b>${node.degree}</b></span>
+          <span>切片数 <b>${chunkIds.length}</b></span>
+        </div>
+
+        <div class="section-title">节点描述</div>
+        <div class="surface-block">${escapeHtml(node.description || "暂无描述")}</div>
+
+        <div class="section-title">关联实体 (${neighbors.length})</div>
+        <div>${neighborsHtml}</div>
+
+        <div class="section-title">来源原文切片</div>
+        <div>${chunksHtml}</div>
+      `;
+
+      drawer.classList.add("open");
+      body.scrollTop = 0;
+    }
+
+    window.focusEntity = function (nodeId) {
+      const target = nodeMap.get(nodeId);
+      if (!target) return;
+      openNodeDrawer(target);
+      graphInstance.centerAt(target.x, target.y, 500);
+      graphInstance.zoom(2.5, 500);
+    };
+
+    function highlightMatchedNodes(ids) {
+      highlightedNodes.clear();
+      highlightedLinks.clear();
+
+      (ids || []).forEach(id => {
+        if (nodeMap.has(id)) highlightedNodes.add(id);
+      });
+
+      graphData.links.forEach(link => {
+        const sId = typeof link.source === "object" ? link.source.id : link.source;
+        const tId = typeof link.target === "object" ? link.target.id : link.target;
+        if (highlightedNodes.has(sId) && highlightedNodes.has(tId)) {
+          highlightedLinks.add(link);
+        }
+      });
+
+      if (highlightedNodes.size > 0) {
+        graphInstance.zoomToFit(700, 110, n => highlightedNodes.has(n.id));
+      }
+    }
+
+    /* ============ GitHub Pages 纯静态浏览器内置多跳 RAG 引擎 ============ */
+
+    async function runStaticBrowserRAG(query, currentApiKey) {
+      const qUpper = query.toUpperCase();
+      const tokens = qUpper
+        .split(/[\s,，。？?！!；;：:（）()【】\[\]"'“”‘’、]+/)
+        .filter(t => t.length >= 2);
+
+      const docGroups = {};
+      const targetDocIds = new Set();
+      const statuteDocIds = new Set();
+
+      for (const [cid, cdata] of Object.entries(textChunksMap)) {
+        if (!cdata || !cdata.content) continue;
+        const docId = cdata.full_doc_id || "unknown";
+        if (!docGroups[docId]) docGroups[docId] = [];
+        docGroups[docId].push({ cid, order: cdata.chunk_order_index || 0, content: cdata.content });
+
+        const cUpper = cdata.content.toUpperCase();
+        // 自动识别已入库的香港法例文件（含 .rtf / .txt 法案切片）
+        if (
+          cUpper.includes("HK-STATUTES-BASELINE") ||
+          cUpper.includes("STATUTORY BASELINE CORPUS") ||
+          cUpper.includes("ORDINANCE (CAP.") ||
+          /\[DOCUMENT_SOURCE:[^\]]*(?:CAP|ORDINANCE|STATUTE|LAW|法例|条例)/i.test(cdata.content)
+        ) {
+          statuteDocIds.add(docId);
+        }
+        if (
+          (qUpper.includes("样本A") || qUpper.includes("样本 A") || qUpper.includes("合同A") || qUpper.includes("主合同") || qUpper.includes("HDIL-2026-MC-01") || qUpper.includes("CONTRACT A")) &&
+          cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT")
+        ) {
+          targetDocIds.add(docId);
+        }
+        if (
+          (qUpper.includes("样本B") || qUpper.includes("样本 B") || qUpper.includes("合同B") || qUpper.includes("分包") || qUpper.includes("APEX-2026-SUB-MEP-01") || qUpper.includes("CONTRACT B")) &&
+          cUpper.includes("CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT")
+        ) {
+          targetDocIds.add(docId);
+        }
+      }
+
+      if (targetDocIds.size === 0) {
+        for (const [docId, arr] of Object.entries(docGroups)) {
+          if (arr.length <= 12 && !statuteDocIds.has(docId)) {
+            const firstUpper = arr[0].content.toUpperCase();
+            if (firstUpper.includes("CONTRACT_A") || firstUpper.includes("CONTRACT_B")) {
+              targetDocIds.add(docId);
+            }
+          }
+        }
+      }
+
+      // 检索匹配的图谱实体与多跳关系边
+      const scoredNodes = [];
+      for (const node of graphData.nodes) {
+        const idU = node.id.toUpperCase();
+        if (idU.length < 3 || STOP_ENTITIES.has(idU)) continue;
+        let score = 0;
+        if (qUpper.includes(idU)) score += 35;
+        for (const tk of tokens) {
+          if (idU.includes(tk)) score += 10;
+          else if ((node.description || "").toUpperCase().includes(tk)) score += 3;
+        }
+        if (score > 0) scoredNodes.push({ score, node });
+      }
+      scoredNodes.sort((a, b) => b.score - a.score);
+      const topEntities = scoredNodes.slice(0, 15).map(x => x.node);
+
+      const entityLines = topEntities.map(
+        n => `- [${n.entity_type}] ${n.id}: ${(n.description || "").slice(0, 260)}`
+      );
+      const edgeLines = [];
+      for (const n of topEntities.slice(0, 10)) {
+        const nbs = neighborMap.get(n.id) || [];
+        for (const nb of nbs.slice(0, 4)) {
+          edgeLines.push(`- ${n.id} -> ${nb.targetId}: ${(nb.description || "").slice(0, 200)}`);
+        }
+      }
+
+      // 检索匹配的社区报告摘要（来自 ./pdf_work_dir_local/kv_store_community_reports.json）
+      const communityLines = [];
+      for (const [_, rep] of Object.entries(communityReportsMap)) {
+        const repStr = (rep && rep.report_string) || "";
+        if (!repStr) continue;
+        const repUpper = repStr.toUpperCase();
+        if (
+          repUpper.includes("HDIL-2026-MC-01") ||
+          repUpper.includes("APEX-2026-SUB-MEP-01") ||
+          tokens.some(tk => tk.length >= 3 && repUpper.includes(tk))
+        ) {
+          communityLines.push(repStr.slice(0, 600));
+          if (communityLines.length >= 3) break;
+        }
+      }
+
+      // 组装目标合同全量同源切片（命中所问条款置顶）+ 数据库法例切片
+      const clauseMatches = [...query.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*条|CLAUSE\s+(\d+(?:\.\d+)?))/gi)];
+      const flatClauses = clauseMatches.map(m => m[1] || m[2]).filter(Boolean);
+
+      const matchedChunkBlocks = [];
+      const siblingChunkBlocks = [];
+
+      for (const docId of targetDocIds) {
+        const list = (docGroups[docId] || []).sort((a, b) => a.order - b.order);
+        for (const item of list) {
+          let hitCl = null;
+          for (const cl of flatClauses) {
+            const re = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?${cl.replace(".", "\\.")}(?:\\.\\d+)?[.\\s]|CLAUSE\\s+${cl.replace(".", "\\.")}\\b`, "i");
+            if (re.test(item.content)) {
+              hitCl = cl;
+              break;
+            }
+          }
+          if (hitCl) {
+            matchedChunkBlocks.push(`<!-- 🎯 TARGET CLAUSE ${hitCl} HIT (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+          } else {
+            siblingChunkBlocks.push(`<!-- Contract Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+          }
+        }
+      }
+
+      const statuteBlocks = [];
+      for (const sDocId of statuteDocIds) {
+        const list = (docGroups[sDocId] || []).sort((a, b) => a.order - b.order);
+        for (const item of list) {
+          if (list.length <= 6 || tokens.some(tk => item.content.toUpperCase().includes(tk))) {
+            statuteBlocks.push(`<!-- ⚖️ Database Statute Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+          }
+          if (statuteBlocks.length >= 8) break;
+        }
+      }
+
+      const evidenceText = [
+        "-----Retrieved Community Reports-----",
+        communityLines.join("\n\n") || "(No community report hit)",
+        "\n-----Retrieved Knowledge Graph Entities-----",
+        entityLines.join("\n") || "(No direct entity hit)",
+        "\n-----Retrieved Knowledge Graph Relations-----",
+        edgeLines.join("\n") || "(No direct relation hit)",
+        "\n-----Complete Target Contract & Database Statute Chunks-----",
+        ...matchedChunkBlocks,
+        ...siblingChunkBlocks,
+        ...statuteBlocks
+      ].join("\n\n");
+
+      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions---\n1. 请严格依据上方检索出的【合同原文切片】与【数据库法例切片】进行审查，准确区分主合同 HDIL-2026-MC-01（Contract A）与机电分包合同 APEX-2026-SUB-MEP-01（Contract B）。\n2. 结合上方数据库法例切片与香港现行法律（如《建造业付款保障条例》Cap. 652：付款回应期上限 30 日、付款期上限 60 日、第 11(2) 条禁止契约排除、第 17 条严禁 Pay-When-Paid、第 24 条法定审裁权、第 57-61 条法定停工权；《雇佣条例》Cap. 57 第 32 条禁止罚款扣薪及第 43C 条大判代偿 2 个月欠薪；《雇员补偿条例》Cap. 282 第 24 条工伤代偿责任；《管制免责条款条例》Cap. 71 第 7(1) 条疏忽致人身伤亡绝对不得免责；Cap. 509/Cap. 59 刑事罚款不可转嫁原则及普通法禁止惩罚性违约金 Penalty 原则）逐条穿透比对。\n3. 直接给出明确结论，逐条列出【条款编号 + 合同原文规定 + 违反的具体香港法例或跨合同矛盾点】。`;
+
+      const llmResp = await fetch(AGNES_CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${currentApiKey}`
+        },
+        body: JSON.stringify({
+          model: AGNES_MODEL,
+          temperature: 0.1,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: query }
+          ]
+        })
+      });
+
+      if (!llmResp.ok) {
+        const errJson = await llmResp.json().catch(() => ({}));
+        throw new Error((errJson.error && errJson.error.message) || `Agnes API 调用失败 (HTTP ${llmResp.status})`);
+      }
+
+      const llmData = await llmResp.json();
+      const answer = (llmData.choices && llmData.choices[0] && llmData.choices[0].message && llmData.choices[0].message.content) || "";
+
+      const aUpper = answer.toUpperCase();
+      const matchedNodeIds = [];
+      for (const node of graphData.nodes) {
+        const idU = node.id.toUpperCase();
+        if (idU.length < 3 || STOP_ENTITIES.has(idU)) continue;
+        if (qUpper.includes(idU) || aUpper.includes(idU)) {
+          matchedNodeIds.push(node.id);
+        }
+        if (matchedNodeIds.length >= 12) break;
+      }
+
+      return {
+        answer,
+        evidence: evidenceText,
+        matched_nodes: matchedNodeIds
+      };
+    }
+
+    /* ============ 查询入口 ============ */
+
+    async function runQuery() {
+      if (!apiKey) {
+        openApiKeyModal();
+        return;
+      }
+
+      const input = document.getElementById("search-input");
+      const query = input.value.trim();
+      if (!query) return;
+
+      const btn = document.getElementById("search-btn");
+      btn.disabled = true;
+      btn.textContent = "分析中…";
+      showAnswerLoading(query);
+
+      try {
+        let data = null;
+        const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+        if (isLocal) {
+          try {
+            const resp = await fetch(`${API_BASE}/api/query`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ query, api_key: apiKey })
+            });
+            if (resp.ok) data = await resp.json();
+          } catch (_) {}
+        }
+
+        if (!data) {
+          data = await runStaticBrowserRAG(query, apiKey);
+        }
+
+        highlightMatchedNodes(data.matched_nodes || []);
+        renderAnswer(query, data);
+      } catch (err) {
+        renderAnswerError(query, err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "提问";
+      }
+    }
+
+    function showAnswerLoading(query) {
+      const drawer = document.getElementById("answer-drawer");
+      const body = document.getElementById("answer-drawer-body");
+
+      body.innerHTML = `
+        <div class="query-echo">${escapeHtml(query)}</div>
+        <div class="section-title">分析结论</div>
+        <div class="skeleton" style="height:14px;margin-bottom:10px;"></div>
+        <div class="skeleton" style="height:14px;width:88%;margin-bottom:10px;"></div>
+        <div class="skeleton" style="height:14px;width:72%;margin-bottom:10px;"></div>
+        <div class="skeleton" style="height:14px;width:80%;"></div>
+      `;
+      drawer.classList.add("open");
+      body.scrollTop = 0;
+    }
+
+    function renderAnswerError(query, message) {
+      const drawer = document.getElementById("answer-drawer");
+      const body = document.getElementById("answer-drawer-body");
+
+      body.innerHTML = `
+        <div class="query-echo">${escapeHtml(query)}</div>
+        <div class="section-title">请求失败</div>
+        <div class="surface-block" style="color:#fca5a5;border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.08);">
+          ${escapeHtml(message || "未知错误")}
+        </div>
+      `;
+      drawer.classList.add("open");
+    }
+
+    function renderAnswer(query, data) {
+      const drawer = document.getElementById("answer-drawer");
+      const body = document.getElementById("answer-drawer-body");
+
+      const matched = data.matched_nodes || [];
+      const chipsHtml = matched.length
+        ? matched
+            .map(
+              id =>
+                `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
+                  id.replace(/'/g, "\\'")
+                )}')">✦ ${escapeHtml(truncateLabel(id, 28))}</span>`
+            )
+            .join("")
+        : `<span class="empty-hint" style="padding:9px 12px;">无特定高亮实体</span>`;
+
+      const htmlAnswer = window.marked
+        ? marked.parse(data.answer || "")
+        : `<div style="white-space:pre-wrap;">${escapeHtml(data.answer || "")}</div>`;
+
+      body.innerHTML = `
+        <div class="query-echo">${escapeHtml(query)}</div>
+
+        <div class="section-title">核心命中节点（点击定位）</div>
+        <div class="chip-wrap">${chipsHtml}</div>
+
+        <div class="section-title">分析结论</div>
+        <div class="surface-block markdown-body" style="white-space:normal;">${htmlAnswer}</div>
+
+        <details class="raw-evidence">
+          <summary>查看底层检索证据链</summary>
+          <pre class="evidence-pre">${escapeHtml(data.evidence || "无证据内容")}</pre>
+        </details>
+      `;
+
+      drawer.classList.add("open");
+      body.scrollTop = 0;
+    }
+
+    /* ============ 数据加载（直接读取 ./pdf_work_dir_local/ 文件夹） ============ */
+
+    async function loadGraphAndChunks() {
+      const statsEl = document.getElementById("graph-stats");
+      const isLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+      const chunkUrls = isLocal
+        ? [`${API_BASE}/api/chunks`, "./pdf_work_dir_local/kv_store_text_chunks.json", "./kv_store_text_chunks.json"]
+        : ["./pdf_work_dir_local/kv_store_text_chunks.json", "./kv_store_text_chunks.json"];
+      for (const url of chunkUrls) {
+        try {
+          const r = await fetch(url);
+          if (r.ok) { textChunksMap = await r.json(); break; }
+        } catch (_) {}
+      }
+
+      for (const url of ["./pdf_work_dir_local/kv_store_community_reports.json", "./kv_store_community_reports.json"]) {
+        try {
+          const r = await fetch(url);
+          if (r.ok) { communityReportsMap = await r.json(); break; }
+        } catch (_) {}
+      }
+
+      const graphUrls = isLocal
+        ? [`${API_BASE}/api/graphml`, "./pdf_work_dir_local/graph_chunk_entity_relation.graphml", "./graph_chunk_entity_relation.graphml"]
+        : ["./pdf_work_dir_local/graph_chunk_entity_relation.graphml", "./graph_chunk_entity_relation.graphml"];
+      for (const url of graphUrls) {
+        try {
+          const r = await fetch(url);
+          if (r.ok) {
+            const xml = await r.text();
+            if (xml.includes("<graphml")) {
+              pendingGraphData = parseGraphML(xml);
+              statsEl.textContent =
+                `${pendingGraphData.nodes.length} 节点 · ${pendingGraphData.links.length} 连边`;
+              statsEl.classList.remove("loading");
+              maybeStartSimulation();
+              return;
+            }
+          }
+        } catch (_) {}
+      }
+
+      statsEl.textContent = "未检测到图谱文件";
+      statsEl.classList.remove("loading");
+      statsEl.style.color = "#f87171";
+    }
+
+    function openApiKeyModal() {
+      const modal = document.getElementById("apikey-modal");
+      const input = document.getElementById("apikey-input");
+      input.value = apiKey;
+      modal.classList.remove("hidden");
+      setTimeout(() => input.focus(), 60);
+    }
+
+    function saveApiKey() {
+      const val = document.getElementById("apikey-input").value.trim();
+      if (!val) {
+        alert("请输入有效的 API Key");
+        return;
+      }
+      apiKey = val;
+      sessionStorage.setItem(STORAGE_KEY, apiKey);
+      document.getElementById("apikey-modal").classList.add("hidden");
+      maybeStartSimulation();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.marked) {
+        marked.setOptions({ breaks: true, gfm: true });
+      }
+
+      initGraph();
+      loadGraphAndChunks();
+
+      if (!apiKey) {
+        openApiKeyModal();
+      }
+
+      document.getElementById("save-apikey-btn").addEventListener("click", saveApiKey);
+      document.getElementById("apikey-input").addEventListener("keydown", e => {
+        if (e.key === "Enter") saveApiKey();
+      });
+      document.getElementById("key-btn").addEventListener("click", openApiKeyModal);
+
+      document.getElementById("search-btn").addEventListener("click", runQuery);
+      document.getElementById("search-input").addEventListener("keydown", e => {
+        if (e.key === "Enter") runQuery();
+      });
+
+      document.getElementById("close-node-btn").addEventListener("click", () => {
+        selectedNode = null;
+        document.getElementById("node-drawer").classList.remove("open");
+      });
+
+      document.getElementById("close-answer-btn").addEventListener("click", () => {
+        document.getElementById("answer-drawer").classList.remove("open");
+      });
+
+      document.getElementById("zoom-in-btn").addEventListener("click", () => {
+        graphInstance.zoom(Math.min(8, graphInstance.zoom() * 1.45), 250);
+      });
+      document.getElementById("zoom-out-btn").addEventListener("click", () => {
+        graphInstance.zoom(Math.max(0.15, graphInstance.zoom() / 1.45), 250);
+      });
+      document.getElementById("zoom-fit-btn").addEventListener("click", () => {
+        highlightedNodes.clear();
+        highlightedLinks.clear();
+        selectedNode = null;
+        document.getElementById("node-drawer").classList.remove("open");
+        graphInstance.zoomToFit(500, 70);
+      });
+    });
+  </script>
+</body>
+</html>
