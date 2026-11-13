@@ -69,32 +69,35 @@ _EMBED_CLIENT = AsyncOpenAI(
     http_client=_EMBED_HTTP_CLIENT,
 )
 
-# 协程上下文变量：传递前端输入的 API Key、当前用户提问与捕获的底层证据链
 _CURRENT_API_KEY: ContextVar[str] = ContextVar("_CURRENT_API_KEY", default="")
 _CURRENT_USER_QUERY: ContextVar[str] = ContextVar("_CURRENT_USER_QUERY", default="")
 _CAPTURED_EVIDENCE: ContextVar[str] = ContextVar("_CAPTURED_EVIDENCE", default="")
 
 _KNOWN_ENTITY_IDS: set[str] = set()
 _CHUNKS_STORE: dict[str, dict] = {}
-_DOC_TO_CHUNKS: dict[str, list[tuple[int, str, str]]] = {}  # full_doc_id -> [(order, cid, content)]
-_DOC_ALIASES: dict[str, str] = {}  # 别名/合同编号 -> full_doc_id
+_DOC_TO_CHUNKS: dict[str, list[tuple[int, str, str]]] = {}
+_DOC_ALIASES: dict[str, str] = {}
+_STATUTE_DOC_IDS: set[str] = set()
 
-# 排除高频泛化噪音节点，避免整张图到处乱闪
+# 排除高频泛化噪音节点，确保只高亮具体条款与法例专有节点
 _STOP_ENTITIES = {
     "CONTRACTOR", "THE CONTRACTOR", "MAIN CONTRACTOR", "SUB-CONTRACTOR",
-    "SUBCONTRACTOR", "SUB-CONTRACTORS", "EMPLOYER", "WORKS", "THE WORKS",
-    "HONG KONG", "GOVERNMENT", "GOVERNMENT OF HONG KONG", "TENDERER",
-    "TENDERERS", "SAMPLES", "DRAWINGS", "MATERIAL", "SITE", "PROJECT SITE",
-    "CONTRACT", "TENDER", "CLAUSE 2", "SUB-CLAUSE (A)", "SUB-CLAUSE (B)", "SUB-CLAUSE (C)"
+    "SUBCONTRACTOR", "SUB-CONTRACTORS", "EMPLOYER", "THE EMPLOYER", "WORKS", "THE WORKS",
+    "HONG KONG", "HKSAR", "GOVERNMENT", "GOVERNMENT OF HONG KONG", "TENDERER",
+    "TENDERERS", "SAMPLES", "DRAWINGS", "MATERIAL", "MATERIALS", "SITE", "PROJECT SITE",
+    "CONTRACT", "MAIN CONTRACT", "SUBCONTRACT", "TENDER", "CLAUSE 2", "SUB-CLAUSE (A)",
+    "SUB-CLAUSE (B)", "SUB-CLAUSE (C)", "PAYMENT", "CLAIM", "CLAIMS", "NOTICE",
+    "CALENDAR MONTH", "RATE OF PROGRESS", "ENGINEER", "EMPLOYER'S ENGINEER",
+    "CONTRACT REFERENCE", "PARTIES", "AGREEMENT", "DATE OF AGREEMENT", "TIME", "DAYS"
 }
 
 
 def load_known_entity_ids_and_chunks():
-    """加载图谱节点与文本切片索引，建立【合同编号/样本别名 -> 完整同源切片组】映射"""
     _KNOWN_ENTITY_IDS.clear()
     _CHUNKS_STORE.clear()
     _DOC_TO_CHUNKS.clear()
     _DOC_ALIASES.clear()
+    _STATUTE_DOC_IDS.clear()
 
     if os.path.exists(CHUNKS_JSON_PATH):
         try:
@@ -109,8 +112,9 @@ def load_known_entity_ids_and_chunks():
                 src_m = re.search(r"\[DOCUMENT_SOURCE:\s*([^\]]+)\]", content)
                 if src_m:
                     fname = src_m.group(1).strip()
+                    fname_u = fname.upper()
                     stem = os.path.splitext(fname)[0].upper()
-                    _DOC_ALIASES[fname.upper()] = doc_id
+                    _DOC_ALIASES[fname_u] = doc_id
                     _DOC_ALIASES[stem] = doc_id
                     if "CONTRACT_A" in stem:
                         for alias in ("样本A", "样本 A", "合同A", "合同 A", "CONTRACT A", "CONTRACT_A", "主合同"):
@@ -118,6 +122,17 @@ def load_known_entity_ids_and_chunks():
                     if "CONTRACT_B" in stem:
                         for alias in ("样本B", "样本 B", "合同B", "合同 B", "CONTRACT B", "CONTRACT_B", "分包合同"):
                             _DOC_ALIASES[alias] = doc_id
+
+                    # 严格限定：排除合同与 GCC/NTT 后，才将法例文档归入 _STATUTE_DOC_IDS
+                    is_contract_or_ntt = any(
+                        k in fname_u for k in ("CONTRACT_A", "CONTRACT_B", "GCCBWT", "GCC_NTT")
+                    )
+                    if not is_contract_or_ntt and (
+                        "HK-STATUTES-BASELINE" in content
+                        or "STATUTORY BASELINE CORPUS" in content
+                        or any(k in fname_u for k in ("STATUTE", "ORDINANCE", "CORPUS", "LAW", "CAP", "法例", "條例", "条例", "法案", ".RTF"))
+                    ):
+                        _STATUTE_DOC_IDS.add(doc_id)
 
                 if "HDIL-2026-MC-01" in content and "DOMESTIC SUBCONTRACT" not in content[:200]:
                     _DOC_ALIASES["HDIL-2026-MC-01"] = doc_id
@@ -142,25 +157,19 @@ def load_known_entity_ids_and_chunks():
 
 
 def build_supplemental_chunks_context(query: str, system_prompt: str) -> str:
-    """
-    当用户询问特定合同（如样本 A / HDIL-2026-MC-01）或特定条款（如第 4 条）时，
-    按切片中部独有指纹判断并补齐全部同源切片（part 1/5 ~ 5/5），彻底解决因 Overlap 重叠导致的 part 2/5 漏检问题。
-    """
     if not _DOC_TO_CHUNKS:
         return ""
 
     target_doc_ids = set()
     q_upper = query.upper()
 
-    # 1. 优先仅根据用户提问(query)锁定目标合同，避免把未提问的其他合同塞入上下文拖慢速度
     for alias, doc_id in _DOC_ALIASES.items():
         if alias in q_upper:
             target_doc_ids.add(doc_id)
 
-    # 2. 仅当用户提问未指明具体合同时，才从已召回的 system_prompt 中检测短合同
     if not target_doc_ids:
         for doc_id, chunk_list in _DOC_TO_CHUNKS.items():
-            if len(chunk_list) <= 12:
+            if len(chunk_list) <= 12 and doc_id not in _STATUTE_DOC_IDS:
                 for _, cid, content in chunk_list:
                     mid = len(content) // 2
                     unique_probe = content[max(0, mid - 80) : mid + 80].strip()
@@ -178,37 +187,64 @@ def build_supplemental_chunks_context(query: str, system_prompt: str) -> str:
             continue
 
         if len(chunk_list) <= 12:
+            matched_blocks = []
+            other_blocks = []
             for order, cid, content in chunk_list:
-                # 关键修复：取切片正中间 160 字符作为独有指纹判重，防止 part 2/5 因开头与 part 1/5 重叠而被误杀
                 mid = len(content) // 2
                 unique_probe = content[max(0, mid - 80) : mid + 80].strip()
-                if not unique_probe or unique_probe not in system_prompt:
-                    supplement_blocks.append(
+                if unique_probe and unique_probe in system_prompt:
+                    continue
+
+                hit_clause = None
+                for cl_num in flat_clauses:
+                    pattern = rf"(?m)(?:^\s*(?:\[[^\]]+\]\s*)?{re.escape(cl_num)}(?:\.\d+)?[\.\s]|CLAUSE\s+{re.escape(cl_num)}(?:\.\d+)?\b)"
+                    if re.search(pattern, content, flags=re.I):
+                        hit_clause = cl_num
+                        break
+
+                if hit_clause:
+                    matched_blocks.append(
+                        f"<!-- 🎯 TARGET CLAUSE {hit_clause} HIT ({cid}, part {order + 1}/{len(chunk_list)}) -->\n{content}"
+                    )
+                else:
+                    other_blocks.append(
                         f"<!-- Supplemental Sibling Chunk ({cid}, part {order + 1}/{len(chunk_list)}) -->\n{content}"
                     )
+            supplement_blocks.extend(matched_blocks)
+            supplement_blocks.extend(other_blocks)
         elif flat_clauses:
             for order, cid, content in chunk_list:
                 mid = len(content) // 2
                 unique_probe = content[max(0, mid - 80) : mid + 80].strip()
                 for cl_num in flat_clauses:
-                    pattern = rf"(?m)(?:^\s*(?:\[[^\]]+\]\s*)?{re.escape(cl_num)}\b|CLAUSE\s+{re.escape(cl_num)}\b)"
+                    pattern = rf"(?m)(?:^\s*(?:\[[^\]]+\]\s*)?{re.escape(cl_num)}(?:\.\d+)?[\.\s]|CLAUSE\s+{re.escape(cl_num)}(?:\.\d+)?\b)"
                     if re.search(pattern, content, flags=re.I) and unique_probe not in system_prompt:
                         supplement_blocks.append(
-                            f"<!-- Supplemental Clause {cl_num} Chunk ({cid}) -->\n{content}"
+                            f"<!-- 🎯 Supplemental Clause {cl_num} Chunk ({cid}) -->\n{content}"
                         )
                         break
+
+    for stat_doc_id in _STATUTE_DOC_IDS:
+        if stat_doc_id in target_doc_ids:
+            continue
+        for order, cid, content in _DOC_TO_CHUNKS.get(stat_doc_id, []):
+            mid = len(content) // 2
+            unique_probe = content[max(0, mid - 80) : mid + 80].strip()
+            if not unique_probe or unique_probe not in system_prompt:
+                supplement_blocks.append(
+                    f"<!-- ⚖️ Database Statute Chunk ({cid}, part {order + 1}) -->\n{content}"
+                )
 
     if not supplement_blocks:
         return ""
 
     return (
-        "-----Supplemental Complete Contract Chunks (Auto-Completed by Document ID)-----\n"
+        "-----Supplemental Complete Contract & Database Statute Chunks-----\n"
         + "\n\n".join(supplement_blocks)
     )
 
 
 def build_safe_query_param() -> QueryParam:
-    """精简检索规模，砍掉 gccbwt.doc 的长尾噪音，将单次查询速度提升 3 倍以上"""
     valid_keys = set(inspect.signature(QueryParam.__init__).parameters.keys())
     desired = {
         "mode": "hi",
@@ -256,10 +292,14 @@ async def llm_model_if_cache(
 
         effective_system_prompt = (
             evidence_with_supplements
-            + "\n\n---Critical Analysis Instructions---\n"
-            "1. 必须同时精读 `-----Source Documents-----` 与 `-----Supplemental Complete Contract Chunks-----` 中的全部合同条款原文（特别是 part 1/5 至 part 5/5 的完整拼接内容），严格区分目标审查合同（如 HDIL-2026-MC-01 主合同 A / APEX-2026-SUB-MEP-01 分包合同 B）与香港政府通用范本（如 GCC / NTT）。\n"
-            "2. 当用户询问某一条款（如“第 4 条”）或是否违反香港法例时，必须结合香港现行法律（如《建造业付款保障条例》Cap. 652、《管制免责条款条例》Cap. 71、《职业安全及健康条例》Cap. 509、《工厂及工业经营条例》Cap. 59、《雇佣条例》Cap. 57 第 32 及 43C 条、《雇员补偿条例》Cap. 282 第 24 条、普通法下惩罚性违约金 Penalty 原则及公共政策 Public Policy）逐款穿透比对。\n"
-            "3. 直接给出明确结论，逐条列出【条款编号（如 4.1 / 4.2 / 4.3 / 4.4）+ 原文核心规定 + 违反的具体香港法例或矛盾点】，严禁输出“需具体分析”等套话。"
+            + "\n\n---Critical Analysis Instructions & Hong Kong Statutory Baseline---\n"
+            "1. 必须同时精读 `-----Source Documents-----` 与 `-----Supplemental Complete Contract & Database Statute Chunks-----`，严格区分主合同 HDIL-2026-MC-01 中的 Main Contractor（总承包商/主承包商）与分包合同 APEX-2026-SUB-MEP-01 中的 Subcontractor（分包商）。\n"
+            "2. 【香港现行法例强制基准（严禁编造英国/新加坡法例的“第10条”、“响应日后7或14天”或“Withholding Notice/附表第4段”）】：\n"
+            "   - 《建造业付款保障条例》(Cap. 652)：**第 11(2) 条**禁止契约排除（任何排除或限制本条例运作的条款均属无效 void）；**第 15–16 条**规定进度款法定最长付款期限为送达付款申索（Payment Claim）后 **60 个日历日**（约定 90 日超限无效）；**第 17 条**严禁“先收款后付款”（Pay-When-Paid）及转嫁业主破产风险；**第 18–20 条**规定付款回应（Payment Response）法定最长期限为收到付款申索后 **30 个日历日**（约定 45 日超限无效），且雇主若要扣减（Set-off）任何款项，必须在法定期限内发出的书面 **Payment Response（付款回应）** 中列明扣减金额与详细理由（无书面付款回应即单方扣款违反第 18–20 条而无效）；**第 24 条**赋予申索方在付款争议产生起 **28 日**内启动法定审裁（Adjudication）的绝对权利；**第 57–61 条**赋予申索方在欠款时经提前至少 5 个工作日书面通知后**暂停工程或减缓施工进度**的法定权利。\n"
+            "   - 《雇佣条例》(Cap. 57)：**第 32 条**严禁非法扣薪（迟到扣月薪 35% 属违法）；**第 43C 及 70 条**规定总承建商须对分包商拖欠工人的前 2 个月工资承担法定连带代偿责任，不得契约免除。\n"
+            "   - 《雇员补偿条例》(Cap. 282)：**第 24 及 31 条**规定总承建商须对分包商雇员工伤承担法定代偿责任，免责无效。\n"
+            "   - 《管制免责条款条例》(Cap. 71)：**第 7(1) 条**绝对禁止免除因疏忽导致的人员死亡或人身伤害责任。\n"
+            "3. 直接给出明确结论，逐条列出【条款编号 + 合同原文规定 + 违反的具体香港法例条文与期限对比】。"
         )
 
     messages = []
@@ -321,8 +361,8 @@ graph_func = HiRAG(
 async def lifespan(app: FastAPI):
     load_known_entity_ids_and_chunks()
     print(
-        f"✅ 已加载 {len(_KNOWN_ENTITY_IDS)} 个图谱节点、{len(_CHUNKS_STORE)} 个文本切片 | "
-        f"访问 http://localhost:8000"
+        f"✅ 已加载 {len(_KNOWN_ENTITY_IDS)} 个图谱节点、{len(_CHUNKS_STORE)} 个文本切片 "
+        f"(含 {len(_STATUTE_DOC_IDS)} 份入库法案文档) | 访问 http://localhost:8000"
     )
     yield
     await _LLM_HTTP_CLIENT.aclose()
@@ -350,22 +390,22 @@ def rank_and_filter_nodes(query: str, answer: str, evidence: str) -> list[str]:
     scored = []
 
     for eid in _KNOWN_ENTITY_IDS:
-        if len(eid) < 3 or eid.upper() in _STOP_ENTITIES:
+        if len(eid) < 4 or eid.upper() in _STOP_ENTITIES:
             continue
         eid_u = eid.upper()
         score = 0
         if eid_u in q_upper:
-            score += 30
+            score += 40
         if eid_u in a_upper:
             score += 20
         elif eid_u in e_upper:
-            score += 5
+            score += 8
         if score > 0:
-            length_bonus = 3 if 4 <= len(eid) <= 45 else 0
-            scored.append((score + length_bonus, eid))
+            compound_bonus = 8 if (" " in eid_u or "-" in eid_u) and len(eid_u) <= 50 else 0
+            scored.append((score + compound_bonus, eid))
 
     scored.sort(key=lambda x: x[0], reverse=True)
-    top_nodes = [eid for s, eid in scored if s >= 15][:12]
+    top_nodes = [eid for s, eid in scored if s >= 15][:10]
     if not top_nodes:
         top_nodes = [eid for _, eid in scored[:8]]
     return top_nodes

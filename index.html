@@ -69,6 +69,7 @@
         linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
         linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
       background-size: 56px 56px;
+      -webkit-mask-image: radial-gradient(circle at 50% 46%, #000 22%, transparent 76%);
       mask-image: radial-gradient(circle at 50% 46%, #000 22%, transparent 76%);
       opacity: 0.85;
     }
@@ -954,7 +955,7 @@
         <span><i style="--c:#60a5fa"></i>人物</span>
         <span><i style="--c:#34d399"></i>地理</span>
         <span><i style="--c:#818cf8"></i>事件</span>
-        <span><i style="--c:#f472b6"></i>合同</span>
+        <span><i style="--c:#f472b6"></i>合同/法例</span>
         <span><i style="--c:#64748b"></i>其他</span>
       </div>
     </div>
@@ -1045,23 +1046,44 @@
       GEO: "#34d399",
       EVENT: "#818cf8",
       CONTRACT: "#f472b6",
+      LAW: "#f472b6",
+      CLAUSE: "#f472b6",
       DEFAULT: "#64748b"
     };
 
+    // 扩充高频泛化噪音词过滤表，避免 THE EMPLOYER / PAYMENT / NOTICE 等泛词抢占核心条款芯片名额
     const STOP_ENTITIES = new Set([
       "CONTRACTOR", "THE CONTRACTOR", "MAIN CONTRACTOR", "SUB-CONTRACTOR",
-      "SUBCONTRACTOR", "SUB-CONTRACTORS", "EMPLOYER", "WORKS", "THE WORKS",
-      "HONG KONG", "GOVERNMENT", "GOVERNMENT OF HONG KONG", "TENDERER",
-      "TENDERERS", "SAMPLES", "DRAWINGS", "MATERIAL", "SITE", "PROJECT SITE",
-      "CONTRACT", "TENDER", "CLAUSE 2", "SUB-CLAUSE (A)", "SUB-CLAUSE (B)", "SUB-CLAUSE (C)"
+      "SUBCONTRACTOR", "SUB-CONTRACTORS", "EMPLOYER", "THE EMPLOYER", "WORKS", "THE WORKS",
+      "HONG KONG", "HKSAR", "GOVERNMENT", "GOVERNMENT OF HONG KONG", "TENDERER",
+      "TENDERERS", "SAMPLES", "DRAWINGS", "MATERIAL", "MATERIALS", "SITE", "PROJECT SITE",
+      "CONTRACT", "MAIN CONTRACT", "SUBCONTRACT", "TENDER", "CLAUSE 2", "SUB-CLAUSE (A)",
+      "SUB-CLAUSE (B)", "SUB-CLAUSE (C)", "PAYMENT", "CLAIM", "CLAIMS", "NOTICE",
+      "CALENDAR MONTH", "RATE OF PROGRESS", "ENGINEER", "EMPLOYER'S ENGINEER",
+      "CONTRACT REFERENCE", "PARTIES", "AGREEMENT", "DATE OF AGREEMENT", "TIME", "DAYS"
     ]);
 
     function cleanStr(val) {
       if (!val) return "";
       return String(val)
         .replace(/^"+|"+$/g, "")
+        .replace(/"\s*<SEP>\s*"/g, "\n• ")
         .replace(/<SEP>/g, "\n• ")
+        .replace(/"\s*\n\s*-\s*"/g, "\n• ")
         .trim();
+    }
+
+    function normalizeEntityType(rawType, id, desc) {
+      const t = cleanStr(rawType).toUpperCase();
+      if (t && t !== "UNKNOWN" && t !== "ENTITY") return t;
+      const combined = `${id} ${desc}`.toUpperCase();
+      if (/(?:ORDINANCE|CAP\.|SECTION|CLAUSE|SUB-CLAUSE|CONTRACT|AGREEMENT|RETENTION|PAYMENT|ADJUDICATION|法例|條例|条例)/.test(combined)) {
+        return "CONTRACT";
+      }
+      if (/(?:LIMITED|LTD|BOARD|DEPARTMENT|GOVERNMENT|SURVEYOR|CENTRE|COMPANY)/.test(combined)) {
+        return "ORGANIZATION";
+      }
+      return "EVENT";
     }
 
     function escapeHtml(str) {
@@ -1107,7 +1129,6 @@
       return true;
     }
 
-    // 静态模式下点击合同节点自动聚合同一 full_doc_id 的全部切片
     function expandSiblingChunkIds(nodeId, initialChunkIds) {
       const result = new Set(initialChunkIds);
       const upperId = (nodeId || "").toUpperCase();
@@ -1154,11 +1175,12 @@
           attrs[k] = dEl.textContent || "";
         });
 
+        const cleanedDesc = cleanStr(attrs.description || "");
         const nodeObj = {
           id,
           label: id,
-          entity_type: cleanStr(attrs.entity_type || attrs.type || "ENTITY"),
-          description: cleanStr(attrs.description || ""),
+          entity_type: normalizeEntityType(attrs.entity_type || attrs.type, id, cleanedDesc),
+          description: cleanedDesc,
           source_id: cleanStr(attrs.source_id || ""),
           degree: 0
         };
@@ -1462,15 +1484,19 @@
         docGroups[docId].push({ cid, order: cdata.chunk_order_index || 0, content: cdata.content });
 
         const cUpper = cdata.content.toUpperCase();
-        // 自动识别已入库的香港法例文件（含 .rtf / .txt 法案切片）
+        const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
+        const isContractOrNtt = /CONTRACT_A|CONTRACT_B|GCCBWT|GCC_NTT/i.test(srcHeader);
+
+        // 严格限定：仅当文件名不属于合同/GCC/NTT，且属于法例文件时，才归入法案库（彻底防止合同切片被重复标为法例）
         if (
-          cUpper.includes("HK-STATUTES-BASELINE") ||
-          cUpper.includes("STATUTORY BASELINE CORPUS") ||
-          cUpper.includes("ORDINANCE (CAP.") ||
-          /\[DOCUMENT_SOURCE:[^\]]*(?:CAP|ORDINANCE|STATUTE|LAW|法例|条例)/i.test(cdata.content)
+          !isContractOrNtt &&
+          (cUpper.includes("HK-STATUTES-BASELINE") ||
+            cUpper.includes("STATUTORY BASELINE CORPUS") ||
+            /(?:CAP|ORDINANCE|STATUTE|LAW|法例|條例|条例|\.RTF)/i.test(srcHeader))
         ) {
           statuteDocIds.add(docId);
         }
+
         if (
           (qUpper.includes("样本A") || qUpper.includes("样本 A") || qUpper.includes("合同A") || qUpper.includes("主合同") || qUpper.includes("HDIL-2026-MC-01") || qUpper.includes("CONTRACT A")) &&
           cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT")
@@ -1496,55 +1522,14 @@
         }
       }
 
-      // 检索匹配的图谱实体与多跳关系边
-      const scoredNodes = [];
-      for (const node of graphData.nodes) {
-        const idU = node.id.toUpperCase();
-        if (idU.length < 3 || STOP_ENTITIES.has(idU)) continue;
-        let score = 0;
-        if (qUpper.includes(idU)) score += 35;
-        for (const tk of tokens) {
-          if (idU.includes(tk)) score += 10;
-          else if ((node.description || "").toUpperCase().includes(tk)) score += 3;
-        }
-        if (score > 0) scoredNodes.push({ score, node });
-      }
-      scoredNodes.sort((a, b) => b.score - a.score);
-      const topEntities = scoredNodes.slice(0, 15).map(x => x.node);
-
-      const entityLines = topEntities.map(
-        n => `- [${n.entity_type}] ${n.id}: ${(n.description || "").slice(0, 260)}`
-      );
-      const edgeLines = [];
-      for (const n of topEntities.slice(0, 10)) {
-        const nbs = neighborMap.get(n.id) || [];
-        for (const nb of nbs.slice(0, 4)) {
-          edgeLines.push(`- ${n.id} -> ${nb.targetId}: ${(nb.description || "").slice(0, 200)}`);
-        }
-      }
-
-      // 检索匹配的社区报告摘要（来自 ./pdf_work_dir_local/kv_store_community_reports.json）
-      const communityLines = [];
-      for (const [_, rep] of Object.entries(communityReportsMap)) {
-        const repStr = (rep && rep.report_string) || "";
-        if (!repStr) continue;
-        const repUpper = repStr.toUpperCase();
-        if (
-          repUpper.includes("HDIL-2026-MC-01") ||
-          repUpper.includes("APEX-2026-SUB-MEP-01") ||
-          tokens.some(tk => tk.length >= 3 && repUpper.includes(tk))
-        ) {
-          communityLines.push(repStr.slice(0, 600));
-          if (communityLines.length >= 3) break;
-        }
-      }
-
-      // 组装目标合同全量同源切片（命中所问条款置顶）+ 数据库法例切片
+      // 1. 先定位命中的目标条款切片，提取 hitChunkIds 与命中条款英文正文，用于反向召回英文图谱节点
       const clauseMatches = [...query.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*条|CLAUSE\s+(\d+(?:\.\d+)?))/gi)];
       const flatClauses = clauseMatches.map(m => m[1] || m[2]).filter(Boolean);
 
       const matchedChunkBlocks = [];
       const siblingChunkBlocks = [];
+      const hitChunkIds = new Set();
+      let hitClauseTextUpper = "";
 
       for (const docId of targetDocIds) {
         const list = (docGroups[docId] || []).sort((a, b) => a.order - b.order);
@@ -1558,6 +1543,8 @@
             }
           }
           if (hitCl) {
+            hitChunkIds.add(item.cid);
+            hitClauseTextUpper += "\n" + item.content.toUpperCase();
             matchedChunkBlocks.push(`<!-- 🎯 TARGET CLAUSE ${hitCl} HIT (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
           } else {
             siblingChunkBlocks.push(`<!-- Contract Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
@@ -1565,14 +1552,69 @@
         }
       }
 
+      // 2. 检索匹配的图谱实体与关系边（支持中文提问通过 hitChunkIds 反向召回英文条款节点）
+      const scoredNodes = [];
+      for (const node of graphData.nodes) {
+        const idU = node.id.toUpperCase();
+        if (idU.length < 3 || STOP_ENTITIES.has(idU)) continue;
+        let score = 0;
+        if (qUpper.includes(idU)) score += 45;
+        if (hitClauseTextUpper && idU.length >= 5 && hitClauseTextUpper.includes(idU)) score += 35;
+        for (const hCid of hitChunkIds) {
+          if ((node.source_id || "").includes(hCid)) score += 30;
+        }
+        for (const tk of tokens) {
+          if (idU.includes(tk)) score += 12;
+          else if ((node.description || "").toUpperCase().includes(tk)) score += 3;
+        }
+        if (score > 0) scoredNodes.push({ score, node });
+      }
+      scoredNodes.sort((a, b) => b.score - a.score);
+      const topEntities = scoredNodes.slice(0, 15).map(x => x.node);
+
+      const entityLines = topEntities.map(
+        n => `- [${n.entity_type}] ${n.id}: ${(n.description || "").replace(/\n/g, " ").slice(0, 260)}`
+      );
+      const edgeLines = [];
+      for (const n of topEntities.slice(0, 10)) {
+        const nbs = neighborMap.get(n.id) || [];
+        for (const nb of nbs.slice(0, 4)) {
+          edgeLines.push(`- ${n.id} -> ${nb.targetId}: ${(nb.description || "").replace(/\n/g, " ").slice(0, 200)}`);
+        }
+      }
+
+      // 3. 检索匹配的社区报告摘要（结合 topEntities 节点名反向匹配社区报告）
+      const communityLines = [];
+      for (const [_, rep] of Object.entries(communityReportsMap)) {
+        const repStr = (rep && (rep.report_string || rep.content)) || "";
+        if (!repStr) continue;
+        const repUpper = repStr.toUpperCase();
+        const hitByEntity = topEntities.slice(0, 5).some(n => n.id.length >= 6 && repUpper.includes(n.id.toUpperCase()));
+        if (
+          hitByEntity ||
+          repUpper.includes("KOWLOON BAY DATA CENTRE") ||
+          repUpper.includes("HDIL-2026-MC-01") ||
+          repUpper.includes("APEX-2026-SUB-MEP-01")
+        ) {
+          communityLines.push(repStr.slice(0, 650));
+          if (communityLines.length >= 2) break;
+        }
+      }
+
+      // 4. 组装真正的数据库法案切片（排除已在 targetDocIds 中的合同文档）
       const statuteBlocks = [];
       for (const sDocId of statuteDocIds) {
+        if (targetDocIds.has(sDocId)) continue;
         const list = (docGroups[sDocId] || []).sort((a, b) => a.order - b.order);
         for (const item of list) {
-          if (list.length <= 6 || tokens.some(tk => item.content.toUpperCase().includes(tk))) {
+          if (
+            list.length <= 6 ||
+            tokens.some(tk => item.content.toUpperCase().includes(tk)) ||
+            topEntities.some(n => n.id.length >= 5 && item.content.toUpperCase().includes(n.id.toUpperCase()))
+          ) {
             statuteBlocks.push(`<!-- ⚖️ Database Statute Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
           }
-          if (statuteBlocks.length >= 8) break;
+          if (statuteBlocks.length >= 6) break;
         }
       }
 
@@ -1589,7 +1631,7 @@
         ...statuteBlocks
       ].join("\n\n");
 
-      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions---\n1. 请严格依据上方检索出的【合同原文切片】与【数据库法例切片】进行审查，准确区分主合同 HDIL-2026-MC-01（Contract A）与机电分包合同 APEX-2026-SUB-MEP-01（Contract B）。\n2. 结合上方数据库法例切片与香港现行法律（如《建造业付款保障条例》Cap. 652：付款回应期上限 30 日、付款期上限 60 日、第 11(2) 条禁止契约排除、第 17 条严禁 Pay-When-Paid、第 24 条法定审裁权、第 57-61 条法定停工权；《雇佣条例》Cap. 57 第 32 条禁止罚款扣薪及第 43C 条大判代偿 2 个月欠薪；《雇员补偿条例》Cap. 282 第 24 条工伤代偿责任；《管制免责条款条例》Cap. 71 第 7(1) 条疏忽致人身伤亡绝对不得免责；Cap. 509/Cap. 59 刑事罚款不可转嫁原则及普通法禁止惩罚性违约金 Penalty 原则）逐条穿透比对。\n3. 直接给出明确结论，逐条列出【条款编号 + 合同原文规定 + 违反的具体香港法例或跨合同矛盾点】。`;
+      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions & Hong Kong Statutory Baseline---\n1. 请严格依据上方检索出的【合同原文切片（🎯 TARGET CLAUSE HIT 及同源切片）】与【数据库法例切片】进行审查，准确区分主合同 HDIL-2026-MC-01 中的 Main Contractor（总承包商/主承包商）与分包合同 APEX-2026-SUB-MEP-01 中的 Subcontractor（分包商），切勿在标题中将主承包商误写为分包商。\n2. 【香港现行法例强制条文基准（严禁编造英国/新加坡法例的“第10条”、“响应日后7或14天”或“Withholding Notice/附表第4段”）】：\n   - 《建造业付款保障条例》(Cap. 652)：**第 11(2) 条**禁止契约排除（任何排除或限制本条例运作的条款均属无效 void）；**第 15–16 条**规定进度款法定最长付款期限为送达付款申索（Payment Claim）后 **60 个日历日**（约定 90 日超限无效）；**第 17 条**严禁“先收款后付款”（Pay-When-Paid）及转嫁业主破产风险；**第 18–20 条**规定付款回应（Payment Response）法定最长期限为收到付款申索后 **30 个日历日**（约定 45 日超限无效），且雇主若要扣减（Set-off）任何款项，必须在法定期限内发出的书面 **Payment Response（付款回应）** 中列明扣减金额与详细理由（无书面付款回应即单方扣款违反第 18–20 条而无效）；**第 24 条**赋予申索方在付款争议产生起 **28 日**内启动法定审裁（Adjudication）的绝对权利；**第 57–61 条**赋予申索方在欠款时经提前至少 5 个工作日书面通知后**暂停工程或减缓施工进度（Suspend or reduce rate of progress）**的法定权利。\n   - 《雇佣条例》(Cap. 57)：**第 32 条**严禁非法扣薪（迟到扣月薪 35% 属刑事违法）；**第 43C 及 70 条**规定总承建商须对分包商拖欠工人的前 2 个月工资承担法定连带代偿责任，不得契约免除。\n   - 《雇员补偿条例》(Cap. 282)：**第 24 及 31 条**规定总承建商须对分包商雇员工伤承担法定代偿责任，免责条款无效。\n   - 《管制免责条款条例》(Cap. 71)：**第 7(1) 条**绝对禁止免除因疏忽导致的人员死亡或人身伤害责任。\n3. 直接给出明确结论，逐条列出【条款编号 + 合同原文规定 + 违反的具体香港法例条文与期限对比】。`;
 
       const llmResp = await fetch(AGNES_CHAT_URL, {
         method: "POST",
@@ -1615,16 +1657,26 @@
       const llmData = await llmResp.json();
       const answer = (llmData.choices && llmData.choices[0] && llmData.choices[0].message && llmData.choices[0].message.content) || "";
 
+      // 5. 按相关性得分排序高亮节点，优先点亮命中条款的专有法例与核心条款实体，剔除泛化词
       const aUpper = answer.toUpperCase();
-      const matchedNodeIds = [];
+      const highlightCandidates = [];
       for (const node of graphData.nodes) {
         const idU = node.id.toUpperCase();
-        if (idU.length < 3 || STOP_ENTITIES.has(idU)) continue;
-        if (qUpper.includes(idU) || aUpper.includes(idU)) {
-          matchedNodeIds.push(node.id);
+        if (idU.length < 4 || STOP_ENTITIES.has(idU)) continue;
+        let hScore = 0;
+        if (qUpper.includes(idU)) hScore += 50;
+        if (hitClauseTextUpper && hitClauseTextUpper.includes(idU)) hScore += 35;
+        for (const hCid of hitChunkIds) {
+          if ((node.source_id || "").includes(hCid)) hScore += 30;
         }
-        if (matchedNodeIds.length >= 12) break;
+        if (aUpper.includes(idU)) hScore += 20;
+        if (hScore > 0) {
+          if (idU.includes(" ") || idU.includes("-")) hScore += 8;
+          highlightCandidates.push({ hScore, id: node.id });
+        }
       }
+      highlightCandidates.sort((a, b) => b.hScore - a.hScore);
+      const matchedNodeIds = highlightCandidates.slice(0, 10).map(x => x.id);
 
       return {
         answer,
