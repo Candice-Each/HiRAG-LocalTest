@@ -1077,23 +1077,33 @@
       return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
+    // 严格按节点自身名称 (id) 划分颜色类型，杜绝因 description 含 "Contractor/Clause" 导致全图变粉红 (CONTRACT)
     function normalizeEntityType(rawType, id, desc) {
       const t = cleanStr(rawType).toUpperCase();
       const idU = cleanStr(id).toUpperCase();
-      const combined = `${idU} ${cleanStr(desc).toUpperCase()}`;
 
-      // 1. 优先识别组织/合同主体（防止将 Maintenance Surveyor's Representative 等机构角色误归为 CONTRACT）
-      if (/^(?:THE\s+)?(?:CONTRACTOR|MAIN\s+CONTRACTOR|SUB-?CONTRACTOR|EMPLOYER|GOVERNMENT.*|MAINTENANCE\s+SURVEYOR.*)$/.test(idU) ||
-          /(?:LIMITED|\bLTD\b|BOARD|DEPARTMENT|AUTHORITY|COMPANY)/.test(idU)) {
+      // 1. 优先识别组织/合同主体/角色（天蓝色 ORGANIZATION）
+      if (
+        /^(?:THE\s+)?(?:CONTRACTOR|MAIN\s+CONTRACTOR|SUB-?CONTRACTOR|EMPLOYER|GOVERNMENT.*|MAINTENANCE\s+SURVEYOR.*|ENGINEER.*|TENDERER.*|COMMISSIONER.*|SPECIALIST\s+CONTRACTOR.*)$/.test(idU) ||
+        /(?:LIMITED|\bLTD\b|BOARD|DEPARTMENT|AUTHORITY|COMPANY|TRIBUNAL|COURT\b)/.test(idU)
+      ) {
         return "ORGANIZATION";
       }
-      // 2. 识别合同条款、法例与工程履约规定（覆盖 Assignment / Subletting / Site Diary / Setting-out 等）
-      if (/(?:ORDINANCE|CAP\.|SECTION\s+\d|CLAUSE|SUB-CLAUSE|SUBCLAUSE|CONTRACT|AGREEMENT|RETENTION|PAYMENT|ADJUDICATION|VARIATION|ASSIGNMENT|SUBLETTING|SITE\s+DIARY|SETTING-OUT|ALIGNMENT|RECTIFY|DEFECT|INDEMNIF|法例|條例|条例)/.test(combined)) {
-        return "CONTRACT";
-      }
-      if (/(?:HONG KONG|KOWLOON|\bSITE\b|DISTRICT|TERRITORY)/.test(idU)) {
+
+      // 2. 识别地理位置与工程现场（翠绿色 GEO）
+      if (/(?:HONG KONG|KOWLOON|\bSITE\b|CONTRACT\s+AREA|DISTRICT|TERRITORY|ADJOINING\s+PROPERTIES)/.test(idU) && !/^CLAUSE\b/.test(idU)) {
         return "GEO";
       }
+
+      // 3. 严格限定 CONTRACT（粉红色）：仅限法例、合同文件本身、以及纯条款编号节点（绝不扫描 description）
+      if (
+        /(?:ORDINANCE|\bCAP\.\s*\d|\bCHAPTER\s+\d|STATUTE|ENACTMENT|BY-LAW|CONTRACT_A|CONTRACT_B|HDIL-|APEX-|GENERAL\s+CONDITIONS|ARTICLES\s+OF\s+AGREEMENT|FORM\s+OF\s+TENDER|SPECIAL\s+CONDITION|SCHEDULE\s+OF\s+RATES|\bGCC\b|法例|條例|条例)/.test(idU) ||
+        /^(?:CLAUSE|SUB-?CLAUSE|SECTION|PART)\s+\d+[A-Z0-9().\s\-]*$/.test(idU)
+      ) {
+        return "CONTRACT";
+      }
+
+      // 4. 保留合法原生类型（PERSON / EVENT / ORGANIZATION / GEO），仅拦截学术/泛化废标签归入 EVENT（蓝紫色）
       const INVALID_TYPES = new Set([
         "UNKNOWN", "ENTITY", "NORMAL_ENTITY", "CONCEPT",
         "SOCIAL SCIENCES", "NATURAL SCIENCES", "HUMANITIES", "CATEGORY", "OTHER"
@@ -1102,11 +1112,13 @@
       return "EVENT";
     }
 
-    // 精简过长的条款内短语（剥离 OF THIS CLAUSE 指代后缀与 ISSUED TO THE / CORRECTNESS OF 等冗余虚词）
+    // 精简冗长短语：剥离 [GCCBWT] 前缀、OF THIS CLAUSE 指代后缀与多余介词虚词
     function compactClausePhrase(rawPhrase) {
       return cleanStr(rawPhrase)
+        .replace(/^\[[A-Z0-9_\-]+\]\s*/i, "")
         .replace(/\s+(?:OF|UNDER|IN)\s+(?:THIS|THE\s+SAID|THE\s+ABOVE)\s+(?:CLAUSE|SUB-CLAUSE|SUBCLAUSE|CONTRACT|AGREEMENT|SECTION)\b/gi, "")
-        .replace(/^(?:THE\s+)?(?:CORRECTNESS|PROVISION|EXECUTION|MAINTENANCE)\s+OF\s+(?:THE\s+)?/i, "")
+        .replace(/^(?:THE\s+)?(?:CORRECTNESS|PROVISION|EXECUTION|MAINTENANCE|SUBMISSION\s+OF\s+STATEMENT)\s+OF\s+(?:THE\s+)?/i, "")
+        .replace(/^INTERFERENCE\s+WITH\s+/i, "")
         .replace(/\bISSUED\s+TO\s+THE\s+/gi, "TO ")
         .replace(/\bPROVIDED\s+BY\s+THE\s+/gi, "BY ")
         .replace(/\s+AND\s+/gi, " & ")
@@ -1286,7 +1298,6 @@
         });
       });
 
-      // 预筛选可作为挂接目标的骨干实体（排除过短词）
       const hubNodes = [...nodes].filter(n => n.id.length >= 4).sort((a, b) => b.degree - a.degree);
 
       nodes.forEach(n => {
@@ -1296,80 +1307,93 @@
         let cids = (n.source_id || "").split(/\n• |\||,|<SEP>/).map(s => s.trim()).filter(Boolean);
         const primaryCid = cids[0];
         const primaryChunk = primaryCid ? textChunksMap[primaryCid] : null;
-        const shortPhrase = compactClausePhrase(n.id);
 
-        // 仅当节点不是组织/人物/地理且尚未以 CLAUSE/SECTION/CAP. 开头时，执行条款号定位与命名规范化
-        const isOrgOrGeo = n.entity_type === "ORGANIZATION" || n.entity_type === "GEO" || n.entity_type === "PERSON";
-        const alreadyNumbered = /^(?:CLAUSE|SUB-?CLAUSE|SECTION|CAP\.|PART)\s+\d|HDIL-|APEX-/i.test(shortPhrase);
+        // 0. 优先处理本身已带 "[GCCBWT] 82. PAYMENT ON CERTIFICATION" 或 "82. TITLE" 的节点，彻底杜绝被误挂到前一条款（如 Clause 81）
+        const selfNumberedMatch = cleanStr(n.id).match(/^(?:\[[A-Z0-9_\-]+\]\s*)?(?:CLAUSE\s+)?(\d{1,3}[A-Z]?)\.\s*(.+)$/i);
+        if (selfNumberedMatch) {
+          const ownClNum = selfNumberedMatch[1].trim();
+          const ownTitle = compactClausePhrase(selfNumberedMatch[2]);
+          n.label = `CLAUSE ${ownClNum}: ${ownTitle}`;
+        } else {
+          const shortPhrase = compactClausePhrase(n.id);
+          const isOrgOrGeo = n.entity_type === "ORGANIZATION" || n.entity_type === "GEO" || n.entity_type === "PERSON";
+          const alreadyNumbered = /^(?:CLAUSE|SECTION|CAP\.|PART)\s+\d|HDIL-|APEX-/i.test(shortPhrase);
 
-        if (!isOrgOrGeo && !alreadyNumbered && primaryChunk && primaryChunk.content) {
-          const chunkText = primaryChunk.content;
-          const isTocChunk = /TABLE OF CONTENTS/i.test(chunkText);
-          let resolvedClNum = null;
-          let resolvedHeading = null;
+          if (!isOrgOrGeo && !alreadyNumbered && primaryChunk && primaryChunk.content) {
+            const chunkText = primaryChunk.content;
+            const isTocChunk = /TABLE OF CONTENTS/i.test(chunkText);
+            let resolvedClNum = null;
+            let resolvedHeading = null;
 
-          if (isTocChunk) {
-            // A. 目录切片（如 ASSIGNMENT / SUBLETTING / INTERFERENCE WITH TRAFFIC...）：精确匹配目录行 "4 Subletting 9"
-            const tocLineRe = new RegExp(`(?:^|\\n)\\s*(\\d{1,3})\\s+(${escapeRegExp(n.id)}[^\\n]*?)\\s+\\d{1,3}\\s*(?:\\n|$)`, "i");
-            const tocMatch = chunkText.match(tocLineRe);
-            if (tocMatch) {
-              resolvedClNum = tocMatch[1].trim();
-              resolvedHeading = compactClausePhrase(tocMatch[2].trim().toUpperCase());
-            } else {
-              const descClMatch = (n.description || "").match(/\bClause\s+(\d+[A-Za-z]?)\b/i);
-              if (descClMatch) resolvedClNum = descClMatch[1];
-            }
+            if (isTocChunk) {
+              // A. 目录切片（如 ASSIGNMENT / SUBLETTING / INTERFERENCE WITH TRAFFIC...）：精确匹配目录行 "4 Subletting 9"
+              const tocLineRe = new RegExp(`(?:^|\\n)\\s*(\\d{1,3})\\s+(${escapeRegExp(n.id)}[^\\n]*?)\\s+\\d{1,3}\\s*(?:\\n|$)`, "i");
+              const tocMatch = chunkText.match(tocLineRe);
+              if (tocMatch) {
+                resolvedClNum = tocMatch[1].trim();
+                resolvedHeading = compactClausePhrase(tocMatch[2].trim().toUpperCase());
+              } else {
+                const descClMatch = (n.description || "").match(/\bClause\s+(\d+[A-Za-z]?)\b/i);
+                if (descClMatch) resolvedClNum = descClMatch[1];
+              }
 
-            if (resolvedClNum) {
-              n.label = `CLAUSE ${resolvedClNum}: ${shortPhrase}`;
-              n.entity_type = "CONTRACT";
-              // 修正目录串行导致的描述错误（如 SUBLETTING 的 "Clauses 4 and 5" -> "Clause 4"）
-              n.description = n.description.replace(/\bClauses\s+\d+\s+and\s+\d+\b/gi, `Clause ${resolvedClNum}`);
+              if (resolvedClNum) {
+                n.label = `CLAUSE ${resolvedClNum}: ${shortPhrase}`;
+                n.description = n.description.replace(/\bClauses\s+\d+\s+and\s+\d+\b/gi, `Clause ${resolvedClNum}`);
 
-              // 自动从同文档非目录切片中检索该条款的正文切片，替换掉无实质内容的目录切片
-              const docList = docChunksMap.get(primaryChunk.full_doc_id) || [];
-              const bodyRe = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?${escapeRegExp(resolvedClNum)}\\.\\s*(?:\\(\\d+\\)|[A-Z])`, "i");
-              const bodyHits = docList.filter(item => !item.isToc && bodyRe.test(item.content)).map(item => item.cid);
-              if (bodyHits.length > 0) {
-                cids = [...new Set([...bodyHits, ...cids.filter(c => c !== primaryCid)])];
-                n.source_id = cids.join("<SEP>");
+                // 自动从同文档非目录切片中检索该条款的正文切片，替换掉无实质内容的目录切片
+                const docList = docChunksMap.get(primaryChunk.full_doc_id) || [];
+                const bodyRe = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?${escapeRegExp(resolvedClNum)}\\.\\s*(?:\\(\\d+\\)|[A-Z])`, "i");
+                const bodyHits = docList.filter(item => !item.isToc && bodyRe.test(item.content)).map(item => item.cid);
+                if (bodyHits.length > 0) {
+                  cids = [...new Set([...bodyHits, ...cids.filter(c => c !== primaryCid)])];
+                  n.source_id = cids.join("<SEP>");
+                }
+              } else {
+                n.label = shortPhrase;
               }
             } else {
-              n.label = shortPhrase;
+              // B. 正文切片：优先匹配完整短语，若不命中则取最长的专有词定位，避免被高频词 PAYMENT 误导到前一条款
+              let pos = chunkText.toUpperCase().indexOf(n.id.toUpperCase());
+              if (pos < 0) {
+                const specificWords = n.id
+                  .replace(/^\[[^\]]+\]\s*/, "")
+                  .split(/\s+/)
+                  .filter(w => w.length >= 5 && !/^(?:CLAUSE|SUB-CLAUSE|CONTRACTOR|EMPLOYER|WORKS|PAYMENT|GENERAL|PROVISION)$/i.test(w))
+                  .sort((a, b) => b.length - a.length);
+                if (specificWords.length > 0) {
+                  pos = chunkText.toUpperCase().indexOf(specificWords[0].toUpperCase());
+                }
+              }
+
+              const docList = docChunksMap.get(primaryChunk.full_doc_id) || [];
+              const curIdx = docList.findIndex(item => item.cid === primaryCid);
+              const prevText = curIdx > 0 && !docList[curIdx - 1].isToc ? docList[curIdx - 1].content + "\n" : "";
+              const searchWindow = prevText + (pos >= 0 ? chunkText.slice(0, pos + 80) : chunkText);
+
+              const headerMatches = [
+                ...searchWindow.matchAll(/(?:^|\n)\s*([A-Z][A-Za-z0-9 ,'’()\-/&]{2,55}?)\s*\n+\s*(?:\[[^\]]+\]\s*)?(\d{1,3})\.\s*(?:\(\d+\))?/g)
+              ];
+              if (headerMatches.length > 0) {
+                const last = headerMatches[headerMatches.length - 1];
+                resolvedHeading = compactClausePhrase(last[1].trim().toUpperCase());
+                resolvedClNum = last[2].trim();
+
+                // 若节点只是空壳 "SUB-CLAUSE (4)"，补上主条款标题：CLAUSE 23(4): CARE OF THE WORKS
+                const bareSubMatch = shortPhrase.match(/^SUB-?CLAUSE\s*\(([0-9A-Z]+)\)$/i);
+                if (bareSubMatch) {
+                  n.label = `CLAUSE ${resolvedClNum}(${bareSubMatch[1]}): ${resolvedHeading}`;
+                } else {
+                  // 若节点已有具体短语，直接用 "CLAUSE 34: INSTRUCTIONS TO CONTRACTOR"，不再套长括号标题避免名称过长
+                  n.label = `CLAUSE ${resolvedClNum}: ${shortPhrase}`;
+                }
+              } else {
+                n.label = shortPhrase;
+              }
             }
           } else {
-            // B. 正文切片（如 INSTRUCTIONS ISSUED TO THE CONTRACTOR / CORRECTNESS OF POSITION... / SUB-CLAUSE (4)）
-            let pos = chunkText.toUpperCase().indexOf(n.id.toUpperCase());
-            if (pos < 0) {
-              const significantWord = n.id.split(/\s+/).filter(w => w.length >= 5 && !/^(?:CLAUSE|CONTRACTOR|WORKS)$/.test(w))[0];
-              if (significantWord) pos = chunkText.toUpperCase().indexOf(significantWord.toUpperCase());
-            }
-
-            // 拼接同文档上一个切片末尾，解决跨切片断头条款（如 chunk-7a4656... 中的 SUB-CLAUSE (4) OF THIS CLAUSE）
-            const docList = docChunksMap.get(primaryChunk.full_doc_id) || [];
-            const curIdx = docList.findIndex(item => item.cid === primaryCid);
-            const prevText = curIdx > 0 && !docList[curIdx - 1].isToc ? docList[curIdx - 1].content + "\n" : "";
-            const searchWindow = prevText + (pos >= 0 ? chunkText.slice(0, pos + 60) : chunkText);
-
-            const headerMatches = [
-              ...searchWindow.matchAll(/(?:^|\n)\s*([A-Z][A-Za-z0-9 ,'’()\-/&]{2,55}?)\s*\n+\s*(?:\[[^\]]+\]\s*)?(\d{1,3})\.\s*(?:\(\d+\))?/g)
-            ];
-            if (headerMatches.length > 0) {
-              const last = headerMatches[headerMatches.length - 1];
-              resolvedHeading = compactClausePhrase(last[1].trim().toUpperCase());
-              resolvedClNum = last[2].trim();
-              if (shortPhrase.toUpperCase() === resolvedHeading) {
-                n.label = `CLAUSE ${resolvedClNum}: ${resolvedHeading}`;
-              } else {
-                n.label = `CLAUSE ${resolvedClNum} (${resolvedHeading}): ${shortPhrase}`;
-              }
-              n.entity_type = "CONTRACT";
-            } else {
-              n.label = shortPhrase;
-            }
+            n.label = shortPhrase;
           }
-        } else {
-          n.label = shortPhrase;
         }
 
         // C. 消除 degree === 0 孤岛节点：依次匹配 [同切片共现实体] -> [描述/原文提及的全局实体]
@@ -1378,7 +1402,6 @@
           const descU = (n.description || "").toUpperCase();
           const candidateTargets = [];
 
-          // 1) 同切片内的其他节点
           for (const cid of cids) {
             for (const sib of (chunkToNodes.get(cid) || [])) {
               if (sib.id !== n.id && !candidateTargets.includes(sib)) {
@@ -1386,7 +1409,6 @@
               }
             }
           }
-          // 2) 描述或当前切片正文中明确出现的全局骨干实体（如 MAINTENANCE SURVEYOR'S REPRESENTATIVE）
           for (const hub of hubNodes) {
             if (hub.id === n.id || candidateTargets.includes(hub)) continue;
             const hubIdU = hub.id.toUpperCase();
@@ -1406,7 +1428,8 @@
           }
         }
 
-        n.entity_type = normalizeEntityType(n.entity_type, n.label, n.description);
+        // 传入原始 n.id（而非加了 CLAUSE 前缀后的 n.label），避免所有带 CLAUSE 前缀的事件节点都被染成粉红色 CONTRACT
+        n.entity_type = normalizeEntityType(n.entity_type, n.id, n.description);
       });
 
       return { nodes, links };
