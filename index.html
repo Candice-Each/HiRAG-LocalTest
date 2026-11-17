@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,20 +28,23 @@
       --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: var(--bg-deep);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       user-select: none;
@@ -160,7 +164,7 @@
       background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
       box-shadow: 0 5px 16px -5px rgba(59, 130, 246, 0.9);
       transition: filter 0.16s var(--ease), transform 0.12s var(--ease),
-                  box-shadow 0.16s var(--ease);
+        box-shadow 0.16s var(--ease);
     }
 
     #search-btn:hover:not(:disabled) {
@@ -289,8 +293,15 @@
     }
 
     @keyframes breathe {
-      0%, 100% { opacity: 0.45; }
-      50% { opacity: 1; }
+
+      0%,
+      100% {
+        opacity: 0.45;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     .side-drawer {
@@ -592,12 +603,22 @@
       margin: 16px 0 8px;
     }
 
-    .markdown-body h1 { font-size: 15.5px; }
-    .markdown-body h2 { font-size: 14.5px; }
-    .markdown-body h3,
-    .markdown-body h4 { font-size: 13.5px; }
+    .markdown-body h1 {
+      font-size: 15.5px;
+    }
 
-    .markdown-body > *:first-child { margin-top: 0; }
+    .markdown-body h2 {
+      font-size: 14.5px;
+    }
+
+    .markdown-body h3,
+    .markdown-body h4 {
+      font-size: 13.5px;
+    }
+
+    .markdown-body>*:first-child {
+      margin-top: 0;
+    }
 
     .markdown-body p {
       margin-bottom: 10px;
@@ -709,7 +730,9 @@
       transition: color 0.16s var(--ease), background 0.16s var(--ease);
     }
 
-    details.raw-evidence summary::-webkit-details-marker { display: none; }
+    details.raw-evidence summary::-webkit-details-marker {
+      display: none;
+    }
 
     details.raw-evidence summary::before {
       content: "▸";
@@ -766,8 +789,13 @@
     }
 
     @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
     }
 
     .modal-backdrop {
@@ -801,8 +829,15 @@
     }
 
     @keyframes modalIn {
-      from { opacity: 0; transform: translateY(14px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .modal-card::before {
@@ -892,8 +927,13 @@
       transition: filter 0.16s var(--ease), transform 0.12s var(--ease);
     }
 
-    .modal-btn:hover { filter: brightness(1.1); }
-    .modal-btn:active { transform: translateY(1px); }
+    .modal-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .modal-btn:active {
+      transform: translateY(1px);
+    }
 
     .modal-hint {
       margin-top: 12px;
@@ -908,10 +948,25 @@
         top: 10px;
         padding: 6px 6px 6px 11px;
       }
-      #search-input { font-size: 13px; }
-      #search-btn { padding: 8px 14px; font-size: 12.5px; }
-      .legend { display: none; }
-      .bottom-left { left: 10px; bottom: 10px; }
+
+      #search-input {
+        font-size: 13px;
+      }
+
+      #search-btn {
+        padding: 8px 14px;
+        font-size: 12.5px;
+      }
+
+      .legend {
+        display: none;
+      }
+
+      .bottom-left {
+        left: 10px;
+        bottom: 10px;
+      }
+
       .side-drawer {
         top: 66px;
         bottom: 10px;
@@ -919,29 +974,34 @@
         right: 10px !important;
         width: auto !important;
       }
-      #node-drawer { transform: translateX(calc(-100% - 20px)); }
-      #answer-drawer { transform: translateX(calc(100% + 20px)); }
-      #node-drawer.open, #answer-drawer.open { transform: translateX(0); }
+
+      #node-drawer {
+        transform: translateX(calc(-100% - 20px));
+      }
+
+      #answer-drawer {
+        transform: translateX(calc(100% + 20px));
+      }
+
+      #node-drawer.open,
+      #answer-drawer.open {
+        transform: translateX(0);
+      }
     }
   </style>
 </head>
+
 <body>
   <div id="graph-container"></div>
 
   <div class="command-bar">
-    <input
-      id="search-input"
-      type="text"
-      placeholder="输入问题检索图谱，自动提取证据链交由 agnes-2.5-flash 分析…"
-      autocomplete="off"
-      spellcheck="false"
-    />
+    <input id="search-input" type="text" placeholder="输入问题检索图谱，自动提取证据链交由 agnes-2.5-flash 分析…" autocomplete="off"
+      spellcheck="false" />
     <button id="key-btn" class="icon-btn" title="配置 API Key">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.9"
-           stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="15" r="4"/>
-        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="15" r="4" />
+        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9" />
       </svg>
     </button>
     <button id="search-btn">提问</button>
@@ -988,11 +1048,10 @@
   <div id="apikey-modal" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="15" r="4"/>
-          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="15" r="4" />
+          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9" />
         </svg>
       </div>
       <div class="modal-title">配置 API Key</div>
@@ -1001,14 +1060,8 @@
         系统将使用图谱检索出的证据链交由该模型生成回答，
         Key 仅保存在当前浏览器会话中。
       </div>
-      <input
-        id="apikey-input"
-        type="password"
-        class="modal-input"
-        placeholder="sk-xxxxxxxxxxxxxxxx"
-        autocomplete="off"
-        spellcheck="false"
-      />
+      <input id="apikey-input" type="password" class="modal-input" placeholder="sk-xxxxxxxxxxxxxxxx" autocomplete="off"
+        spellcheck="false" />
       <button id="save-apikey-btn" class="modal-btn">进入图谱终端</button>
       <div class="modal-hint">按 Enter 快速确认</div>
     </div>
@@ -1075,17 +1128,58 @@
 
     function normalizeEntityType(rawType, id, desc) {
       const t = cleanStr(rawType).toUpperCase();
-      if (t && t !== "UNKNOWN" && t !== "ENTITY") return t;
       const combined = `${id} ${desc}`.toUpperCase();
-      if (/(?:ORDINANCE|CAP\.|SECTION|CLAUSE|SUB-CLAUSE|CONTRACT|AGREEMENT|RETENTION|PAYMENT|ADJUDICATION|法例|條例|条例)/.test(combined)) {
+
+      if (/(?:ORDINANCE|CAP\.|SECTION\s+\d|CLAUSE|SUB-CLAUSE|CONTRACT|AGREEMENT|GCC|TENDER|法例|條例|条例)/.test(combined)) {
         return "CONTRACT";
       }
-      if (/(?:LIMITED|LTD|BOARD|DEPARTMENT|GOVERNMENT|SURVEYOR|CENTRE|COMPANY)/.test(combined)) {
+      if (/(?:LIMITED|LTD|BOARD|DEPARTMENT|GOVERNMENT|SURVEYOR|CENTRE|COMPANY|EMPLOYER|CONTRACTOR|ENGINEER)/.test(combined)) {
         return "ORGANIZATION";
       }
+      if (/(?:HONG KONG|KOWLOON|SITE|DISTRICT|TERRITORY)/.test(id.toUpperCase())) {
+        return "GEO";
+      }
+      const INVALID_ACADEMIC_TYPES = new Set([
+        "UNKNOWN", "ENTITY", "NORMAL_ENTITY", "SOCIAL SCIENCES",
+        "NATURAL SCIENCES", "HUMANITIES", "CONCEPT", "CATEGORY", "OTHER"
+      ]);
+      if (t && !INVALID_ACADEMIC_TYPES.has(t)) return t;
       return "EVENT";
     }
 
+    function formatNodeLabel(rawId, desc) {
+      let label = cleanStr(rawId);
+      const deicticPattern = /\s+(?:OF|UNDER|IN)\s+(?:THIS|THE\s+SAID|THE\s+ABOVE)\s+(?:CLAUSE|SUB-CLAUSE|CONTRACT|AGREEMENT|SECTION)\b/gi;
+      if (deicticPattern.test(label)) {
+        const parentMatch = (desc || "").match(/\b(Clause\s+\d+[A-Za-z]?)\b/i);
+        label = label.replace(deicticPattern, "").trim();
+        if (parentMatch && !label.toUpperCase().includes(parentMatch[1].toUpperCase())) {
+          label = `${parentMatch[1].toUpperCase()} - ${label}`;
+        }
+      }
+      return label;
+    }
+
+    function repairTruncatedDesc(nodeId, rawDesc, neighbors) {
+      let desc = cleanStr(rawDesc);
+      const hasUnclosedParen = (desc.match(/\(/g) || []).length > (desc.match(/\)/g) || []).length;
+      if (hasUnclosedParen) desc += ")";
+
+      const isTruncatedOrEcho =
+        !desc ||
+        desc.length < 22 ||
+        desc.toUpperCase() === nodeId.toUpperCase() ||
+        /^SUB-CLAUSE\s*\(\d+\)$/i.test(desc.trim());
+
+      if (isTruncatedOrEcho && neighbors && neighbors.length > 0) {
+        const bestEdgeDesc = neighbors
+          .map(nb => nb.description)
+          .filter(d => d && d.length > desc.length)
+          .sort((a, b) => b.length - a.length)[0];
+        if (bestEdgeDesc) return bestEdgeDesc;
+      }
+      return desc || "暂无描述";
+    }
     function escapeHtml(str) {
       return String(str == null ? "" : str)
         .replace(/&/g, "&amp;")
@@ -1178,7 +1272,7 @@
         const cleanedDesc = cleanStr(attrs.description || "");
         const nodeObj = {
           id,
-          label: id,
+          label: formatNodeLabel(id, cleanedDesc),
           entity_type: normalizeEntityType(attrs.entity_type || attrs.type, id, cleanedDesc),
           description: cleanedDesc,
           source_id: cleanStr(attrs.source_id || ""),
@@ -1208,6 +1302,12 @@
         nodeMap.get(tgt).degree++;
         neighborMap.get(src).push({ targetId: tgt, description: desc, weight });
         neighborMap.get(tgt).push({ targetId: src, description: desc, weight });
+      });
+
+      nodes.forEach(n => {
+        const nbs = neighborMap.get(n.id) || [];
+        n.description = repairTruncatedDesc(n.id, n.description, nbs);
+        n.label = formatNodeLabel(n.id, n.description);
       });
 
       return { nodes, links };
@@ -1328,8 +1428,8 @@
               ctx.fillStyle = isMatched
                 ? "#fcd34d"
                 : isForcedLabel
-                ? "#ffffff"
-                : "#cbd5e1";
+                  ? "#ffffff"
+                  : "#cbd5e1";
               ctx.fillText(displayStr, node.x, labelY);
             }
           }
@@ -1390,28 +1490,28 @@
 
       const chunksHtml = chunkIds.length
         ? chunkIds
-            .map(cid => {
-              const c = textChunksMap[cid];
-              return `<div class="surface-block" style="white-space:normal;">
+          .map(cid => {
+            const c = textChunksMap[cid];
+            return `<div class="surface-block" style="white-space:normal;">
                 <div class="chunk-id">${escapeHtml(cid)}</div>
                 <div class="chunk-text">${c ? escapeHtml(c.content) : "未找到对应原文切片"}</div>
               </div>`;
-            })
-            .join("")
+          })
+          .join("")
         : `<div class="empty-hint">无关联切片</div>`;
 
       const neighborsHtml = neighbors.length
         ? neighbors
-            .slice(0, 25)
-            .map(
-              nb => `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
-                nb.targetId.replace(/'/g, "\\'")
-              )}')">
+          .slice(0, 25)
+          .map(
+            nb => `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
+              nb.targetId.replace(/'/g, "\\'")
+            )}')">
                 <div class="neighbor-name">${escapeHtml(nb.targetId)}</div>
                 <div class="neighbor-desc">${escapeHtml(nb.description || "")}</div>
               </div>`
-            )
-            .join("")
+          )
+          .join("")
         : `<div class="empty-hint">无关联节点</div>`;
 
       body.innerHTML = `
@@ -1714,7 +1814,7 @@
               body: JSON.stringify({ query, api_key: apiKey })
             });
             if (resp.ok) data = await resp.json();
-          } catch (_) {}
+          } catch (_) { }
         }
 
         if (!data) {
@@ -1768,13 +1868,13 @@
       const matched = data.matched_nodes || [];
       const chipsHtml = matched.length
         ? matched
-            .map(
-              id =>
-                `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
-                  id.replace(/'/g, "\\'")
-                )}')">✦ ${escapeHtml(truncateLabel(id, 28))}</span>`
-            )
-            .join("")
+          .map(
+            id =>
+              `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
+                id.replace(/'/g, "\\'")
+              )}')">✦ ${escapeHtml(truncateLabel(id, 28))}</span>`
+          )
+          .join("")
         : `<span class="empty-hint" style="padding:9px 12px;">无特定高亮实体</span>`;
 
       const htmlAnswer = window.marked
@@ -1813,14 +1913,14 @@
         try {
           const r = await fetch(url);
           if (r.ok) { textChunksMap = await r.json(); break; }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       for (const url of ["./pdf_work_dir_local/kv_store_community_reports.json", "./kv_store_community_reports.json"]) {
         try {
           const r = await fetch(url);
           if (r.ok) { communityReportsMap = await r.json(); break; }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       const graphUrls = isLocal
@@ -1840,7 +1940,7 @@
               return;
             }
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       statsEl.textContent = "未检测到图谱文件";
@@ -1916,4 +2016,5 @@
     });
   </script>
 </body>
+
 </html>
