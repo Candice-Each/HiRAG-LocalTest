@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HiRAG · 知识图谱检索终端</title>
+  <title>HiRAG · 知識圖譜檢索終端</title>
   <script src="https://unpkg.com/force-graph@1.43.5/dist/force-graph.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -27,20 +28,23 @@
       --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
     }
 
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: var(--bg-deep);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       user-select: none;
@@ -160,7 +164,7 @@
       background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
       box-shadow: 0 5px 16px -5px rgba(59, 130, 246, 0.9);
       transition: filter 0.16s var(--ease), transform 0.12s var(--ease),
-                  box-shadow 0.16s var(--ease);
+        box-shadow 0.16s var(--ease);
     }
 
     #search-btn:hover:not(:disabled) {
@@ -289,8 +293,15 @@
     }
 
     @keyframes breathe {
-      0%, 100% { opacity: 0.45; }
-      50% { opacity: 1; }
+
+      0%,
+      100% {
+        opacity: 0.45;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     .side-drawer {
@@ -592,12 +603,22 @@
       margin: 16px 0 8px;
     }
 
-    .markdown-body h1 { font-size: 15.5px; }
-    .markdown-body h2 { font-size: 14.5px; }
-    .markdown-body h3,
-    .markdown-body h4 { font-size: 13.5px; }
+    .markdown-body h1 {
+      font-size: 15.5px;
+    }
 
-    .markdown-body > *:first-child { margin-top: 0; }
+    .markdown-body h2 {
+      font-size: 14.5px;
+    }
+
+    .markdown-body h3,
+    .markdown-body h4 {
+      font-size: 13.5px;
+    }
+
+    .markdown-body>*:first-child {
+      margin-top: 0;
+    }
 
     .markdown-body p {
       margin-bottom: 10px;
@@ -709,7 +730,9 @@
       transition: color 0.16s var(--ease), background 0.16s var(--ease);
     }
 
-    details.raw-evidence summary::-webkit-details-marker { display: none; }
+    details.raw-evidence summary::-webkit-details-marker {
+      display: none;
+    }
 
     details.raw-evidence summary::before {
       content: "▸";
@@ -766,8 +789,13 @@
     }
 
     @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
     }
 
     .modal-backdrop {
@@ -801,8 +829,15 @@
     }
 
     @keyframes modalIn {
-      from { opacity: 0; transform: translateY(14px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .modal-card::before {
@@ -892,8 +927,13 @@
       transition: filter 0.16s var(--ease), transform 0.12s var(--ease);
     }
 
-    .modal-btn:hover { filter: brightness(1.1); }
-    .modal-btn:active { transform: translateY(1px); }
+    .modal-btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .modal-btn:active {
+      transform: translateY(1px);
+    }
 
     .modal-hint {
       margin-top: 12px;
@@ -908,10 +948,25 @@
         top: 10px;
         padding: 6px 6px 6px 11px;
       }
-      #search-input { font-size: 13px; }
-      #search-btn { padding: 8px 14px; font-size: 12.5px; }
-      .legend { display: none; }
-      .bottom-left { left: 10px; bottom: 10px; }
+
+      #search-input {
+        font-size: 13px;
+      }
+
+      #search-btn {
+        padding: 8px 14px;
+        font-size: 12.5px;
+      }
+
+      .legend {
+        display: none;
+      }
+
+      .bottom-left {
+        left: 10px;
+        bottom: 10px;
+      }
+
       .side-drawer {
         top: 66px;
         bottom: 10px;
@@ -919,39 +974,44 @@
         right: 10px !important;
         width: auto !important;
       }
-      #node-drawer { transform: translateX(calc(-100% - 20px)); }
-      #answer-drawer { transform: translateX(calc(100% + 20px)); }
-      #node-drawer.open, #answer-drawer.open { transform: translateX(0); }
+
+      #node-drawer {
+        transform: translateX(calc(-100% - 20px));
+      }
+
+      #answer-drawer {
+        transform: translateX(calc(100% + 20px));
+      }
+
+      #node-drawer.open,
+      #answer-drawer.open {
+        transform: translateX(0);
+      }
     }
   </style>
 </head>
+
 <body>
   <div id="graph-container"></div>
 
   <div class="command-bar">
-    <input
-      id="search-input"
-      type="text"
-      placeholder="输入问题检索图谱，自动提取证据链交由 agnes-2.5-flash 分析…"
-      autocomplete="off"
-      spellcheck="false"
-    />
+    <input id="search-input" type="text" placeholder="輸入問題檢索圖譜，自動提取證據鏈交由 agnes-2.5-flash 分析…" autocomplete="off"
+      spellcheck="false" />
     <button id="key-btn" class="icon-btn" title="配置 API Key">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.9"
-           stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="15" r="4"/>
-        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="8" cy="15" r="4" />
+        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9" />
       </svg>
     </button>
-    <button id="search-btn">提问</button>
+    <button id="search-btn">提問</button>
   </div>
 
   <div class="bottom-left">
     <div class="legend glass-panel">
       <div class="legend-title">Entity Types</div>
       <div class="legend-grid">
-        <span><i style="--c:#38bdf8"></i>组织</span>
+        <span><i style="--c:#38bdf8"></i>組織</span>
         <span><i style="--c:#60a5fa"></i>人物</span>
         <span><i style="--c:#34d399"></i>地理</span>
         <span><i style="--c:#818cf8"></i>事件</span>
@@ -962,25 +1022,25 @@
 
     <div class="controls glass-panel">
       <button class="ctrl-btn" id="zoom-in-btn" title="放大">+</button>
-      <button class="ctrl-btn" id="zoom-out-btn" title="缩小">−</button>
-      <button class="ctrl-btn" id="zoom-fit-btn" title="重置视角并清除高亮">⟲</button>
+      <button class="ctrl-btn" id="zoom-out-btn" title="縮小">−</button>
+      <button class="ctrl-btn" id="zoom-fit-btn" title="重置視角並清除高亮">⟲</button>
       <div class="divider-v"></div>
-      <span class="graph-stats loading" id="graph-stats">加载图谱中…</span>
+      <span class="graph-stats loading" id="graph-stats">載入圖譜中…</span>
     </div>
   </div>
 
   <aside id="node-drawer" class="side-drawer">
     <div class="drawer-header">
-      <span class="drawer-title">节点详情</span>
-      <button class="close-btn" id="close-node-btn" title="关闭">×</button>
+      <span class="drawer-title">節點詳情</span>
+      <button class="close-btn" id="close-node-btn" title="關閉">×</button>
     </div>
     <div class="drawer-body" id="node-drawer-body"></div>
   </aside>
 
   <aside id="answer-drawer" class="side-drawer">
     <div class="drawer-header">
-      <span class="drawer-title">检索分析回答</span>
-      <button class="close-btn" id="close-answer-btn" title="关闭">×</button>
+      <span class="drawer-title">檢索分析回答</span>
+      <button class="close-btn" id="close-answer-btn" title="關閉">×</button>
     </div>
     <div class="drawer-body" id="answer-drawer-body"></div>
   </aside>
@@ -988,29 +1048,22 @@
   <div id="apikey-modal" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="modal-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="15" r="4"/>
-          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="15" r="4" />
+          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9" />
         </svg>
       </div>
       <div class="modal-title">配置 API Key</div>
       <div class="modal-desc">
-        请输入 Agnes AI <code>agnes-2.5-flash</code> 的 API Key。
-        系统将使用图谱检索出的证据链交由该模型生成回答，
-        Key 仅保存在当前浏览器会话中。
+        請輸入 Agnes AI <code>agnes-2.5-flash</code> 的 API Key。
+        系統將使用圖譜檢索出的證據鏈交由該模型生成回答，
+        Key 僅保存在當前流覽器會話中。
       </div>
-      <input
-        id="apikey-input"
-        type="password"
-        class="modal-input"
-        placeholder="sk-xxxxxxxxxxxxxxxx"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button id="save-apikey-btn" class="modal-btn">进入图谱终端</button>
-      <div class="modal-hint">按 Enter 快速确认</div>
+      <input id="apikey-input" type="password" class="modal-input" placeholder="sk-xxxxxxxxxxxxxxxx" autocomplete="off"
+        spellcheck="false" />
+      <button id="save-apikey-btn" class="modal-btn">進入圖譜終端</button>
+      <div class="modal-hint">按 Enter 快速確認</div>
     </div>
   </div>
 
@@ -1044,6 +1097,7 @@
       ORGANIZATION: "#38bdf8",
       PERSON: "#60a5fa",
       GEO: "#34d399",
+      LOCATION: "#34d399",
       EVENT: "#818cf8",
       CONTRACT: "#f472b6",
       LAW: "#f472b6",
@@ -1051,7 +1105,7 @@
       DEFAULT: "#64748b"
     };
 
-    // 扩充高频泛化噪音词过滤表，避免 THE EMPLOYER / PAYMENT / NOTICE 等泛词抢占核心条款芯片名额
+    // 擴充高頻泛化噪音詞過濾表，避免 THE EMPLOYER / PAYMENT / NOTICE / 百分率 等泛詞搶佔核心條款晶片名額
     const STOP_ENTITIES = new Set([
       "CONTRACTOR", "THE CONTRACTOR", "MAIN CONTRACTOR", "SUB-CONTRACTOR",
       "SUBCONTRACTOR", "SUB-CONTRACTORS", "EMPLOYER", "THE EMPLOYER", "WORKS", "THE WORKS",
@@ -1060,7 +1114,8 @@
       "CONTRACT", "MAIN CONTRACT", "SUBCONTRACT", "TENDER", "CLAUSE 2", "SUB-CLAUSE (A)",
       "SUB-CLAUSE (B)", "SUB-CLAUSE (C)", "PAYMENT", "CLAIM", "CLAIMS", "NOTICE",
       "CALENDAR MONTH", "RATE OF PROGRESS", "ENGINEER", "EMPLOYER'S ENGINEER",
-      "CONTRACT REFERENCE", "PARTIES", "AGREEMENT", "DATE OF AGREEMENT", "TIME", "DAYS"
+      "CONTRACT REFERENCE", "PARTIES", "AGREEMENT", "DATE OF AGREEMENT", "TIME", "DAYS",
+      "百分率", "慣用的手", "慣用手"
     ]);
 
     function cleanStr(val) {
@@ -1077,66 +1132,161 @@
       return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
-    // 严格按节点自身名称 (id) 划分颜色类型，杜绝因 description 含 "Contractor/Clause" 导致全图变粉红 (CONTRACT)
+    // 判斷是否為法例中的 "ANY PERSON WHO..." / "NATURAL PERSON WHO..." 等法例適用主體條件從句
+    function isStatutoryPersonClause(idU) {
+      return (
+        /^(?:(?:ANY|A|AN|EVERY|THE|SUCH)\s+)?(?:[A-Z\-]+\s+){0,2}(?:PERSON|PARTIES|PARTY|BODY\s+CORPORATE|ASSOCIATION|EMPLOYER|EMPLOYEE|CONTRACTOR|SUB-?CONTRACTOR|OWNER)\s+(?:WHO|WHICH|THAT|BEING|IN|TO\s+WHOM|ORDINARILY|RESIDENT)\b/i.test(idU) ||
+        (/\b(?:SUBSECTION|SECTION|CLAUSE|OFFENCE|PRESCRIBED|CONVICTION|ORDINARILY\s+RESIDENT)\b/i.test(idU) && idU.split(/\s+/).length >= 5)
+      );
+    }
+
+    // 判斷是否為工傷解剖部位/傷殘賠償表項（防止模型把 "喪失掌骨" 當成地理 LOCATION）
+    function isAnatomicalOrInjuryItem(idU, descU) {
+      return (
+        /(?:喪失|掌骨|指骨|拇指|手指|關節|強硬|一腿|一腳|足踝|臀骨|膝關節|慣用的手|失明|耳聾)/.test(idU) ||
+        /\b(?:METACARPAL|PHALANX|THUMB|FINGER|ANKLE|KNEE|HIP|LIMB|AMPUTATION|INJURED\s+HAND)\b/.test(descU || "")
+      );
+    }
+
+    // 嚴格按節點自身名稱 (id) 劃分顏色類型，相容中英文法例條文並攔截工傷部位 LOCATION 誤判
     function normalizeEntityType(rawType, id, desc) {
       const t = cleanStr(rawType).toUpperCase();
       const idU = cleanStr(id).toUpperCase();
+      const descU = cleanStr(desc).toUpperCase();
 
-      // 1. 优先识别组织/合同主体/角色（天蓝色 ORGANIZATION）
+      // 0. 攔截被誤標為 PERSON 的法例從句或被誤標為 LOCATION 的工傷解剖部位（如 "喪失掌骨——第一(附帶)"）
+      if (isStatutoryPersonClause(idU) || isAnatomicalOrInjuryItem(idU, descU)) {
+        return "EVENT";
+      }
+
+      // 1. 優先識別組織/合同主體/法院角色（天藍色 ORGANIZATION）
       if (
-        /^(?:THE\s+)?(?:CONTRACTOR|MAIN\s+CONTRACTOR|SUB-?CONTRACTOR|EMPLOYER|GOVERNMENT.*|MAINTENANCE\s+SURVEYOR.*|ENGINEER.*|TENDERER.*|COMMISSIONER.*|SPECIALIST\s+CONTRACTOR.*)$/.test(idU) ||
-        /(?:LIMITED|\bLTD\b|BOARD|DEPARTMENT|AUTHORITY|COMPANY|TRIBUNAL|COURT\b)/.test(idU)
+        /^(?:THE\s+)?(?:CONTRACTOR|MAIN\s+CONTRACTOR|SUB-?CONTRACTOR|EMPLOYER|GOVERNMENT.*|MAINTENANCE\s+SURVEYOR.*|ENGINEER.*|TENDERER.*|COMMISSIONER.*|SPECIALIST\s+CONTRACTOR.*|區域法院.*|勞工處.*|僱主|承建商|判頭)$/.test(idU) ||
+        /(?:LIMITED|\bLTD\b|BOARD|DEPARTMENT|AUTHORITY|COMPANY|TRIBUNAL|COURT\b|法院|審裁處|委員會|署長)/.test(idU)
       ) {
         return "ORGANIZATION";
       }
 
-      // 2. 识别地理位置与工程现场（翠绿色 GEO）
-      if (/(?:HONG KONG|KOWLOON|\bSITE\b|CONTRACT\s+AREA|DISTRICT|TERRITORY|ADJOINING\s+PROPERTIES)/.test(idU) && !/^CLAUSE\b/.test(idU)) {
+      // 2. 識別真實地理位置與工程現場（翠綠色 GEO，排除法例中的自然人/法人居所條件與解剖部位）
+      const isResidencyPersonRule = /\b(?:NATURAL\s+PERSON|BODY\s+CORPORATE|ORDINARILY\s+RESIDENT|PLACE\s+OF\s+BUSINESS)\b/.test(idU);
+      if (
+        !isResidencyPersonRule &&
+        ((/(?:HONG KONG|KOWLOON|\bSITE\b|CONTRACT\s+AREA|DISTRICT|TERRITORY|ADJOINING\s+PROPERTIES|香港|九龍|新界|地盤|工地)/.test(idU) &&
+          !/^CLAUSE\b|^SECTION\b|^\[|^第/.test(idU)) ||
+          ((t === "LOCATION" || t === "GEO") && !isAnatomicalOrInjuryItem(idU, descU) && /^(?:HONG KONG|KOWLOON|NEW TERRITORIES|SITE|THE SITE|CONTRACT AREA|WORKS AREA|香港|九龍|新界)/.test(idU)))
+      ) {
         return "GEO";
       }
 
-      // 3. 严格限定 CONTRACT（粉红色）：仅限法例、合同文件本身、以及纯条款编号节点（绝不扫描 description）
+      // 3. 嚴格限定 CONTRACT（粉紅色）：法例、合同檔本身、以及中英文純條款/條文/附表編號節點
       if (
-        /(?:ORDINANCE|\bCAP\.\s*\d|\bCHAPTER\s+\d|STATUTE|ENACTMENT|BY-LAW|CONTRACT_A|CONTRACT_B|HDIL-|APEX-|GENERAL\s+CONDITIONS|ARTICLES\s+OF\s+AGREEMENT|FORM\s+OF\s+TENDER|SPECIAL\s+CONDITION|SCHEDULE\s+OF\s+RATES|\bGCC\b|法例|條例|条例)/.test(idU) ||
-        /^(?:CLAUSE|SUB-?CLAUSE|SECTION|PART)\s+\d+[A-Z0-9().\s\-]*$/.test(idU)
+        /(?:ORDINANCE|\bCAP\.\s*\d|\bCHAPTER\s+\d|STATUTE|ENACTMENT|BY-LAW|CONTRACT_A|CONTRACT_B|HDIL-|APEX-|GENERAL\s+CONDITIONS|ARTICLES\s+OF\s+AGREEMENT|FORM\s+OF\s+TENDER|SPECIAL\s+CONDITION|SCHEDULE\s+OF\s+RATES|\bGCC\b|法例|條例|條例)/.test(idU) ||
+        /^(?:\[[^\]]+\]\s*)?(?:CLAUSE|SUB-?CLAUSE|SECTION|SUBSECTION|PART|SCHEDULE)S?\s*(?:\d+[A-Z0-9().\s,\-]*|\([0-9A-Z]+\)(?:\s*[,&/\-]\s*\([0-9A-Z]+\))*)$/.test(idU) ||
+        /^\[?第\s*[0-9A-Z一二三四五六七八九十百()\s]+(?:條|款|部|節)?\]?$/.test(idU) ||
+        /^附表\s*[0-9A-Z一二三四五六七八九十]+$/.test(idU)
       ) {
         return "CONTRACT";
       }
 
-      // 4. 保留合法原生类型（PERSON / EVENT / ORGANIZATION / GEO），仅拦截学术/泛化废标签归入 EVENT（蓝紫色）
+      // 4. 保留合法原生類型（PERSON / EVENT / ORGANIZATION / GEO），攔截學術/泛化廢標籤歸入 EVENT（藍紫色）
       const INVALID_TYPES = new Set([
-        "UNKNOWN", "ENTITY", "NORMAL_ENTITY", "CONCEPT",
+        "UNKNOWN", "ENTITY", "NORMAL_ENTITY", "CONCEPT", "LOCATION",
         "SOCIAL SCIENCES", "NATURAL SCIENCES", "HUMANITIES", "CATEGORY", "OTHER"
       ]);
-      if (t && !INVALID_TYPES.has(t)) return t;
+      if (t && !INVALID_TYPES.has(t)) {
+        if (t === "PERSON" && idU.split(/\s+/).length > 5) return "EVENT";
+        return t;
+      }
       return "EVENT";
     }
 
-    // 精简冗长短语：剥离 [GCCBWT] 前缀、OF THIS CLAUSE 指代后缀与多余介词虚词
+    // 精簡冗長短語：剝離 [GCCBWT] 首碼、OF THIS CLAUSE 指代尾碼、以及 "ANY PERSON WHO..." 法例定語從句外殼
     function compactClausePhrase(rawPhrase) {
-      return cleanStr(rawPhrase)
-        .replace(/^\[[A-Z0-9_\-]+\]\s*/i, "")
-        .replace(/\s+(?:OF|UNDER|IN)\s+(?:THIS|THE\s+SAID|THE\s+ABOVE)\s+(?:CLAUSE|SUB-CLAUSE|SUBCLAUSE|CONTRACT|AGREEMENT|SECTION)\b/gi, "")
+      let s = cleanStr(rawPhrase)
+        .replace(/^\[([A-Z0-9_\-]+)\]\s*/i, "")
+        .replace(/^\[(第[^\]]+)\]\s*/, "$1")
+        .replace(/\s+(?:OF|UNDER|IN)\s+(?:THIS|THE\s+SAID|THE\s+ABOVE)\s+(?:CLAUSE|SUB-CLAUSE|SUBCLAUSE|CONTRACT|AGREEMENT|SECTION|SUBSECTION|PART)\b/gi, "")
+        .replace(/\s+(?:PRESCRIBED\s+)?FOR\s+THE\s+PURPOSES\s+OF\s+(?:THIS\s+)?(?:SUBSECTION|SECTION|CLAUSE|PART)\s*(?:\([0-9A-Z]+\))?/gi, "")
+        .replace(/\s+WHICH\s+WHEN\s+TESTED\s+UNDER\s+CONDITIONS\b/gi, "")
+        .replace(/^(?:ANY|A|EVERY)\s+PERSON\s+WHO\s+(?:HAS\s+IN\s+HIS\s+POSSESSION|USES\s+OR\s+CAUSES\s+TO\s+BE\s+USED|COMMITS|CONTRAVENES)\s+/i, "POSSESSION/USE OF ")
+        .replace(/^(?:ANY|A|EVERY)\s+(?:PERSON|EMPLOYER)\s+WHO\s+/i, "")
         .replace(/^(?:THE\s+)?(?:CORRECTNESS|PROVISION|EXECUTION|MAINTENANCE|SUBMISSION\s+OF\s+STATEMENT)\s+OF\s+(?:THE\s+)?/i, "")
         .replace(/^INTERFERENCE\s+WITH\s+/i, "")
+        .replace(/\bDOES\s+NOT\s+COMPLY\s+WITH\s+(?:ANY\s+)?REQUIREMENT\s+RELATING\s+TO\s+/gi, "NON-COMPLIANT ")
         .replace(/\bISSUED\s+TO\s+THE\s+/gi, "TO ")
         .replace(/\bPROVIDED\s+BY\s+THE\s+/gi, "BY ")
         .replace(/\s+AND\s+/gi, " & ")
+        .replace(/\s{2,}/g, " ")
         .trim();
+
+      const words = s.split(/\s+/);
+      if (words.length > 7) {
+        s = words.slice(0, 6).join(" ");
+      }
+      return s;
     }
 
-    // 修复因右括号正则回溯导致的半截描述（如 "Sub-Clause (4"）
+    // 根據文檔內容推斷法例章號或文檔簡稱（優先識別主法例特徵，防止條文中引用的外法例 Cap. 587 造成污染）
+    function inferDocShortTag(docChunks) {
+      if (!docChunks || docChunks.length === 0) return "";
+      const sampleText = docChunks.slice(0, 4).map(c => c.content).join("\n");
+      const srcMatch = sampleText.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i);
+      const fname = srcMatch ? srcMatch[1].trim() : "";
+
+      if (/gccbwt/i.test(fname) || /\[gccbwt\]/i.test(sampleText)) {
+        return "GCCBWT";
+      }
+      const fnameCap = fname.match(/\bCap[_\-\s]*(\d+[A-Z]?)\b/i);
+      if (fnameCap) return `CAP. ${fnameCap[1].toUpperCase()}`;
+
+      if (/arbitration agreement|仲裁協議|供選用的條文不得自動適用|Arbitration Ordinance/i.test(sampleText)) {
+        return "CAP. 609";
+      }
+      if (/63C\.\s*Offences relating to time and payment of wages|43C\b.*工資|長期服務金|強積金|拘捕潛逃僱主|Employment Ordinance/i.test(sampleText)) {
+        return "CAP. 57";
+      }
+      if (/喪失掌骨|慣用的手|喪失賺取收入能力|Employees'\s*Compensation/i.test(sampleText)) {
+        return "CAP. 282";
+      }
+      if (/noise emission|Noise Control|噪音/i.test(sampleText)) {
+        return "CAP. 400";
+      }
+      if (/Security of Payment|付款保障|Adjudication/i.test(sampleText) && !/CONTRACT_A|CONTRACT_B/i.test(fname)) {
+        return "CAP. 652";
+      }
+
+      // 剝離 "meaning given to it by ... (Cap. XXX)" 等跨法例引用後再匹配章號
+      const strippedText = sampleText.replace(/(?:meaning given to it by|referred to in|under)\s+[^.;\n]{0,80}\(Cap\.?\s*\d+[A-Z]?\)/gi, "");
+      const capMatch = strippedText.match(/\bCap\.?\s*(\d+[A-Z]?)\b/i);
+      if (capMatch) return `CAP. ${capMatch[1].toUpperCase()}`;
+
+      return "";
+    }
+
+    // 修復因右括弧正則回溯導致的半截描述（如 "Sub-Clause (4"）並清理多段 <SEP> 重複套話
     function repairTruncatedDesc(nodeId, rawDesc, neighbors) {
       let desc = cleanStr(rawDesc);
       const openCnt = (desc.match(/\(/g) || []).length;
       const closeCnt = (desc.match(/\)/g) || []).length;
       if (openCnt > closeCnt) desc += ")";
 
+      // 若描述含多段 "• " 拼接，優先保留信息量最具體（含中文或具體條款號）的段落，剔除 "likely refers to..." 套話
+      if (desc.includes("\n• ")) {
+        const parts = desc
+          .split("\n• ")
+          .map(p => p.trim())
+          .filter(p => p && !/likely refers to|in the legal text provided/i.test(p));
+        if (parts.length > 0) {
+          desc = [...new Set(parts)].join("\n• ");
+        }
+      }
+
       const isTruncated =
         !desc ||
-        desc.length < 22 ||
+        desc.length < 18 ||
         desc.toUpperCase() === nodeId.toUpperCase() ||
-        /^SUB-?CLAUSE\s*\(\d+\)$/i.test(desc.trim());
+        /^SUB-?CLAUSE\s*\(\d+\)$/i.test(desc.trim()) ||
+        /^This is an event reference in Chinese/i.test(desc.trim());
 
       if (isTruncated && neighbors && neighbors.length > 0) {
         const bestEdgeDesc = neighbors
@@ -1145,7 +1295,7 @@
           .sort((a, b) => b.length - a.length)[0];
         if (bestEdgeDesc) return bestEdgeDesc;
       }
-      return desc || "暂无描述";
+      return desc || "暫無描述";
     }
 
     function escapeHtml(str) {
@@ -1254,7 +1404,7 @@
       xmlDoc.querySelectorAll("edge").forEach(eEl => {
         const src = cleanStr(eEl.getAttribute("source") || "");
         const tgt = cleanStr(eEl.getAttribute("target") || "");
-        if (!nodeMap.has(src) || !nodeMap.has(tgt)) return;
+        if (!nodeMap.has(src) || !nodeMap.has(tgt) || src === tgt) return;
 
         const attrs = {};
         eEl.querySelectorAll("data").forEach(dEl => {
@@ -1266,14 +1416,13 @@
         const desc = cleanStr(attrs.description || "");
 
         links.push({ source: src, target: tgt, weight, description: desc });
-        nodeMap.get(src).degree++;
-        nodeMap.get(tgt).degree++;
         neighborMap.get(src).push({ targetId: tgt, description: desc, weight });
         neighborMap.get(tgt).push({ targetId: src, description: desc, weight });
       });
 
-      // 按文档组装有序切片索引，用于：1) 目录切片跳回正文切片；2) 跨切片回溯主条款头
+      // 按文檔組裝有序切片索引與法例章號映射
       const docChunksMap = new Map();
+      const docTagMap = new Map();
       const chunkToNodes = new Map();
       for (const [cid, cdata] of Object.entries(textChunksMap)) {
         if (!cdata || !cdata.content) continue;
@@ -1286,8 +1435,10 @@
           isToc: /TABLE OF CONTENTS/i.test(cdata.content)
         });
       }
-      for (const arr of docChunksMap.values()) {
+      for (const [docId, arr] of docChunksMap.entries()) {
         arr.sort((a, b) => a.order - b.order);
+        const tag = inferDocShortTag(arr);
+        if (tag) docTagMap.set(docId, tag);
       }
 
       nodes.forEach(n => {
@@ -1298,7 +1449,7 @@
         });
       });
 
-      const hubNodes = [...nodes].filter(n => n.id.length >= 4).sort((a, b) => b.degree - a.degree);
+      const hubNodes = [...nodes].filter(n => n.id.length >= 4).sort((a, b) => (neighborMap.get(b.id) || []).length - (neighborMap.get(a.id) || []).length);
 
       nodes.forEach(n => {
         const nbs = neighborMap.get(n.id) || [];
@@ -1307,26 +1458,111 @@
         let cids = (n.source_id || "").split(/\n• |\||,|<SEP>/).map(s => s.trim()).filter(Boolean);
         const primaryCid = cids[0];
         const primaryChunk = primaryCid ? textChunksMap[primaryCid] : null;
+        const chunkText = (primaryChunk && primaryChunk.content) || "";
+        const docList = primaryChunk ? (docChunksMap.get(primaryChunk.full_doc_id) || []) : [];
+        let docCapTag = primaryChunk ? (docTagMap.get(primaryChunk.full_doc_id) || "") : "";
+        if (!docCapTag && chunkText) {
+          docCapTag = inferDocShortTag([{ content: chunkText }]);
+        }
 
-        // 0. 优先处理本身已带 "[GCCBWT] 82. PAYMENT ON CERTIFICATION" 或 "82. TITLE" 的节点，彻底杜绝被误挂到前一条款（如 Clause 81）
-        const selfNumberedMatch = cleanStr(n.id).match(/^(?:\[[A-Z0-9_\-]+\]\s*)?(?:CLAUSE\s+)?(\d{1,3}[A-Z]?)\.\s*(.+)$/i);
+        const rawIdClean = cleanStr(n.id);
+        const selfNumberedMatch = rawIdClean.match(/^(?:\[[A-Z0-9_\-]+\]\s*)?(?:CLAUSE\s+)?(\d{1,3}[A-Z]?)\.\s*(.+)$/i);
+        const bareSectionMatch = rawIdClean.match(/^SECTION\s+(\d+[A-Z0-9()]*)$/i);
+        const bareMultiSubMatch = rawIdClean.match(/^(?:SUB-?CLAUSE|SUBSECTION)S?\s*(\([0-9A-Z]+\)(?:\s*[,&/\-]\s*\([0-9A-Z]+\))*)$/i);
+        const zhSectionMatch = rawIdClean.match(/^\[?第\s*(\d+[A-Z0-9]*)\s*條\]?$/i);
+        const zhSubClauseMatch = rawIdClean.match(/^第\s*(\([0-9A-Z]+\)(?:\([0-9A-Z]+\))*)\s*款?$/i);
+
+        // 0A. 自帶 "[GCCBWT] 82. PAYMENT ON CERTIFICATION" 編號的節點
         if (selfNumberedMatch) {
           const ownClNum = selfNumberedMatch[1].trim();
           const ownTitle = compactClausePhrase(selfNumberedMatch[2]);
           n.label = `CLAUSE ${ownClNum}: ${ownTitle}`;
+        }
+        // 0B. 中文條文引用如 "[第67條]"：結合切片中的附表與標題補全為 "CAP. 57 第67條 (附表2：拘捕潛逃僱主的程式)"
+        else if (zhSectionMatch) {
+          const secNum = zhSectionMatch[1];
+          const schedMatch = chunkText.match(/(附表\s*[0-9A-Z一二三四五六七八九十]+)[\s|]*\[第\s*\d+\s*條\][\s|]*(?:Second\s+Schedule|First\s+Schedule|[A-Za-z\s]+Schedule)?[\s|]*\[s\.\s*\d+\][\s|]*([^\n|(]{2,25})/);
+          const prefix = docCapTag ? `${docCapTag} ` : "";
+          if (schedMatch) {
+            const schedName = schedMatch[1].replace(/\s+/g, "");
+            const schedTitle = schedMatch[2].trim();
+            n.label = `${prefix}第${secNum}條 (${schedName}：${schedTitle})`;
+          } else {
+            n.label = `${prefix}第${secNum}條`;
+          }
+        }
+        // 0C. 中文殘缺子款如 "第(1)(B)(III)" / "第(4)(C)"：補齊 "款" 字並從描述/原文提取主題（如強積金權益）
+        else if (zhSubClauseMatch) {
+          const subCode = zhSubClauseMatch[1].toLowerCase();
+          const prefix = docCapTag ? `${docCapTag} ` : "";
+          let topicTag = "";
+          const combinedZh = `${n.description} ${chunkText}`;
+          if (/強積金.*自願|自願性.*強積金/.test(combinedZh) && subCode.includes("iii")) {
+            topicTag = "：僱主供款強積金權益";
+          } else if (/強積金/.test(combinedZh)) {
+            topicTag = "：強積金計劃權益沖抵";
+          } else if (/長期服務金/.test(combinedZh)) {
+            topicTag = "：長期服務金對沖項目";
+          }
+          n.label = `${prefix}第${subCode}款${topicTag}`;
+        }
+        // 0D. 《雇員補償條例》(Cap. 282) 附表1 傷殘等級表格項：如 "喪失掌骨——第一(附帶)" 或 "第二、第三、第四或第五(附帶)"
+        else if (isAnatomicalOrInjuryItem(rawIdClean.toUpperCase(), n.description.toUpperCase()) && chunkText.includes("||||")) {
+          const prefix = docCapTag || "CAP. 282";
+          if (/^第二、第三/.test(rawIdClean) && chunkText.includes("喪失掌骨")) {
+            n.label = `${prefix} 附表1第29項：喪失第二至五掌骨 (3%)`;
+          } else {
+            const itemMatch = chunkText.match(new RegExp(`\\|\\|(\\d+[A-Z]?)\\.\\|([^|]*?${escapeRegExp(rawIdClean.split("——")[0])}[^|]*?)\\|`, "i"));
+            if (itemMatch) {
+              const itemNo = itemMatch[1];
+              const cleanInjury = rawIdClean.replace(/——/g, "：").replace(/\(附帶\)/g, "");
+              n.label = `${prefix} 附表1第${itemNo}項：${cleanInjury}`;
+            } else {
+              n.label = `${prefix} 附表1：${rawIdClean.replace(/——/g, "：")}`;
+            }
+          }
+        }
+        // 0E. 英文裸 "SECTION 49A" 或並列子款 "SUBSECTION (2), (3), (4)"
+        else if ((bareSectionMatch || bareMultiSubMatch) && primaryChunk && primaryChunk.content) {
+          const prefix = docCapTag ? `${docCapTag} ` : "";
+          if (bareSectionMatch) {
+            const secNum = bareSectionMatch[1].toUpperCase();
+            n.label = `${prefix}SECTION ${secNum}`;
+
+            const defRe = new RegExp(`(?:^|\\n|\\|)\\s*${escapeRegExp(secNum)}\\.\\s+`, "i");
+            const defHits = docList.filter(item => !item.isToc && defRe.test(item.content)).map(item => item.cid);
+            const curIdx = docList.findIndex(item => item.cid === primaryCid);
+            const nextCid = (curIdx >= 0 && curIdx + 1 < docList.length) ? [docList[curIdx + 1].cid] : [];
+            cids = [...new Set([...defHits, ...cids, ...nextCid])];
+            n.source_id = cids.join("<SEP>");
+          } else {
+            const subRaw = bareMultiSubMatch[1].replace(/\s+/g, "");
+            let parentSec = "";
+            const nextZhSec = chunkText.match(/(?:^|\n|\|)\s*(\d{1,3})\.\s+[\u4e00-\u9fa5]/);
+            if (nextZhSec && chunkText.indexOf(nextZhSec[0]) > chunkText.indexOf("(2)")) {
+              parentSec = String(parseInt(nextZhSec[1], 10) - 1);
+            } else {
+              const prevSecHit = chunkText.match(/(?:^|\n|\|\|?)\s*(\d{1,3}[A-Z]?)\.\s+[A-Z\u4e00-\u9fa5]/);
+              if (prevSecHit) parentSec = prevSecHit[1];
+            }
+            n.label = parentSec
+              ? `${prefix}SECTION ${parentSec}${subRaw}`
+              : `${prefix}SUBSECTION ${subRaw}`;
+            n.entity_type = "CONTRACT";
+          }
         } else {
           const shortPhrase = compactClausePhrase(n.id);
           const isOrgOrGeo = n.entity_type === "ORGANIZATION" || n.entity_type === "GEO" || n.entity_type === "PERSON";
-          const alreadyNumbered = /^(?:CLAUSE|SECTION|CAP\.|PART)\s+\d|HDIL-|APEX-/i.test(shortPhrase);
+          const alreadyNumbered = /^(?:CLAUSE|SECTION|CAP\.|PART)\s+\d|HDIL-|APEX-|^第\s*\d+/i.test(shortPhrase);
 
           if (!isOrgOrGeo && !alreadyNumbered && primaryChunk && primaryChunk.content) {
-            const chunkText = primaryChunk.content;
             const isTocChunk = /TABLE OF CONTENTS/i.test(chunkText);
             let resolvedClNum = null;
             let resolvedHeading = null;
+            let isStatuteSection = false;
 
             if (isTocChunk) {
-              // A. 目录切片（如 ASSIGNMENT / SUBLETTING / INTERFERENCE WITH TRAFFIC...）：精确匹配目录行 "4 Subletting 9"
+              // A. 目錄切片（如 ASSIGNMENT / SUBLETTING / INTERFERENCE WITH TRAFFIC...）
               const tocLineRe = new RegExp(`(?:^|\\n)\\s*(\\d{1,3})\\s+(${escapeRegExp(n.id)}[^\\n]*?)\\s+\\d{1,3}\\s*(?:\\n|$)`, "i");
               const tocMatch = chunkText.match(tocLineRe);
               if (tocMatch) {
@@ -1341,8 +1577,6 @@
                 n.label = `CLAUSE ${resolvedClNum}: ${shortPhrase}`;
                 n.description = n.description.replace(/\bClauses\s+\d+\s+and\s+\d+\b/gi, `Clause ${resolvedClNum}`);
 
-                // 自动从同文档非目录切片中检索该条款的正文切片，替换掉无实质内容的目录切片
-                const docList = docChunksMap.get(primaryChunk.full_doc_id) || [];
                 const bodyRe = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?${escapeRegExp(resolvedClNum)}\\.\\s*(?:\\(\\d+\\)|[A-Z])`, "i");
                 const bodyHits = docList.filter(item => !item.isToc && bodyRe.test(item.content)).map(item => item.cid);
                 if (bodyHits.length > 0) {
@@ -1353,42 +1587,81 @@
                 n.label = shortPhrase;
               }
             } else {
-              // B. 正文切片：优先匹配完整短语，若不命中则取最长的专有词定位，避免被高频词 PAYMENT 误导到前一条款
+              // B. 正文切片：同時支持 GCC 跨行標題 ("Setting-out\n21. (1)") 與香港法例雙語表格同行標題 ("||17. Use of products...")
               let pos = chunkText.toUpperCase().indexOf(n.id.toUpperCase());
               if (pos < 0) {
                 const specificWords = n.id
                   .replace(/^\[[^\]]+\]\s*/, "")
                   .split(/\s+/)
-                  .filter(w => w.length >= 5 && !/^(?:CLAUSE|SUB-CLAUSE|CONTRACTOR|EMPLOYER|WORKS|PAYMENT|GENERAL|PROVISION)$/i.test(w))
+                  .filter(w => w.length >= 5 && !/^(?:CLAUSE|SUB-CLAUSE|SECTION|SUBSECTION|PERSON|POSSESSION|PRODUCT|CONDITIONS|PRESCRIBED|PURPOSES|REQUIREMENT|RELATING|CONTRACTOR|EMPLOYER|WORKS|PAYMENT|GENERAL|PROVISION)$/i.test(w))
                   .sort((a, b) => b.length - a.length);
                 if (specificWords.length > 0) {
                   pos = chunkText.toUpperCase().indexOf(specificWords[0].toUpperCase());
                 }
               }
 
-              const docList = docChunksMap.get(primaryChunk.full_doc_id) || [];
               const curIdx = docList.findIndex(item => item.cid === primaryCid);
               const prevText = curIdx > 0 && !docList[curIdx - 1].isToc ? docList[curIdx - 1].content + "\n" : "";
               const searchWindow = prevText + (pos >= 0 ? chunkText.slice(0, pos + 80) : chunkText);
 
-              const headerMatches = [
+              // 1) 優先匹配香港法例雙語表格同行標題格式：如 "||17. Use of products not in compliance with noise standards"
+              const statuteMatches = [
+                ...searchWindow.matchAll(/(?:^|\n|\|\|?)\s*(\d{1,3}[A-Z]{0,2})\.\s+([A-Z][A-Za-z0-9 ,'’()\-/&]{3,75})(?=\n|$)/g)
+              ];
+              // 2) 匹配 GCC 合同跨行標題格式：如 "Setting-out \n 21. (1)"
+              const gccMatches = [
                 ...searchWindow.matchAll(/(?:^|\n)\s*([A-Z][A-Za-z0-9 ,'’()\-/&]{2,55}?)\s*\n+\s*(?:\[[^\]]+\]\s*)?(\d{1,3})\.\s*(?:\(\d+\))?/g)
               ];
-              if (headerMatches.length > 0) {
-                const last = headerMatches[headerMatches.length - 1];
-                resolvedHeading = compactClausePhrase(last[1].trim().toUpperCase());
-                resolvedClNum = last[2].trim();
+              // 3) 若當前法例切片從第(2)款切入且後續出現中文新條號（如 "102. 供選用的條文..."），反推當前條號為 101
+              const trailingZhSec = chunkText.match(/(?:^|\n|\|)\s*(\d{1,3})\.\s+[\u4e00-\u9fa5]{3,}/);
 
-                // 若节点只是空壳 "SUB-CLAUSE (4)"，补上主条款标题：CLAUSE 23(4): CARE OF THE WORKS
-                const bareSubMatch = shortPhrase.match(/^SUB-?CLAUSE\s*\(([0-9A-Z]+)\)$/i);
+              if (statuteMatches.length > 0) {
+                const lastStat = statuteMatches[statuteMatches.length - 1];
+                resolvedClNum = lastStat[1].trim();
+                resolvedHeading = compactClausePhrase(lastStat[2].trim().toUpperCase());
+                isStatuteSection = true;
+              } else if (gccMatches.length > 0) {
+                const lastGcc = gccMatches[gccMatches.length - 1];
+                resolvedHeading = compactClausePhrase(lastGcc[1].trim().toUpperCase());
+                resolvedClNum = lastGcc[2].trim();
+              } else if (trailingZhSec && pos >= 0 && pos < chunkText.indexOf(trailingZhSec[0])) {
+                resolvedClNum = String(parseInt(trailingZhSec[1], 10) - 1);
+                resolvedHeading = "SUBCONTRACTING ARBITRATION EXEMPTION";
+                isStatuteSection = true;
+              }
+
+              // 修復被截斷 "OUTSIDE HONG KONG" 的法例居住地條件短語
+              let finalPhrase = shortPhrase;
+              if (/ORDINARILY\s+RESIDENT$/i.test(finalPhrase) && /outside\s+Hong\s+Kong/i.test(chunkText + " " + n.description)) {
+                finalPhrase = "NATURAL PERSON RESIDENT OUTSIDE HK";
+              }
+
+              if (resolvedClNum) {
+                let subNum = "";
+                if (pos >= 0) {
+                  const subMatches = [...chunkText.slice(0, pos + 15).matchAll(/(?:^|\n)\s*\((\d+[A-Za-z]?)\)\s+/g)];
+                  if (subMatches.length > 0 && isStatutoryPersonClause(n.id)) {
+                    subNum = `(${subMatches[subMatches.length - 1][1]})`;
+                  }
+                }
+
+                const bareSubMatch = finalPhrase.match(/^SUB-?CLAUSE\s*\(([0-9A-Z]+)\)$/i);
+                const locPrefix = isStatuteSection
+                  ? `[${docCapTag ? docCapTag + " " : ""}S.${resolvedClNum}${subNum}]`
+                  : `[${docCapTag ? docCapTag + " " : ""}CL. ${resolvedClNum}${subNum}]`;
+
                 if (bareSubMatch) {
-                  n.label = `CLAUSE ${resolvedClNum}(${bareSubMatch[1]}): ${resolvedHeading}`;
+                  n.label = `${isStatuteSection ? (docCapTag ? docCapTag + " " : "") + "SECTION" : "CLAUSE"} ${resolvedClNum}(${bareSubMatch[1]}): ${resolvedHeading}`;
+                  n.entity_type = "CONTRACT";
+                } else if (/ORDINARILY\s+RESIDENT/i.test(n.id)) {
+                  n.label = `${locPrefix} ${finalPhrase}`;
+                } else if (isStatutoryPersonClause(n.id)) {
+                  n.label = `${locPrefix} ${resolvedHeading || finalPhrase}`;
                 } else {
-                  // 若节点已有具体短语，直接用 "CLAUSE 34: INSTRUCTIONS TO CONTRACTOR"，不再套长括号标题避免名称过长
-                  n.label = `CLAUSE ${resolvedClNum}: ${shortPhrase}`;
+                  n.label = `${locPrefix} ${finalPhrase}`;
                 }
               } else {
-                n.label = shortPhrase;
+                n.label = finalPhrase;
               }
             }
           } else {
@@ -1396,40 +1669,67 @@
           }
         }
 
-        // C. 消除 degree === 0 孤岛节点：依次匹配 [同切片共现实体] -> [描述/原文提及的全局实体]
-        if (n.degree === 0) {
-          const currentChunkTextU = primaryChunk && primaryChunk.content ? primaryChunk.content.toUpperCase() : "";
-          const descU = (n.description || "").toUpperCase();
+        // C. 消除孤島與單邊斷聯節點：若無鄰居，或僅有 1 條邊但描述/邊描述明確點名了其他核心實體（如 EMPLOYER / MAINTENANCE SURVEYOR），自動補齊關聯邊
+        const curNbs = neighborMap.get(n.id) || [];
+        if (curNbs.length <= 1) {
+          const currentChunkTextU = chunkText.toUpperCase();
+          const existingEdgeDescU = curNbs.map(e => e.description || "").join(" ").toUpperCase();
+          const descU = `${n.description || ""} ${existingEdgeDescU}`.toUpperCase();
+          const existingTargetSet = new Set(curNbs.map(e => e.targetId));
           const candidateTargets = [];
 
-          for (const cid of cids) {
-            for (const sib of (chunkToNodes.get(cid) || [])) {
-              if (sib.id !== n.id && !candidateTargets.includes(sib)) {
+          if (curNbs.length === 1) {
+            for (const sib of (chunkToNodes.get(primaryCid) || [])) {
+              if (sib.id !== n.id && !existingTargetSet.has(sib.id) && sib.id.length >= 4 && descU.includes(sib.id.toUpperCase())) {
                 candidateTargets.push(sib);
+              }
+            }
+          } else {
+            for (const cid of cids) {
+              for (const sib of (chunkToNodes.get(cid) || [])) {
+                if (sib.id !== n.id && !existingTargetSet.has(sib.id) && !candidateTargets.includes(sib)) {
+                  candidateTargets.push(sib);
+                }
               }
             }
           }
           for (const hub of hubNodes) {
-            if (hub.id === n.id || candidateTargets.includes(hub)) continue;
+            if (hub.id === n.id || existingTargetSet.has(hub.id) || candidateTargets.includes(hub)) continue;
             const hubIdU = hub.id.toUpperCase();
-            if (descU.includes(hubIdU) || (hubIdU.length >= 6 && currentChunkTextU.includes(hubIdU))) {
+            if (descU.includes(hubIdU) || (curNbs.length === 0 && hubIdU.length >= 6 && currentChunkTextU.includes(hubIdU))) {
               candidateTargets.push(hub);
               if (candidateTargets.length >= 3) break;
             }
           }
 
           for (const targetNode of candidateTargets.slice(0, 2)) {
-            const edgeDesc = n.description || `Associated under ${n.label}.`;
+            const targetDesc = cleanStr(targetNode.description);
+            const edgeDesc =
+              targetDesc && targetDesc !== n.description
+                ? targetDesc
+                : `Associated with ${targetNode.label || targetNode.id} under ${n.label}.`;
             links.push({ source: n.id, target: targetNode.id, weight: 1, description: edgeDesc });
-            n.degree++;
-            targetNode.degree++;
             neighborMap.get(n.id).push({ targetId: targetNode.id, description: edgeDesc, weight: 1 });
-            neighborMap.get(targetNode.id).push({ targetId: n.id, description: edgeDesc, weight: 1 });
+            neighborMap.get(targetNode.id).push({ targetId: n.id, description: n.description || edgeDesc, weight: 1 });
           }
         }
 
-        // 传入原始 n.id（而非加了 CLAUSE 前缀后的 n.label），避免所有带 CLAUSE 前缀的事件节点都被染成粉红色 CONTRACT
         n.entity_type = normalizeEntityType(n.entity_type, n.id, n.description);
+      });
+
+      // D. 最終統一對每個節點的鄰居列表按 targetId 去重，並強制將 n.degree 設為去重後的鄰居數（徹底修復“關聯邊數 2 vs 關聯實體 (3)”不一致）
+      nodes.forEach(n => {
+        const rawList = neighborMap.get(n.id) || [];
+        const seenTargets = new Set();
+        const deduped = [];
+        for (const item of rawList) {
+          if (!seenTargets.has(item.targetId)) {
+            seenTargets.add(item.targetId);
+            deduped.push(item);
+          }
+        }
+        neighborMap.set(n.id, deduped);
+        n.degree = deduped.length;
       });
 
       return { nodes, links };
@@ -1550,8 +1850,8 @@
               ctx.fillStyle = isMatched
                 ? "#fcd34d"
                 : isForcedLabel
-                ? "#ffffff"
-                : "#cbd5e1";
+                  ? "#ffffff"
+                  : "#cbd5e1";
               ctx.fillText(displayStr, node.x, labelY);
             }
           }
@@ -1612,48 +1912,58 @@
 
       const chunksHtml = chunkIds.length
         ? chunkIds
-            .map(cid => {
-              const c = textChunksMap[cid];
-              return `<div class="surface-block" style="white-space:normal;">
+          .map(cid => {
+            const c = textChunksMap[cid];
+            return `<div class="surface-block" style="white-space:normal;">
                 <div class="chunk-id">${escapeHtml(cid)}</div>
-                <div class="chunk-text">${c ? escapeHtml(c.content) : "未找到对应原文切片"}</div>
+                <div class="chunk-text">${c ? escapeHtml(c.content) : "未找到對應原文切片"}</div>
               </div>`;
-            })
-            .join("")
-        : `<div class="empty-hint">无关联切片</div>`;
+          })
+          .join("")
+        : `<div class="empty-hint">無關聯切片</div>`;
 
       const neighborsHtml = neighbors.length
         ? neighbors
-            .slice(0, 25)
-            .map(
-              nb => {
-                const nbLabel = (nodeMap.get(nb.targetId) && nodeMap.get(nb.targetId).label) || nb.targetId;
-                return `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
-                  nb.targetId.replace(/'/g, "\\'")
-                )}')">
-                  <div class="neighbor-name">${escapeHtml(nbLabel)}</div>
-                  <div class="neighbor-desc">${escapeHtml(nb.description || "")}</div>
-                </div>`;
+          .slice(0, 25)
+          .map(
+            nb => {
+              const targetNode = nodeMap.get(nb.targetId);
+              const nbLabel = (targetNode && targetNode.label) || nb.targetId;
+              // 若邊描述與當前節點描述完全重複，改用目標節點自身描述（若仍重複則生成簡潔關聯說明）
+              let nbDesc = cleanStr(nb.description || "");
+              if (nbDesc === cleanStr(node.description || "")) {
+                const altDesc = targetNode ? cleanStr(targetNode.description || "") : "";
+                nbDesc =
+                  altDesc && altDesc !== nbDesc
+                    ? altDesc
+                    : `與「${nbLabel}」於同一法例或合同條款下直接關聯。`;
               }
-            )
-            .join("")
-        : `<div class="empty-hint">无关联节点</div>`;
+              return `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
+                nb.targetId.replace(/'/g, "\\'")
+              )}')">
+                  <div class="neighbor-name">${escapeHtml(nbLabel)}</div>
+                  <div class="neighbor-desc">${escapeHtml(nbDesc)}</div>
+                </div>`;
+            }
+          )
+          .join("")
+        : `<div class="empty-hint">無關聯節點</div>`;
 
       body.innerHTML = `
         <span class="type-badge">${escapeHtml(node.entity_type)}</span>
         <h3 class="node-title">${escapeHtml(node.label)}</h3>
         <div class="meta-row">
-          <span>关联边数 <b>${node.degree}</b></span>
-          <span>切片数 <b>${chunkIds.length}</b></span>
+          <span>關聯邊數 <b>${neighbors.length}</b></span>
+          <span>切片數 <b>${chunkIds.length}</b></span>
         </div>
 
-        <div class="section-title">节点描述</div>
-        <div class="surface-block">${escapeHtml(node.description || "暂无描述")}</div>
+        <div class="section-title">節點描述</div>
+        <div class="surface-block">${escapeHtml(node.description || "暫無描述")}</div>
 
-        <div class="section-title">关联实体 (${neighbors.length})</div>
+        <div class="section-title">關聯實體 (${neighbors.length})</div>
         <div>${neighborsHtml}</div>
 
-        <div class="section-title">来源原文切片</div>
+        <div class="section-title">來源原文切片</div>
         <div>${chunksHtml}</div>
       `;
 
@@ -1690,7 +2000,7 @@
       }
     }
 
-    /* ============ GitHub Pages 纯静态浏览器内置多跳 RAG 引擎 ============ */
+    /* ============ GitHub Pages 純靜態流覽器內置多跳 RAG 引擎 ============ */
 
     async function runStaticBrowserRAG(query, currentApiKey) {
       const qUpper = query.toUpperCase();
@@ -1712,24 +2022,24 @@
         const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
         const isContractOrNtt = /CONTRACT_A|CONTRACT_B|GCCBWT|GCC_NTT/i.test(srcHeader);
 
-        // 严格限定：仅当文件名不属于合同/GCC/NTT，且属于法例文件时，才归入法案库（彻底防止合同切片被重复标为法例）
+        // 嚴格限定：僅當檔案名不屬於合同/GCC/NTT，且屬於法例檔時，才歸入法案庫（徹底防止合同切片被重複標為法例）
         if (
           !isContractOrNtt &&
           (cUpper.includes("HK-STATUTES-BASELINE") ||
             cUpper.includes("STATUTORY BASELINE CORPUS") ||
-            /(?:CAP|ORDINANCE|STATUTE|LAW|法例|條例|条例|\.RTF)/i.test(srcHeader))
+            /(?:CAP|ORDINANCE|STATUTE|LAW|法例|條例|條例|\.RTF)/i.test(srcHeader))
         ) {
           statuteDocIds.add(docId);
         }
 
         if (
-          (qUpper.includes("样本A") || qUpper.includes("样本 A") || qUpper.includes("合同A") || qUpper.includes("主合同") || qUpper.includes("HDIL-2026-MC-01") || qUpper.includes("CONTRACT A")) &&
+          (qUpper.includes("樣本A") || qUpper.includes("樣本 A") || qUpper.includes("合同A") || qUpper.includes("主合同") || qUpper.includes("HDIL-2026-MC-01") || qUpper.includes("CONTRACT A")) &&
           cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT")
         ) {
           targetDocIds.add(docId);
         }
         if (
-          (qUpper.includes("样本B") || qUpper.includes("样本 B") || qUpper.includes("合同B") || qUpper.includes("分包") || qUpper.includes("APEX-2026-SUB-MEP-01") || qUpper.includes("CONTRACT B")) &&
+          (qUpper.includes("樣本B") || qUpper.includes("樣本 B") || qUpper.includes("合同B") || qUpper.includes("分包") || qUpper.includes("APEX-2026-SUB-MEP-01") || qUpper.includes("CONTRACT B")) &&
           cUpper.includes("CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT")
         ) {
           targetDocIds.add(docId);
@@ -1747,8 +2057,8 @@
         }
       }
 
-      // 1. 先定位命中的目标条款切片，提取 hitChunkIds 与命中条款英文正文，用于反向召回英文图谱节点
-      const clauseMatches = [...query.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*条|CLAUSE\s+(\d+(?:\.\d+)?))/gi)];
+      // 1. 先定位命中的目標條款切片，提取 hitChunkIds 與命中條款英文正文，用於反向召回英文圖譜節點
+      const clauseMatches = [...query.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*條|CLAUSE\s+(\d+(?:\.\d+)?))/gi)];
       const flatClauses = clauseMatches.map(m => m[1] || m[2]).filter(Boolean);
 
       const matchedChunkBlocks = [];
@@ -1777,7 +2087,7 @@
         }
       }
 
-      // 2. 检索匹配的图谱实体与关系边（支持中文提问通过 hitChunkIds 反向召回英文条款节点）
+      // 2. 檢索匹配的圖譜實體與關係邊（支援中文提問通過 hitChunkIds 反向召回英文條款節點）
       const scoredNodes = [];
       for (const node of graphData.nodes) {
         const idU = node.id.toUpperCase();
@@ -1810,7 +2120,7 @@
         }
       }
 
-      // 3. 检索匹配的社区报告摘要（结合 topEntities 节点名反向匹配社区报告）
+      // 3. 檢索匹配的社區報告摘要（結合 topEntities 節點名反向匹配社區報告）
       const communityLines = [];
       for (const [_, rep] of Object.entries(communityReportsMap)) {
         const repStr = (rep && (rep.report_string || rep.content)) || "";
@@ -1828,7 +2138,7 @@
         }
       }
 
-      // 4. 组装真正的数据库法案切片（排除已在 targetDocIds 中的合同文档）
+      // 4. 組裝真正的資料庫法案切片（排除已在 targetDocIds 中的合同文檔）
       const statuteBlocks = [];
       for (const sDocId of statuteDocIds) {
         if (targetDocIds.has(sDocId)) continue;
@@ -1858,7 +2168,7 @@
         ...statuteBlocks
       ].join("\n\n");
 
-      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions & Hong Kong Statutory Baseline---\n1. 请严格依据上方检索出的【合同原文切片（🎯 TARGET CLAUSE HIT 及同源切片）】与【数据库法例切片】进行审查，准确区分主合同 HDIL-2026-MC-01 中的 Main Contractor（总承包商/主承包商）与分包合同 APEX-2026-SUB-MEP-01 中的 Subcontractor（分包商），切勿在标题中将主承包商误写为分包商。\n2. 【香港现行法例强制条文基准（严禁编造英国/新加坡法例的“第10条”、“响应日后7或14天”或“Withholding Notice/附表第4段”）】：\n   - 《建造业付款保障条例》(Cap. 652)：**第 11(2) 条**禁止契约排除（任何排除或限制本条例运作的条款均属无效 void）；**第 15–16 条**规定进度款法定最长付款期限为送达付款申索（Payment Claim）后 **60 个日历日**（约定 90 日超限无效）；**第 17 条**严禁“先收款后付款”（Pay-When-Paid）及转嫁业主破产风险；**第 18–20 条**规定付款回应（Payment Response）法定最长期限为收到付款申索后 **30 个日历日**（约定 45 日超限无效），且雇主若要扣减（Set-off）任何款项，必须在法定期限内发出的书面 **Payment Response（付款回应）** 中列明扣减金额与详细理由（无书面付款回应即单方扣款违反第 18–20 条而无效）；**第 24 条**赋予申索方在付款争议产生起 **28 日**内启动法定审裁（Adjudication）的绝对权利；**第 57–61 条**赋予申索方在欠款时经提前至少 5 个工作日书面通知后**暂停工程或减缓施工进度（Suspend or reduce rate of progress）**的法定权利。\n   - 《雇佣条例》(Cap. 57)：**第 32 条**严禁非法扣薪（迟到扣月薪 35% 属刑事违法）；**第 43C 及 70 条**规定总承建商须对分包商拖欠工人的前 2 个月工资承担法定连带代偿责任，不得契约免除。\n   - 《雇员补偿条例》(Cap. 282)：**第 24 及 31 条**规定总承建商须对分包商雇员工伤承担法定代偿责任，免责条款无效。\n   - 《管制免责条款条例》(Cap. 71)：**第 7(1) 条**绝对禁止免除因疏忽导致的人员死亡或人身伤害责任。\n3. 直接给出明确结论，逐条列出【条款编号 + 合同原文规定 + 违反的具体香港法例条文与期限对比】。`;
+      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions & Hong Kong Statutory Baseline---\n1. 請嚴格依據上方檢索出的【合同原文切片（🎯 TARGET CLAUSE HIT 及同源切片）】與【資料庫法例切片】進行審查，準確區分主合同 HDIL-2026-MC-01 中的 Main Contractor（總承包商/主承包商）與分包合同 APEX-2026-SUB-MEP-01 中的 Subcontractor（分包商），切勿在標題中將主承包商誤寫為分包商。\n2. 【香港現行法例強制條文基準（嚴禁編造英國/新加坡法例的“第10條”、“回應日後7或14天”或“Withholding Notice/附表第4段”）】：\n   - 《建造業付款保障條例》(Cap. 652)：**第 11(2) 條**禁止契約排除（任何排除或限制本條例運作的條款均屬無效 void）；**第 15–16 條**規定進度款法定最長付款期限為送達付款申索（Payment Claim）後 **60 個日曆日**（約定 90 日超限無效）；**第 17 條**嚴禁“先收款後付款”（Pay-When-Paid）及轉嫁業主破產風險；**第 18–20 條**規定付款回應（Payment Response）法定最長期限為收到付款申索後 **30 個日曆日**（約定 45 日超限無效），且雇主若要扣減（Set-off）任何款項，必須在法定期限內發出的書面 **Payment Response（付款回應）** 中列明扣減金額與詳細理由（無書面付款回應即單方扣款違反第 18–20 條而無效）；**第 24 條**賦予申索方在付款爭議產生起 **28 日**內啟動法定審裁（Adjudication）的絕對權利；**第 57–61 條**賦予申索方在欠款時經提前至少 5 個工作日書面通知後**暫停工程或減緩施工進度（Suspend or reduce rate of progress）**的法定權利。\n   - 《雇傭條例》(Cap. 57)：**第 32 條**嚴禁非法扣薪（遲到扣月薪 35% 屬刑事違法）；**第 43C 及 70 條**規定總承建商須對分包商拖欠工人的前 2 個月工資承擔法定連帶代償責任，不得契約免除。\n   - 《雇員補償條例》(Cap. 282)：**第 24 及 31 條**規定總承建商須對分包商雇員工傷承擔法定代償責任，免責條款無效。\n   - 《管制免責條款條例》(Cap. 71)：**第 7(1) 條**絕對禁止免除因疏忽導致的人員死亡或人身傷害責任。\n3. 直接給出明確結論，逐條列出【條款編號 + 合同原文規定 + 違反的具體香港法例條文與期限對比】。`;
 
       const llmResp = await fetch(AGNES_CHAT_URL, {
         method: "POST",
@@ -1878,13 +2188,13 @@
 
       if (!llmResp.ok) {
         const errJson = await llmResp.json().catch(() => ({}));
-        throw new Error((errJson.error && errJson.error.message) || `Agnes API 调用失败 (HTTP ${llmResp.status})`);
+        throw new Error((errJson.error && errJson.error.message) || `Agnes API 調用失敗 (HTTP ${llmResp.status})`);
       }
 
       const llmData = await llmResp.json();
       const answer = (llmData.choices && llmData.choices[0] && llmData.choices[0].message && llmData.choices[0].message.content) || "";
 
-      // 5. 按相关性得分排序高亮节点，优先点亮命中条款的专有法例与核心条款实体，剔除泛化词
+      // 5. 按相關性得分排序高亮節點，優先點亮命中條款的專有法例與核心條款實體，剔除泛化詞
       const aUpper = answer.toUpperCase();
       const highlightCandidates = [];
       for (const node of graphData.nodes) {
@@ -1913,7 +2223,7 @@
       };
     }
 
-    /* ============ 查询入口 ============ */
+    /* ============ 查詢入口 ============ */
 
     async function runQuery() {
       if (!apiKey) {
@@ -1942,7 +2252,7 @@
               body: JSON.stringify({ query, api_key: apiKey })
             });
             if (resp.ok) data = await resp.json();
-          } catch (_) {}
+          } catch (_) { }
         }
 
         if (!data) {
@@ -1955,7 +2265,7 @@
         renderAnswerError(query, err.message);
       } finally {
         btn.disabled = false;
-        btn.textContent = "提问";
+        btn.textContent = "提問";
       }
     }
 
@@ -1965,7 +2275,7 @@
 
       body.innerHTML = `
         <div class="query-echo">${escapeHtml(query)}</div>
-        <div class="section-title">分析结论</div>
+        <div class="section-title">分析結論</div>
         <div class="skeleton" style="height:14px;margin-bottom:10px;"></div>
         <div class="skeleton" style="height:14px;width:88%;margin-bottom:10px;"></div>
         <div class="skeleton" style="height:14px;width:72%;margin-bottom:10px;"></div>
@@ -1981,9 +2291,9 @@
 
       body.innerHTML = `
         <div class="query-echo">${escapeHtml(query)}</div>
-        <div class="section-title">请求失败</div>
+        <div class="section-title">請求失敗</div>
         <div class="surface-block" style="color:#fca5a5;border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.08);">
-          ${escapeHtml(message || "未知错误")}
+          ${escapeHtml(message || "未知錯誤")}
         </div>
       `;
       drawer.classList.add("open");
@@ -1996,16 +2306,16 @@
       const matched = data.matched_nodes || [];
       const chipsHtml = matched.length
         ? matched
-            .map(
-              id => {
-                const chipLabel = (nodeMap.get(id) && nodeMap.get(id).label) || id;
-                return `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
-                  id.replace(/'/g, "\\'")
-                )}')">✦ ${escapeHtml(truncateLabel(chipLabel, 28))}</span>`;
-              }
-            )
-            .join("")
-        : `<span class="empty-hint" style="padding:9px 12px;">无特定高亮实体</span>`;
+          .map(
+            id => {
+              const chipLabel = (nodeMap.get(id) && nodeMap.get(id).label) || id;
+              return `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
+                id.replace(/'/g, "\\'")
+              )}')">✦ ${escapeHtml(truncateLabel(chipLabel, 28))}</span>`;
+            }
+          )
+          .join("")
+        : `<span class="empty-hint" style="padding:9px 12px;">無特定高亮實體</span>`;
 
       const htmlAnswer = window.marked
         ? marked.parse(data.answer || "")
@@ -2014,15 +2324,15 @@
       body.innerHTML = `
         <div class="query-echo">${escapeHtml(query)}</div>
 
-        <div class="section-title">核心命中节点（点击定位）</div>
+        <div class="section-title">核心命中節點（點擊定位）</div>
         <div class="chip-wrap">${chipsHtml}</div>
 
-        <div class="section-title">分析结论</div>
+        <div class="section-title">分析結論</div>
         <div class="surface-block markdown-body" style="white-space:normal;">${htmlAnswer}</div>
 
         <details class="raw-evidence">
-          <summary>查看底层检索证据链</summary>
-          <pre class="evidence-pre">${escapeHtml(data.evidence || "无证据内容")}</pre>
+          <summary>查看底層檢索證據鏈</summary>
+          <pre class="evidence-pre">${escapeHtml(data.evidence || "無證據內容")}</pre>
         </details>
       `;
 
@@ -2030,7 +2340,7 @@
       body.scrollTop = 0;
     }
 
-    /* ============ 数据加载（直接读取 ./pdf_work_dir_local/ 文件夹） ============ */
+    /* ============ 資料載入（直接讀取 ./pdf_work_dir_local/ 資料夾） ============ */
 
     async function loadGraphAndChunks() {
       const statsEl = document.getElementById("graph-stats");
@@ -2043,14 +2353,14 @@
         try {
           const r = await fetch(url);
           if (r.ok) { textChunksMap = await r.json(); break; }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       for (const url of ["./pdf_work_dir_local/kv_store_community_reports.json", "./kv_store_community_reports.json"]) {
         try {
           const r = await fetch(url);
           if (r.ok) { communityReportsMap = await r.json(); break; }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       const graphUrls = isLocal
@@ -2064,16 +2374,16 @@
             if (xml.includes("<graphml")) {
               pendingGraphData = parseGraphML(xml);
               statsEl.textContent =
-                `${pendingGraphData.nodes.length} 节点 · ${pendingGraphData.links.length} 连边`;
+                `${pendingGraphData.nodes.length} 節點 · ${pendingGraphData.links.length} 連邊`;
               statsEl.classList.remove("loading");
               maybeStartSimulation();
               return;
             }
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
-      statsEl.textContent = "未检测到图谱文件";
+      statsEl.textContent = "未檢測到圖譜檔";
       statsEl.classList.remove("loading");
       statsEl.style.color = "#f87171";
     }
@@ -2089,7 +2399,7 @@
     function saveApiKey() {
       const val = document.getElementById("apikey-input").value.trim();
       if (!val) {
-        alert("请输入有效的 API Key");
+        alert("請輸入有效的 API Key");
         return;
       }
       apiKey = val;
@@ -2146,4 +2456,5 @@
     });
   </script>
 </body>
+
 </html>
