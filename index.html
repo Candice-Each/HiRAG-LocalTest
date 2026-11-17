@@ -1130,20 +1130,17 @@
       const t = cleanStr(rawType).toUpperCase();
       const combined = `${id} ${desc}`.toUpperCase();
 
-      if (/(?:ORDINANCE|CAP\.|SECTION\s+\d|CLAUSE|SUB-CLAUSE|CONTRACT|AGREEMENT|GCC|TENDER|法例|條例|条例)/.test(combined)) {
+      if (/(?:ORDINANCE|CAP\.|SECTION\s+\d|CLAUSE|SUB-CLAUSE|CONTRACT|AGREEMENT|RETENTION|PAYMENT|ADJUDICATION|VARIATION|SETTING-OUT|ALIGNMENT|RECTIFY|DEFECT|法例|條例|条例)/.test(combined)) {
         return "CONTRACT";
       }
-      if (/(?:LIMITED|LTD|BOARD|DEPARTMENT|GOVERNMENT|SURVEYOR|CENTRE|COMPANY|EMPLOYER|CONTRACTOR|ENGINEER)/.test(combined)) {
+      if (/(?:LIMITED|LTD|BOARD|DEPARTMENT|GOVERNMENT|SURVEYOR|CENTRE|COMPANY|EMPLOYER|ENGINEER)/.test(id.toUpperCase())) {
         return "ORGANIZATION";
       }
-      if (/(?:HONG KONG|KOWLOON|SITE|DISTRICT|TERRITORY)/.test(id.toUpperCase())) {
-        return "GEO";
-      }
-      const INVALID_ACADEMIC_TYPES = new Set([
-        "UNKNOWN", "ENTITY", "NORMAL_ENTITY", "SOCIAL SCIENCES",
-        "NATURAL SCIENCES", "HUMANITIES", "CONCEPT", "CATEGORY", "OTHER"
+      const INVALID_TYPES = new Set([
+        "UNKNOWN", "ENTITY", "NORMAL_ENTITY", "CONCEPT",
+        "SOCIAL SCIENCES", "NATURAL SCIENCES", "HUMANITIES", "CATEGORY", "OTHER"
       ]);
-      if (t && !INVALID_ACADEMIC_TYPES.has(t)) return t;
+      if (t && !INVALID_TYPES.has(t)) return t;
       return "EVENT";
     }
 
@@ -1304,10 +1301,54 @@
         neighborMap.get(tgt).push({ targetId: src, description: desc, weight });
       });
 
+      const chunkToNodes = new Map();
       nodes.forEach(n => {
-        const nbs = neighborMap.get(n.id) || [];
-        n.description = repairTruncatedDesc(n.id, n.description, nbs);
-        n.label = formatNodeLabel(n.id, n.description);
+        const cids = (n.source_id || "").split(/\n• |\||,|<SEP>/).map(s => s.trim()).filter(Boolean);
+        cids.forEach(cid => {
+          if (!chunkToNodes.has(cid)) chunkToNodes.set(cid, []);
+          chunkToNodes.get(cid).push(n);
+        });
+      });
+
+      nodes.forEach(n => {
+        const cids = (n.source_id || "").split(/\n• |\||,|<SEP>/).map(s => s.trim()).filter(Boolean);
+
+        if (!/CLAUSE|SECTION|CAP\.|ORDINANCE|CONTRACT/i.test(n.label) && cids.length > 0 && textChunksMap[cids[0]]) {
+          const chunkText = textChunksMap[cids[0]].content || "";
+          const keyToken = n.id.split(/\s+/).filter(w => w.length >= 5)[0] || n.id;
+          const pos = chunkText.toUpperCase().indexOf(keyToken.toUpperCase());
+          const searchWindow = pos >= 0 ? chunkText.slice(0, pos + 160) : chunkText;
+          const matches = [
+            ...searchWindow.matchAll(/(?:^|\n)\s*([A-Z][A-Za-z0-9 ,'’()\-/]{2,50})\s*\n+\s*(?:\[[^\]]+\]\s*)?(\d{1,3})\.\s*(?:\(\d+\))?/g)
+          ];
+          if (matches.length > 0) {
+            const last = matches[matches.length - 1];
+            const heading = last[1].trim().toUpperCase();
+            const clNum = last[2].trim();
+            n.label = `CLAUSE ${clNum} (${heading}) · ${n.label}`;
+            n.entity_type = "CONTRACT";
+          }
+        }
+
+        if (n.degree === 0) {
+          const descU = (n.description || "").toUpperCase();
+          const candidates = new Set(cids.flatMap(cid => chunkToNodes.get(cid) || []));
+          if (descU.includes("MAINTENANCE SURVEYOR") && nodeMap.has("MAINTENANCE SURVEYOR")) {
+            candidates.add(nodeMap.get("MAINTENANCE SURVEYOR"));
+          }
+          for (const targetNode of candidates) {
+            if (!targetNode || targetNode.id === n.id) continue;
+            if (descU.includes(targetNode.id.toUpperCase()) || targetNode.degree > 0) {
+              const edgeDesc = n.description || "Co-occurs in the same contract clause provision.";
+              links.push({ source: n.id, target: targetNode.id, weight: 1, description: edgeDesc });
+              n.degree++;
+              targetNode.degree++;
+              neighborMap.get(n.id).push({ targetId: targetNode.id, description: edgeDesc, weight: 1 });
+              neighborMap.get(targetNode.id).push({ targetId: n.id, description: edgeDesc, weight: 1 });
+              if (n.degree >= 2) break;
+            }
+          }
+        }
       });
 
       return { nodes, links };
