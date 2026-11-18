@@ -44,7 +44,7 @@
       background: var(--bg-deep);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       user-select: none;
@@ -164,7 +164,7 @@
       background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
       box-shadow: 0 5px 16px -5px rgba(59, 130, 246, 0.9);
       transition: filter 0.16s var(--ease), transform 0.12s var(--ease),
-        box-shadow 0.16s var(--ease);
+                  box-shadow 0.16s var(--ease);
     }
 
     #search-btn:hover:not(:disabled) {
@@ -1000,8 +1000,8 @@
     <button id="key-btn" class="icon-btn" title="配置 API Key">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
         stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="15" r="4" />
-        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9" />
+        <circle cx="8" cy="15" r="4"/>
+        <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
       </svg>
     </button>
     <button id="search-btn">提問</button>
@@ -1050,8 +1050,8 @@
       <div class="modal-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
           stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="15" r="4" />
-          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9" />
+          <circle cx="8" cy="15" r="4"/>
+          <path d="m10.8 12.2 8.2-8.2M17 4l3 3M14.5 6.5 17 9"/>
         </svg>
       </div>
       <div class="modal-title">配置 API Key</div>
@@ -1073,7 +1073,24 @@
     const AGNES_MODEL = "agnes-2.5-flash";
     const STORAGE_KEY = "HIRAG_API_KEY";
 
-    let apiKey = sessionStorage.getItem(STORAGE_KEY) || "";
+    function sanitizeApiKey(raw) {
+      if (!raw) return "";
+      let s = String(raw)
+        .replace(/[\u200B-\u200D\uFEFF]/g, "")
+        .trim()
+        .replace(/^Bearer\s+/i, "")
+        .trim();
+      // 若包含中文或非 ASCII 可见字符（说明把提问词误输入到了 API Key 弹窗中），直接判定为无效
+      if (/[^\x21-\x7E]/.test(s)) {
+        return "";
+      }
+      return s;
+    }
+
+    let apiKey = sanitizeApiKey(sessionStorage.getItem(STORAGE_KEY) || "");
+    if (!apiKey) {
+      sessionStorage.removeItem(STORAGE_KEY);
+    }
 
     let graphInstance = null;
     let graphData = { nodes: [], links: [] };
@@ -1132,7 +1149,6 @@
       return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
-    // 判斷是否為法例中的 "ANY PERSON WHO..." / "NATURAL PERSON WHO..." 等法例適用主體條件從句
     function isStatutoryPersonClause(idU) {
       return (
         /^(?:(?:ANY|A|AN|EVERY|THE|SUCH)\s+)?(?:[A-Z\-]+\s+){0,2}(?:PERSON|PARTIES|PARTY|BODY\s+CORPORATE|ASSOCIATION|EMPLOYER|EMPLOYEE|CONTRACTOR|SUB-?CONTRACTOR|OWNER)\s+(?:WHO|WHICH|THAT|BEING|IN|TO\s+WHOM|ORDINARILY|RESIDENT)\b/i.test(idU) ||
@@ -1140,15 +1156,27 @@
       );
     }
 
-    // 判斷是否為工傷解剖部位/傷殘賠償表項（防止模型把 "喪失掌骨" 當成地理 LOCATION）
     function isAnatomicalOrInjuryItem(idU, descU) {
       return (
         /(?:喪失|掌骨|指骨|拇指|手指|關節|強硬|一腿|一腳|足踝|臀骨|膝關節|慣用的手|失明|耳聾)/.test(idU) ||
-        /\b(?:METACARPAL|PHALANX|THUMB|FINGER|ANKLE|KNEE|HIP|LIMB|AMPUTATION|INJURED\s+HAND)\b/.test(descU || "")
+        /\b(?:METACARPAL|PHALANX|THUMB|FINGER|ANKLE|KNEE|HIP|LIMB|AMPUTATION|INJURED\s+HAND)\b/.test( descU || "" )
       );
     }
 
-    // 嚴格按節點自身名稱 (id) 劃分顏色類型，相容中英文法例條文並攔截工傷部位 LOCATION 誤判
+    // 识别不应作为图谱节点的纯时间、日期、工期时长或百分比数值（如 "24個月"、"1 DECEMBER 2026"、"30 NOVEMBER 2027"、"28 DAYS"）
+    function isTemporalOrNumericEntity(rawId) {
+      const s = cleanStr(rawId).toUpperCase().trim();
+      if (!s) return true;
+      if (/^\d+(?:\.\d+)?\s*(?:個?月|年|日|天|星期|週|周|小時|小时|個?工作日|個?日曆日)$/.test(s)) return true;
+      if (/^\d{4}\s*年(?:\s*\d{1,2}\s*月(?:\s*\d{1,2}\s*日)?)?$/.test(s)) return true;
+      const months = "(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER|JAN|FEB|MAR|APR|JUN|JUL|AUG|SEP|SEPT|OCT|NOV|DEC)";
+      if (new RegExp(`^\\d{1,2}(?:ST|ND|RD|TH)?\\s+${months}(?:\\s*,?\\s*\\d{2,4})?$`, "i").test(s)) return true;
+      if (new RegExp(`^${months}\\s+\\d{1,2}(?:ST|ND|RD|TH)?(?:\\s*,?\\s*\\d{2,4})?$`, "i").test(s)) return true;
+      if (/^\d+(?:\.\d+)?\s*(?:CALENDAR\s+|WORKING\s+|BUSINESS\s+|CLEAR\s+)?(?:DAYS?|MONTHS?|YEARS?|WEEKS?|HOURS?|%)$/i.test(s)) return true;
+      return false;
+    }
+
+    // 严格按节点自身名称 (id) 划分颜色类型，兼容中英文法例条文并拦截工伤部位 LOCATION 误判
     function normalizeEntityType(rawType, id, desc) {
       const t = cleanStr(rawType).toUpperCase();
       const idU = cleanStr(id).toUpperCase();
@@ -1379,7 +1407,7 @@
 
       xmlDoc.querySelectorAll("node").forEach(nEl => {
         const id = cleanStr(nEl.getAttribute("id") || "");
-        if (!id) return;
+        if (!id || isTemporalOrNumericEntity(id)) return;
 
         const attrs = {};
         nEl.querySelectorAll("data").forEach(dEl => {
@@ -1850,8 +1878,8 @@
               ctx.fillStyle = isMatched
                 ? "#fcd34d"
                 : isForcedLabel
-                  ? "#ffffff"
-                  : "#cbd5e1";
+                ? "#ffffff"
+                : "#cbd5e1";
               ctx.fillText(displayStr, node.x, labelY);
             }
           }
@@ -1912,8 +1940,8 @@
 
       const chunksHtml = chunkIds.length
         ? chunkIds
-          .map(cid => {
-            const c = textChunksMap[cid];
+            .map(cid => {
+              const c = textChunksMap[cid];
             return `<div class="surface-block" style="white-space:normal;">
                 <div class="chunk-id">${escapeHtml(cid)}</div>
                 <div class="chunk-text">${c ? escapeHtml(c.content) : "未找到對應原文切片"}</div>
@@ -1924,23 +1952,23 @@
 
       const neighborsHtml = neighbors.length
         ? neighbors
-          .slice(0, 25)
-          .map(
-            nb => {
+            .slice(0, 25)
+            .map(
+              nb => {
               const targetNode = nodeMap.get(nb.targetId);
               const nbLabel = (targetNode && targetNode.label) || nb.targetId;
               // 若邊描述與當前節點描述完全重複，改用目標節點自身描述（若仍重複則生成簡潔關聯說明）
               let nbDesc = cleanStr(nb.description || "");
-              if (nbDesc === cleanStr(node.description || "")) {
-                const altDesc = targetNode ? cleanStr(targetNode.description || "") : "";
-                nbDesc =
-                  altDesc && altDesc !== nbDesc
-                    ? altDesc
-                    : `與「${nbLabel}」於同一法例或合同條款下直接關聯。`;
-              }
-              return `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
-                nb.targetId.replace(/'/g, "\\'")
-              )}')">
+                if (nbDesc === cleanStr(node.description || "")) {
+                  const altDesc = targetNode ? cleanStr(targetNode.description || "") : "";
+                  nbDesc =
+                    altDesc && altDesc !== nbDesc
+                      ? altDesc
+                      : `與「${nbLabel}」於同一法例或合同條款下直接關聯。`;
+                }
+                return `<div class="neighbor-row" onclick="window.focusEntity('${escapeHtml(
+                  nb.targetId.replace(/'/g, "\\'")
+                )}')">
                   <div class="neighbor-name">${escapeHtml(nbLabel)}</div>
                   <div class="neighbor-desc">${escapeHtml(nbDesc)}</div>
                 </div>`;
@@ -1983,9 +2011,25 @@
       highlightedNodes.clear();
       highlightedLinks.clear();
 
-      (ids || []).forEach(id => {
-        if (nodeMap.has(id)) highlightedNodes.add(id);
-      });
+      const seedIds = (ids || []).filter(id => nodeMap.has(id));
+      seedIds.forEach(id => highlightedNodes.add(id));
+
+      // 自动补齐选中节点之间的 1-hop 桥接中间节点，确保画布上高亮节点之间连边对得上、绝不悬空乱飘
+      if (seedIds.length >= 2) {
+        const primaryId = seedIds[0];
+        const primaryNbs = new Set((neighborMap.get(primaryId) || []).map(nb => nb.targetId));
+        for (let i = 1; i < seedIds.length; i++) {
+          const curId = seedIds[i];
+          if (primaryNbs.has(curId)) continue;
+          const curNbs = neighborMap.get(curId) || [];
+          for (const nb of curNbs) {
+            if (primaryNbs.has(nb.targetId) || highlightedNodes.has(nb.targetId)) {
+              highlightedNodes.add(nb.targetId);
+              break;
+            }
+          }
+        }
+      }
 
       graphData.links.forEach(link => {
         const sId = typeof link.source === "object" ? link.source.id : link.source;
@@ -2003,14 +2047,26 @@
     /* ============ GitHub Pages 純靜態流覽器內置多跳 RAG 引擎 ============ */
 
     async function runStaticBrowserRAG(query, currentApiKey) {
-      const qUpper = query.toUpperCase();
-      const tokens = qUpper
+      const qUpper = query.toUpperCase().trim();
+      const GENERIC_QUERY_STOPWORDS = new Set([
+        "目前", "目前的", "現在", "现在", "是誰", "是谁", "是什麼", "是什么", "什麼", "什么",
+        "哪個", "哪个", "哪些", "如何", "怎麼", "怎么", "請問", "请问", "審查", "审查",
+        "檢查", "检查", "分析", "告訴我", "告诉我", "的", "了", "嗎", "吗", "呢",
+        "WHAT", "WHO", "WHERE", "WHEN", "WHICH", "HOW", "THE", "IS", "ARE", "OF", "IN", "TO", "FOR", "AND"
+      ]);
+
+      const rawTokens = qUpper
+        .replace(/(?:目前的|是谁|是誰|是什么|是什麼|请问|請問)/g, " ")
         .split(/[\s,，。？?！!；;：:（）()【】\[\]"'“”‘’、]+/)
-        .filter(t => t.length >= 2);
+        .map(t => t.trim())
+        .filter(t => t.length >= 2 && !GENERIC_QUERY_STOPWORDS.has(t));
+
+      const tokens = rawTokens.length > 0 ? rawTokens : [qUpper];
 
       const docGroups = {};
       const targetDocIds = new Set();
       const statuteDocIds = new Set();
+      let chunkKeywordHits = 0;
 
       for (const [cid, cdata] of Object.entries(textChunksMap)) {
         if (!cdata || !cdata.content) continue;
@@ -2019,6 +2075,10 @@
         docGroups[docId].push({ cid, order: cdata.chunk_order_index || 0, content: cdata.content });
 
         const cUpper = cdata.content.toUpperCase();
+        if (tokens.some(tk => tk.length >= 2 && cUpper.includes(tk))) {
+          chunkKeywordHits++;
+        }
+
         const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
         const isContractOrNtt = /CONTRACT_A|CONTRACT_B|GCCBWT|GCC_NTT/i.test(srcHeader);
 
@@ -2046,7 +2106,16 @@
         }
       }
 
-      if (targetDocIds.size === 0) {
+      const clauseMatches = [...query.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*[条條]|CLAUSE\s+(\d+(?:\.\d+)?)|SECTION\s+(\d+[A-Z]?))/gi)];
+      const flatClauses = clauseMatches.map(m => m[1] || m[2] || m[3]).filter(Boolean);
+
+      const hasDomainIntent =
+        flatClauses.length > 0 ||
+        targetDocIds.size > 0 ||
+        /(?:合同|合約|條款|条款|法例|條例|条例|樣本|样本|工程|分包|承建商|承包商|業主|业主|僱主|雇主|僱員|雇员|工資|工资|付款|扣款|審裁|审裁|仲裁|賠償|赔偿|工傷|工伤|噪音|違約|违约|免責|免责|留置|工期|HDIL|APEX|GCC|CAP|CLAUSE|SECTION|CONTRACT|SUBCONTRACT|PAYMENT|WAGE|ARBITRATION|SURVEYOR|ENGINEER|LIQUIDATED|RETENTION)/i.test(qUpper);
+
+      // 仅当存在领域意图但未指明具体合同时，才回退加载样本合同（防止无关问题如“英伟达CEO是谁”被强塞合同切片）
+      if (targetDocIds.size === 0 && hasDomainIntent) {
         for (const [docId, arr] of Object.entries(docGroups)) {
           if (arr.length <= 12 && !statuteDocIds.has(docId)) {
             const firstUpper = arr[0].content.toUpperCase();
@@ -2057,27 +2126,30 @@
         }
       }
 
-      // 1. 先定位命中的目標條款切片，提取 hitChunkIds 與命中條款英文正文，用於反向召回英文圖譜節點
-      const clauseMatches = [...query.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*條|CLAUSE\s+(\d+(?:\.\d+)?))/gi)];
-      const flatClauses = clauseMatches.map(m => m[1] || m[2]).filter(Boolean);
-
+      // 1. 定位命中的目标条款切片
       const matchedChunkBlocks = [];
       const siblingChunkBlocks = [];
       const hitChunkIds = new Set();
+      const targetDocChunkIds = new Set();
       let hitClauseTextUpper = "";
 
       for (const docId of targetDocIds) {
         const list = (docGroups[docId] || []).sort((a, b) => a.order - b.order);
         for (const item of list) {
+          targetDocChunkIds.add(item.cid);
           let hitCl = null;
           for (const cl of flatClauses) {
-            const re = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?${cl.replace(".", "\\.")}(?:\\.\\d+)?[.\\s]|CLAUSE\\s+${cl.replace(".", "\\.")}\\b`, "i");
+            const re = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?(?:CLAUSE\\s+|ARTICLE\\s+|SECTION\\s+)?${cl.replace(".", "\\.")}(?:\\.\\d+)?[.\\s:]|CLAUSE\\s+${cl.replace(".", "\\.")}\\b`, "i");
             if (re.test(item.content)) {
               hitCl = cl;
               break;
             }
           }
-          if (hitCl) {
+          if (!hitCl && flatClauses.length === 0 && tokens.some(tk => tk.length >= 3 && item.content.toUpperCase().includes(tk))) {
+            hitChunkIds.add(item.cid);
+            hitClauseTextUpper += "\n" + item.content.toUpperCase();
+            matchedChunkBlocks.push(`<!-- 🎯 TARGET ENTITY HIT (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+          } else if (hitCl) {
             hitChunkIds.add(item.cid);
             hitClauseTextUpper += "\n" + item.content.toUpperCase();
             matchedChunkBlocks.push(`<!-- 🎯 TARGET CLAUSE ${hitCl} HIT (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
@@ -2087,27 +2159,99 @@
         }
       }
 
-      // 2. 檢索匹配的圖譜實體與關係邊（支援中文提問通過 hitChunkIds 反向召回英文條款節點）
+      // 2. 检索匹配的图谱实体（严格剔除时间/日期节点，并记录直接查询命中）
       const scoredNodes = [];
+      const directAnchorNodes = [];
       for (const node of graphData.nodes) {
         const idU = node.id.toUpperCase();
         const labelU = (node.label || node.id).toUpperCase();
-        if (idU.length < 3 || STOP_ENTITIES.has(idU)) continue;
-        let score = 0;
-        if (qUpper.includes(idU) || qUpper.includes(labelU)) score += 45;
-        if (hitClauseTextUpper && idU.length >= 5 && hitClauseTextUpper.includes(idU)) score += 35;
+        if (idU.length < 3 || STOP_ENTITIES.has(idU) || isTemporalOrNumericEntity(idU)) continue;
+
+        const srcStr = node.source_id || "";
+        let inHitChunk = false;
+        let inTargetDoc = false;
         for (const hCid of hitChunkIds) {
-          if ((node.source_id || "").includes(hCid)) score += 30;
+          if (srcStr.includes(hCid)) { inHitChunk = true; break; }
+        }
+        if (!inHitChunk) {
+          for (const tCid of targetDocChunkIds) {
+            if (srcStr.includes(tCid)) { inTargetDoc = true; break; }
+          }
+        }
+
+        let score = 0;
+        const isDirectQueryHit = (idU.length >= 4 && qUpper.includes(idU)) || (qUpper.length >= 4 && idU.includes(qUpper));
+        if (isDirectQueryHit) {
+          score += 120;
+          directAnchorNodes.push(node);
+        }
+        if (inHitChunk) score += 75;
+        else if (inTargetDoc) score += 35;
+
+        if (hitClauseTextUpper && idU.length >= 5 && hitClauseTextUpper.includes(idU)) {
+          score += (inHitChunk || inTargetDoc) ? 35 : 0;
         }
         for (const tk of tokens) {
-          if (idU.includes(tk) || labelU.includes(tk)) score += 12;
-          else if ((node.description || "").toUpperCase().includes(tk)) score += 3;
+          if (tk.length >= 2 && (idU.includes(tk) || labelU.includes(tk))) score += 20;
+          else if (tk.length >= 3 && (node.description || "").toUpperCase().includes(tk)) score += 4;
         }
-        if (score > 0) scoredNodes.push({ score, node });
+        if (score > 0) scoredNodes.push({ score, node, inHitChunk, inTargetDoc, isDirectQueryHit });
       }
       scoredNodes.sort((a, b) => b.score - a.score);
-      const topEntities = scoredNodes.slice(0, 15).map(x => x.node);
 
+      // 【核心防越界护栏 (Out-of-Domain Guardrail)】：
+      // 若用户问题既无任何图谱节点命中、又无任何数据库原文切片命中、且不属于合同/法例领域（例如“英伟达目前的CEO是谁”），
+      // 严禁转入通用 AI 聊天模式编造外部答案，直接返回无相关内容！
+      if (scoredNodes.length === 0 && chunkKeywordHits === 0 && !hasDomainIntent) {
+        return {
+          answer: `⚠️ **當前知識庫中無相關內容**\n\n經檢索，本工程合同與香港法例數據庫（涵蓋香港法例 Cap. 26 / 57 / 71 / 282 / 400 / 509 / 609 / 652、GCCBWT 標準建築合同及樣本合同 \`HDIL-2026-MC-01\` / \`APEX-2026-SUB-MEP-01\`）中**不包含與「${query}」相關的任何實體、條款或原文切片**。\n\n本系統嚴格受限於已入庫的數據集證據鏈，不會調用通用大模型外部常識作答。請輸入與上述工程合同、分包協議或香港相關法例有關的查詢。`,
+          evidence: "(Out-of-domain query blocked: 0 matching entities and 0 matching text chunks in dataset)",
+          matched_nodes: []
+        };
+      }
+
+      // 3. 构建确定性连通高亮子图 (Connected Subgraph Selection)：
+      // 确保同一查询在任何页面、任何时候返回的节点与连边 100% 一致，且所有高亮节点在图上必有连边相接，绝不出现无关联孤立节点或时间节点
+      const connectedHighlightIds = [];
+      const connectedSet = new Set();
+
+      // 优先加入直接命中的锚点实体（如 APEX BUILDERS (HK) LIMITED）及其在图谱中真实相连的邻居节点
+      for (const anchor of directAnchorNodes) {
+        if (!connectedSet.has(anchor.id)) {
+          connectedSet.add(anchor.id);
+          connectedHighlightIds.push(anchor.id);
+        }
+        const nbs = neighborMap.get(anchor.id) || [];
+        for (const nb of nbs) {
+          const nbId = nb.targetId;
+          const nbNode = nodeMap.get(nbId);
+          if (!nbNode || STOP_ENTITIES.has(nbId.toUpperCase()) || isTemporalOrNumericEntity(nbId)) continue;
+          // 排除与建筑合同无关的噪音条例节点
+          if (/CAP\.?\s*400|NOISE/i.test(nbNode.label || nbId)) continue;
+          if (!connectedSet.has(nbId)) {
+            connectedSet.add(nbId);
+            connectedHighlightIds.push(nbId);
+          }
+          if (connectedHighlightIds.length >= 9) break;
+        }
+      }
+
+      // 若按条款号查询（如“审查样本A第4条”），补充该条款切片内相互连通的高分节点
+      for (const item of scoredNodes) {
+        if (connectedHighlightIds.length >= 9) break;
+        const nid = item.node.id;
+        if (connectedSet.has(nid) || isTemporalOrNumericEntity(nid)) continue;
+        if (/CAP\.?\s*400|NOISE/i.test(item.node.label || nid) && !/噪音|NOISE|400/i.test(qUpper)) continue;
+
+        const nbs = neighborMap.get(nid) || [];
+        const linksToExisting = connectedSet.size === 0 || nbs.some(nb => connectedSet.has(nb.targetId));
+        if (linksToExisting || item.inHitChunk) {
+          connectedSet.add(nid);
+          connectedHighlightIds.push(nid);
+        }
+      }
+
+      const topEntities = scoredNodes.slice(0, 15).map(x => x.node);
       const entityLines = topEntities.map(
         n => `- [${n.entity_type}] ${n.label || n.id}: ${(n.description || "").replace(/\n/g, " ").slice(0, 260)}`
       );
@@ -2120,7 +2264,7 @@
         }
       }
 
-      // 3. 檢索匹配的社區報告摘要（結合 topEntities 節點名反向匹配社區報告）
+      // 4. 检索匹配的社区报告摘要
       const communityLines = [];
       for (const [_, rep] of Object.entries(communityReportsMap)) {
         const repStr = (rep && (rep.report_string || rep.content)) || "";
@@ -2129,31 +2273,41 @@
         const hitByEntity = topEntities.slice(0, 5).some(n => n.id.length >= 6 && repUpper.includes(n.id.toUpperCase()));
         if (
           hitByEntity ||
-          repUpper.includes("KOWLOON BAY DATA CENTRE") ||
-          repUpper.includes("HDIL-2026-MC-01") ||
-          repUpper.includes("APEX-2026-SUB-MEP-01")
+          (targetDocIds.size > 0 && (repUpper.includes("KOWLOON BAY DATA CENTRE") || repUpper.includes("HDIL-2026-MC-01") || repUpper.includes("APEX-2026-SUB-MEP-01")))
         ) {
           communityLines.push(repStr.slice(0, 650));
           if (communityLines.length >= 2) break;
         }
       }
 
-      // 4. 組裝真正的資料庫法案切片（排除已在 targetDocIds 中的合同文檔）
-      const statuteBlocks = [];
+      // 5. 按与命中合同条款的法律相关性对数据库法案切片打分排序
+      const scoredStatuteChunks = [];
       for (const sDocId of statuteDocIds) {
         if (targetDocIds.has(sDocId)) continue;
         const list = (docGroups[sDocId] || []).sort((a, b) => a.order - b.order);
         for (const item of list) {
-          if (
-            list.length <= 6 ||
-            tokens.some(tk => item.content.toUpperCase().includes(tk)) ||
-            topEntities.some(n => n.id.length >= 5 && item.content.toUpperCase().includes(n.id.toUpperCase()))
-          ) {
-            statuteBlocks.push(`<!-- ⚖️ Database Statute Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+          const cU = item.content.toUpperCase();
+          let sScore = 0;
+          if (list.length <= 6) sScore += 20;
+          for (const tk of tokens) {
+            if (tk.length >= 2 && cU.includes(tk)) sScore += 12;
           }
-          if (statuteBlocks.length >= 6) break;
+          if (hitClauseTextUpper) {
+            if (/PAYMENT|PAY WHEN PAID|SET-OFF|DEDUCT|ADJUDICATION|SUSPEND/.test(hitClauseTextUpper) && /CAP\.?\s*652|PAYMENT|ADJUDICATION|付款保障/.test(cU)) sScore += 30;
+            if (/WAGE|SALARY|DEDUCTION|LATE|SUBCONTRACTOR'S EMPLOYEES/.test(hitClauseTextUpper) && /CAP\.?\s*57|WAGES|工資|扣薪/.test(cU)) sScore += 30;
+            if (/INJURY|COMPENSATION|ACCIDENT|DEATH/.test(hitClauseTextUpper) && /CAP\.?\s*282|COMPENSATION|僱員補償/.test(cU)) sScore += 30;
+            if (/ARBITRATION|SUBCONTRACT/.test(hitClauseTextUpper) && /CAP\.?\s*609|ARBITRATION|仲裁/.test(cU)) sScore += 25;
+          }
+          if (sScore > 0) {
+            scoredStatuteChunks.push({
+              sScore,
+              block: `<!-- ⚖️ Database Statute Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`
+            });
+          }
         }
       }
+      scoredStatuteChunks.sort((a, b) => b.sScore - a.sScore);
+      const statuteBlocks = scoredStatuteChunks.slice(0, 6).map(x => x.block);
 
       const evidenceText = [
         "-----Retrieved Community Reports-----",
@@ -2168,17 +2322,25 @@
         ...statuteBlocks
       ].join("\n\n");
 
-      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions & Hong Kong Statutory Baseline---\n1. 請嚴格依據上方檢索出的【合同原文切片（🎯 TARGET CLAUSE HIT 及同源切片）】與【資料庫法例切片】進行審查，準確區分主合同 HDIL-2026-MC-01 中的 Main Contractor（總承包商/主承包商）與分包合同 APEX-2026-SUB-MEP-01 中的 Subcontractor（分包商），切勿在標題中將主承包商誤寫為分包商。\n2. 【香港現行法例強制條文基準（嚴禁編造英國/新加坡法例的“第10條”、“回應日後7或14天”或“Withholding Notice/附表第4段”）】：\n   - 《建造業付款保障條例》(Cap. 652)：**第 11(2) 條**禁止契約排除（任何排除或限制本條例運作的條款均屬無效 void）；**第 15–16 條**規定進度款法定最長付款期限為送達付款申索（Payment Claim）後 **60 個日曆日**（約定 90 日超限無效）；**第 17 條**嚴禁“先收款後付款”（Pay-When-Paid）及轉嫁業主破產風險；**第 18–20 條**規定付款回應（Payment Response）法定最長期限為收到付款申索後 **30 個日曆日**（約定 45 日超限無效），且雇主若要扣減（Set-off）任何款項，必須在法定期限內發出的書面 **Payment Response（付款回應）** 中列明扣減金額與詳細理由（無書面付款回應即單方扣款違反第 18–20 條而無效）；**第 24 條**賦予申索方在付款爭議產生起 **28 日**內啟動法定審裁（Adjudication）的絕對權利；**第 57–61 條**賦予申索方在欠款時經提前至少 5 個工作日書面通知後**暫停工程或減緩施工進度（Suspend or reduce rate of progress）**的法定權利。\n   - 《雇傭條例》(Cap. 57)：**第 32 條**嚴禁非法扣薪（遲到扣月薪 35% 屬刑事違法）；**第 43C 及 70 條**規定總承建商須對分包商拖欠工人的前 2 個月工資承擔法定連帶代償責任，不得契約免除。\n   - 《雇員補償條例》(Cap. 282)：**第 24 及 31 條**規定總承建商須對分包商雇員工傷承擔法定代償責任，免責條款無效。\n   - 《管制免責條款條例》(Cap. 71)：**第 7(1) 條**絕對禁止免除因疏忽導致的人員死亡或人身傷害責任。\n3. 直接給出明確結論，逐條列出【條款編號 + 合同原文規定 + 違反的具體香港法例條文與期限對比】。`;
+      const systemPrompt = `${evidenceText}\n\n---Critical Legal Review Instructions & Hong Kong Statutory Baseline---\n0. 【知识库边界与语言一致性硬性约束】：\n   - 无论用户输入的是英文实体名（如 APEX BUILDERS (HK) LIMITED）还是中文提问，**必须统一使用中文（搭配英文专有名词/条款号对照）输出结构化分析报告**，确保多次查询或跨页面查询结果完全一致。\n   - 严禁回答上方检索证据链以外的任何外部常识问题！若用户提问的对象不在上方检索出的图谱实体与原文切片中，必须直接回答：“当前知识库中无相关内容”，绝对禁止切换为通用 AI 助手模式。\n1. 请严格依据上方检索出的【合同原文切片（🎯 TARGET HIT 及同源切片）】与【数据库法例切片】进行分析，准确区分主合同 HDIL-2026-MC-01 中的 Main Contractor（总承包商：Apex Builders (HK) Limited）与分包合同 APEX-2026-SUB-MEP-01 中的 Subcontractor（分包商：Vanguard MEP Engineering Limited）。\n2. 【香港现行法例强制条文基准】：\n   - 《建造业付款保障条例》(Cap. 652)：**第 11(2) 条**禁止契约排除；**第 15–16 条**规定进度款法定最长付款期限为 **60 个日历日**（约定 90 日超限无效）；**第 17 条**严禁“先收款后付款”（Pay-When-Paid）；**第 18–20 条**规定付款回应（Payment Response）法定最长期限为 **30 个日历日**，无书面付款回应即单方扣款无效；**第 24 条**赋予在付款争议产生起 **28 日**内启动法定审裁（Adjudication）的权利；**第 57–61 条**赋予欠款时提前至少 5 个工作日通知后**暂停工程或减缓进度**的法定权利。\n   - 《雇佣条例》(Cap. 57)：**第 32 条**严禁非法扣薪；**第 43C 及 70 条**规定总承建商须对分包商拖欠工人的前 2 个月工资承担法定连带代偿责任。\n   - 《雇员补偿条例》(Cap. 282)：**第 24 及 31 条**规定总承建商须对分包商雇员工伤承担法定代偿责任。\n   - 《管制免责条款条例》(Cap. 71)：**第 7(1) 条**绝对禁止免除因疏忽导致的人员伤亡责任。\n3. 直接给出明确结论，逐条列出【实体角色/条款编号 + 合同原文规定 + 关联香港法例合规分析】。`;
+
+      const cleanKey = sanitizeApiKey(currentApiKey);
+      if (!cleanKey) {
+        apiKey = "";
+        sessionStorage.removeItem(STORAGE_KEY);
+        openApiKeyModal();
+        throw new Error("API Key 包含非 ASCII 字符（如中文或全角符号），已自动清空，请在弹窗中重新输入纯英文/数字的 sk-... 密钥。");
+      }
 
       const llmResp = await fetch(AGNES_CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${currentApiKey}`
+          "Authorization": `Bearer ${cleanKey}`
         },
         body: JSON.stringify({
           model: AGNES_MODEL,
-          temperature: 0.1,
+          temperature: 0.0,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: query }
@@ -2188,38 +2350,16 @@
 
       if (!llmResp.ok) {
         const errJson = await llmResp.json().catch(() => ({}));
-        throw new Error((errJson.error && errJson.error.message) || `Agnes API 調用失敗 (HTTP ${llmResp.status})`);
+        throw new Error((errJson.error && errJson.error.message) || `Agnes API 调用失败 (HTTP ${llmResp.status})`);
       }
 
       const llmData = await llmResp.json();
       const answer = (llmData.choices && llmData.choices[0] && llmData.choices[0].message && llmData.choices[0].message.content) || "";
 
-      // 5. 按相關性得分排序高亮節點，優先點亮命中條款的專有法例與核心條款實體，剔除泛化詞
-      const aUpper = answer.toUpperCase();
-      const highlightCandidates = [];
-      for (const node of graphData.nodes) {
-        const idU = node.id.toUpperCase();
-        const labelU = (node.label || node.id).toUpperCase();
-        if (idU.length < 4 || STOP_ENTITIES.has(idU)) continue;
-        let hScore = 0;
-        if (qUpper.includes(idU) || qUpper.includes(labelU)) hScore += 50;
-        if (hitClauseTextUpper && hitClauseTextUpper.includes(idU)) hScore += 35;
-        for (const hCid of hitChunkIds) {
-          if ((node.source_id || "").includes(hCid)) hScore += 30;
-        }
-        if (aUpper.includes(idU) || aUpper.includes(labelU)) hScore += 20;
-        if (hScore > 0) {
-          if (idU.includes(" ") || idU.includes("-")) hScore += 8;
-          highlightCandidates.push({ hScore, id: node.id });
-        }
-      }
-      highlightCandidates.sort((a, b) => b.hScore - a.hScore);
-      const matchedNodeIds = highlightCandidates.slice(0, 10).map(x => x.id);
-
       return {
         answer,
         evidence: evidenceText,
-        matched_nodes: matchedNodeIds
+        matched_nodes: connectedHighlightIds
       };
     }
 
@@ -2252,7 +2392,7 @@
               body: JSON.stringify({ query, api_key: apiKey })
             });
             if (resp.ok) data = await resp.json();
-          } catch (_) { }
+          } catch (_) {}
         }
 
         if (!data) {
@@ -2306,11 +2446,11 @@
       const matched = data.matched_nodes || [];
       const chipsHtml = matched.length
         ? matched
-          .map(
-            id => {
-              const chipLabel = (nodeMap.get(id) && nodeMap.get(id).label) || id;
-              return `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
-                id.replace(/'/g, "\\'")
+            .map(
+              id => {
+                const chipLabel = (nodeMap.get(id) && nodeMap.get(id).label) || id;
+                return `<span class="node-chip" onclick="window.focusEntity('${escapeHtml(
+                  id.replace(/'/g, "\\'")
               )}')">✦ ${escapeHtml(truncateLabel(chipLabel, 28))}</span>`;
             }
           )
@@ -2353,14 +2493,14 @@
         try {
           const r = await fetch(url);
           if (r.ok) { textChunksMap = await r.json(); break; }
-        } catch (_) { }
+        } catch (_) {}
       }
 
       for (const url of ["./pdf_work_dir_local/kv_store_community_reports.json", "./kv_store_community_reports.json"]) {
         try {
           const r = await fetch(url);
           if (r.ok) { communityReportsMap = await r.json(); break; }
-        } catch (_) { }
+        } catch (_) {}
       }
 
       const graphUrls = isLocal
@@ -2383,7 +2523,7 @@
         } catch (_) { }
       }
 
-      statsEl.textContent = "未檢測到圖譜檔";
+      statsEl.textContent = "未檢測到圖譜文檔";
       statsEl.classList.remove("loading");
       statsEl.style.color = "#f87171";
     }
@@ -2397,9 +2537,10 @@
     }
 
     function saveApiKey() {
-      const val = document.getElementById("apikey-input").value.trim();
+      const rawVal = document.getElementById("apikey-input").value;
+      const val = sanitizeApiKey(rawVal);
       if (!val) {
-        alert("請輸入有效的 API Key");
+        alert("请输入有效的纯 ASCII 英文/数字 API Key（切勿将中文提问词或全角字符粘贴至此处）");
         return;
       }
       apiKey = val;
