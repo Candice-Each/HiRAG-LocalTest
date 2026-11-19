@@ -1,0 +1,1157 @@
+{
+  "summary": {
+    "total_chunks": 1674,
+    "detected_doc_tags": [
+      "APEX-2026-SUB-MEP-01",
+      "CAP. 26",
+      "CAP. 282",
+      "CAP. 400",
+      "CAP. 509",
+      "CAP. 57",
+      "CAP. 609",
+      "CAP. 652",
+      "CAP. 71",
+      "GCCBWT",
+      "HDIL-2026-MC-01"
+    ],
+    "merged_synonyms_count": 162,
+    "pruned_noise_orphans_count": 71,
+    "updated_nodes_count": 4727,
+    "added_edges_count": 3175,
+    "final_nodes_count": 9885
+  },
+  "merged_synonyms": [
+    {
+      "merged_from": "DISPUTE RESOLUTION MECHANISMS",
+      "merged_into": "DISPUTE RESOLUTION MECHANISM"
+    },
+    {
+      "merged_from": "SUB-CONTRACTOR",
+      "merged_into": "SUBCONTRACTOR"
+    },
+    {
+      "merged_from": "SUB-CONTRACTORS",
+      "merged_into": "SUBCONTRACTOR"
+    },
+    {
+      "merged_from": "TENDERERS",
+      "merged_into": "TENDERER"
+    },
+    {
+      "merged_from": "NOMINATED SUB-CONTRACTORS",
+      "merged_into": "NOMINATED SUB-CONTRACTOR"
+    },
+    {
+      "merged_from": "NOMINATED SUBCONTRACTORS",
+      "merged_into": "NOMINATED SUB-CONTRACTOR"
+    },
+    {
+      "merged_from": "COMPLAINT CHITS",
+      "merged_into": "COMPLAINT CHIT"
+    },
+    {
+      "merged_from": "GENERAL HOLIDAYS",
+      "merged_into": "GENERAL HOLIDAY"
+    },
+    {
+      "merged_from": "MAINTENANCE PERIODS",
+      "merged_into": "MAINTENANCE PERIOD"
+    },
+    {
+      "merged_from": "THE LAWS OF HONG KONG",
+      "merged_into": "LAWS OF HONG KONG"
+    },
+    {
+      "merged_from": "VARIATIONS",
+      "merged_into": "VARIATION"
+    },
+    {
+      "merged_from": "DESIGNS",
+      "merged_into": "DESIGN"
+    },
+    {
+      "merged_from": "MATERIALS",
+      "merged_into": "MATERIAL"
+    },
+    {
+      "merged_from": "THE CONTRACTOR",
+      "merged_into": "CONTRACTOR"
+    },
+    {
+      "merged_from": "ENACTMENTS",
+      "merged_into": "ENACTMENT"
+    },
+    {
+      "merged_from": "REGULATIONS",
+      "merged_into": "REGULATION"
+    },
+    {
+      "merged_from": "THE EMPLOYER",
+      "merged_into": "EMPLOYER"
+    },
+    {
+      "merged_from": "EMPLOYERS",
+      "merged_into": "EMPLOYER"
+    },
+    {
+      "merged_from": "NOTICES",
+      "merged_into": "NOTICE"
+    },
+    {
+      "merged_from": "RECORDS",
+      "merged_into": "RECORD"
+    },
+    {
+      "merged_from": "WORKS ORDERS",
+      "merged_into": "WORKS ORDER"
+    },
+    {
+      "merged_from": "INTERIM PAYMENTS",
+      "merged_into": "INTERIM PAYMENT"
+    },
+    {
+      "merged_from": "ARBITRATORS",
+      "merged_into": "ARBITRATOR"
+    },
+    {
+      "merged_from": "CONSUMER TRANSACTIONS",
+      "merged_into": "CONSUMER TRANSACTION"
+    },
+    {
+      "merged_from": "BUSINESS OPERATIONS",
+      "merged_into": "BUSINESS OPERATION"
+    },
+    {
+      "merged_from": "LEGAL PROVISIONS",
+      "merged_into": "LEGAL PROVISION"
+    },
+    {
+      "merged_from": "THE BUYER",
+      "merged_into": "BUYER"
+    },
+    {
+      "merged_from": "THE SELLER",
+      "merged_into": "SELLER"
+    },
+    {
+      "merged_from": "OCCUPATIONAL DISEASES",
+      "merged_into": "OCCUPATIONAL DISEASE"
+    },
+    {
+      "merged_from": "THE CHINESE MEDICINE HOSPITAL OF HONG KONG",
+      "merged_into": "CHINESE MEDICINE HOSPITAL OF HONG KONG"
+    },
+    {
+      "merged_from": "THE INSURANCE ORDINANCE (CAP. 41)",
+      "merged_into": "INSURANCE ORDINANCE (CAP. 41)"
+    },
+    {
+      "merged_from": "FAMILY MEMBERS",
+      "merged_into": "FAMILY MEMBER"
+    },
+    {
+      "merged_from": "PERIODICAL PAYMENTS",
+      "merged_into": "PERIODICAL PAYMENT"
+    },
+    {
+      "merged_from": "THE EMPLOYEES' COMPENSATION (AMENDMENT) ORDINANCE 1995",
+      "merged_into": "EMPLOYEES' COMPENSATION (AMENDMENT) ORDINANCE 1995"
+    },
+    {
+      "merged_from": "ACCIDENTS",
+      "merged_into": "ACCIDENT"
+    },
+    {
+      "merged_from": "CHINESE MEDICINE PRACTITIONERS",
+      "merged_into": "CHINESE MEDICINE PRACTITIONER"
+    },
+    {
+      "merged_from": "WORKPLACE ACCIDENTS",
+      "merged_into": "WORKPLACE ACCIDENT"
+    },
+    {
+      "merged_from": "COMPENSATION CLAIMS",
+      "merged_into": "COMPENSATION CLAIM"
+    },
+    {
+      "merged_from": "MEDICAL EXAMINATIONS",
+      "merged_into": "MEDICAL EXAMINATION"
+    },
+    {
+      "merged_from": "OFFENCES",
+      "merged_into": "OFFENCE"
+    },
+    {
+      "merged_from": "A FINE AT LEVEL 6",
+      "merged_into": "FINE AT LEVEL 6"
+    },
+    {
+      "merged_from": "THE DISTRICT COURT ORDINANCE (CAP. 336)",
+      "merged_into": "DISTRICT COURT ORDINANCE (CAP. 336)"
+    },
+    {
+      "merged_from": "APPEALS",
+      "merged_into": "APPEAL"
+    },
+    {
+      "merged_from": "NOTIFICATION REQUIREMENTS",
+      "merged_into": "NOTIFICATION REQUIREMENT"
+    },
+    {
+      "merged_from": "LEGAL PROCEDURES",
+      "merged_into": "LEGAL PROCEDURE"
+    },
+    {
+      "merged_from": "THE MERCHANT SHIPPING ACT 1894",
+      "merged_into": "MERCHANT SHIPPING ACT 1894"
+    },
+    {
+      "merged_from": "HONG KONG SHIPS",
+      "merged_into": "HONG KONG SHIP"
+    },
+    {
+      "merged_from": "SEAFARERS",
+      "merged_into": "SEAFARER"
+    },
+    {
+      "merged_from": "COMPENSATION FOR OCCUPATIONAL DISEASES",
+      "merged_into": "COMPENSATION FOR OCCUPATIONAL DISEASE"
+    },
+    {
+      "merged_from": "THE COURT",
+      "merged_into": "COURT"
+    },
+    {
+      "merged_from": "SURGICAL APPLIANCES",
+      "merged_into": "SURGICAL APPLIANCE"
+    },
+    {
+      "merged_from": "THE COMPANY",
+      "merged_into": "COMPANY"
+    },
+    {
+      "merged_from": "THE COMPANIES ORDINANCE (CAP. 622)",
+      "merged_into": "COMPANIES ORDINANCE (CAP. 622)"
+    },
+    {
+      "merged_from": "THE CHIEF EXECUTIVE IN COUNCIL",
+      "merged_into": "CHIEF EXECUTIVE IN COUNCIL"
+    },
+    {
+      "merged_from": "THE COMMISSIONER",
+      "merged_into": "COMMISSIONER"
+    },
+    {
+      "merged_from": "DOCUMENTS",
+      "merged_into": "DOCUMENT"
+    },
+    {
+      "merged_from": "THE ORDINANCE",
+      "merged_into": "ORDINANCE"
+    },
+    {
+      "merged_from": "CONTRAVENTIONS",
+      "merged_into": "CONTRAVENTION"
+    },
+    {
+      "merged_from": "THE WORKMEN'S COMPENSATION ORDINANCE",
+      "merged_into": "WORKMEN'S COMPENSATION ORDINANCE"
+    },
+    {
+      "merged_from": "PUBLIC PLACES",
+      "merged_into": "PUBLIC PLACE"
+    },
+    {
+      "merged_from": "FUNCTIONS",
+      "merged_into": "FUNCTION"
+    },
+    {
+      "merged_from": "CONSTRUCTION SITES",
+      "merged_into": "CONSTRUCTION SITE"
+    },
+    {
+      "merged_from": "NOISE REGULATIONS",
+      "merged_into": "NOISE REGULATION"
+    },
+    {
+      "merged_from": "NOISE ABATEMENT NOTICES",
+      "merged_into": "NOISE ABATEMENT NOTICE"
+    },
+    {
+      "merged_from": "THE AUTHORITY",
+      "merged_into": "AUTHORITY"
+    },
+    {
+      "merged_from": "INTRUDER ALARM SYSTEMS",
+      "merged_into": "INTRUDER ALARM SYSTEM"
+    },
+    {
+      "merged_from": "A FINE OF $200,000",
+      "merged_into": "FINE OF $200,000"
+    },
+    {
+      "merged_from": "\"任何人由於生意或業務而輸入、製造或供應,或為供應而要約或展示,任何為施行本部而訂明的產品\"",
+      "merged_into": "任何人由於生意或業務而輸入、製造或供應,或為供應而要約或展示,任何為施行本部而訂明的產品"
+    },
+    {
+      "merged_from": "\"監督可規定交出產品以作測試\"",
+      "merged_into": "監督可規定交出產品以作測試"
+    },
+    {
+      "merged_from": "PUBLIC HOLIDAYS",
+      "merged_into": "PUBLIC HOLIDAY"
+    },
+    {
+      "merged_from": "APPEAL PROCEDURES",
+      "merged_into": "APPEAL PROCEDURE"
+    },
+    {
+      "merged_from": "THE SECRETARY",
+      "merged_into": "SECRETARY"
+    },
+    {
+      "merged_from": "THE BUILDING MANAGEMENT ORDINANCE (CAP. 344)",
+      "merged_into": "BUILDING MANAGEMENT ORDINANCE (CAP. 344)"
+    },
+    {
+      "merged_from": "THE MAGISTRATES ORDINANCE (CAP. 227)",
+      "merged_into": "MAGISTRATES ORDINANCE (CAP. 227)"
+    },
+    {
+      "merged_from": "THE CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE",
+      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE"
+    },
+    {
+      "merged_from": "THE CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (CONTINUED)",
+      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (CONTINUED)"
+    },
+    {
+      "merged_from": "THE CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (FINAL)",
+      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (FINAL)"
+    },
+    {
+      "merged_from": "DANGEROUS OCCURRENCES",
+      "merged_into": "DANGEROUS OCCURRENCE"
+    },
+    {
+      "merged_from": "OCCUPIERS",
+      "merged_into": "OCCUPIER"
+    },
+    {
+      "merged_from": "SUBSTANCES",
+      "merged_into": "SUBSTANCE"
+    },
+    {
+      "merged_from": "INDUSTRIAL UNDERTAKINGS",
+      "merged_into": "INDUSTRIAL UNDERTAKING"
+    },
+    {
+      "merged_from": "WORKPLACE INSPECTIONS",
+      "merged_into": "WORKPLACE INSPECTION"
+    },
+    {
+      "merged_from": "PUBLIC OFFICERS",
+      "merged_into": "PUBLIC OFFICER"
+    },
+    {
+      "merged_from": "A PUBLIC OFFICER",
+      "merged_into": "PUBLIC OFFICER"
+    },
+    {
+      "merged_from": "EMPLOYEES",
+      "merged_into": "EMPLOYEE"
+    },
+    {
+      "merged_from": "AN EMPLOYEE",
+      "merged_into": "EMPLOYEE"
+    },
+    {
+      "merged_from": "WORKPLACES",
+      "merged_into": "WORKPLACE"
+    },
+    {
+      "merged_from": "OCCUPATIONAL SAFETY OFFICERS",
+      "merged_into": "OCCUPATIONAL SAFETY OFFICER"
+    },
+    {
+      "merged_from": "THE COLLAPSE OR FAILURE OF A LIFTING APPLIANCE (EXCEPT THE BREAKAGE OF CHAIN OR ROPE SLINGS)",
+      "merged_into": "COLLAPSE OR FAILURE OF A LIFTING APPLIANCE (EXCEPT THE BREAKAGE OF CHAIN OR ROPE SLINGS)"
+    },
+    {
+      "merged_from": "THE RELEVANT DATE",
+      "merged_into": "RELEVANT DATE"
+    },
+    {
+      "merged_from": "HOLIDAYS",
+      "merged_into": "HOLIDAY"
+    },
+    {
+      "merged_from": "LOCK-OUTS",
+      "merged_into": "LOCK-OUT"
+    },
+    {
+      "merged_from": "EMPLOYER-FUNDED MPFS BENEFITS",
+      "merged_into": "EMPLOYER-FUNDED MPFS BENEFIT"
+    },
+    {
+      "merged_from": "EMPLOYER-FUNDED ORS BENEFITS",
+      "merged_into": "EMPLOYER-FUNDED ORS BENEFIT"
+    },
+    {
+      "merged_from": "STRIKES",
+      "merged_into": "STRIKE"
+    },
+    {
+      "merged_from": "STATUTORY HOLIDAYS",
+      "merged_into": "STATUTORY HOLIDAY"
+    },
+    {
+      "merged_from": "ORS BENEFITS",
+      "merged_into": "ORS BENEFIT"
+    },
+    {
+      "merged_from": "REST DAYS",
+      "merged_into": "REST DAY"
+    },
+    {
+      "merged_from": "STATUTORY LAWS",
+      "merged_into": "STATUTORY LAW"
+    },
+    {
+      "merged_from": "NORMAL WORKING DAYS",
+      "merged_into": "NORMAL WORKING DAY"
+    },
+    {
+      "merged_from": "A PREGNANT EMPLOYEE",
+      "merged_into": "PREGNANT EMPLOYEE"
+    },
+    {
+      "merged_from": "FEMALE EMPLOYEES",
+      "merged_into": "FEMALE EMPLOYEE"
+    },
+    {
+      "merged_from": "EMPLOYMENT REGULATIONS",
+      "merged_into": "EMPLOYMENT REGULATION"
+    },
+    {
+      "merged_from": "WORKERS",
+      "merged_into": "WORKER"
+    },
+    {
+      "merged_from": "THE BANKING ORDINANCE (CAP. 155)",
+      "merged_into": "BANKING ORDINANCE (CAP. 155)"
+    },
+    {
+      "merged_from": "EMPLOYER OPENING SHOPS FOR SALE OF COMMODITIES TO EMPLOYEES",
+      "merged_into": "EMPLOYER OPENING SHOPS FOR SALE OF COMMODITIES TO EMPLOYEE"
+    },
+    {
+      "merged_from": "SEVERANCE PAYMENTS",
+      "merged_into": "SEVERANCE PAYMENT"
+    },
+    {
+      "merged_from": "LEGAL OBLIGATIONS",
+      "merged_into": "LEGAL OBLIGATION"
+    },
+    {
+      "merged_from": "LONG SERVICE PAYMENTS",
+      "merged_into": "LONG SERVICE PAYMENT"
+    },
+    {
+      "merged_from": "THE EIGHTH SCHEDULE",
+      "merged_into": "EIGHTH SCHEDULE"
+    },
+    {
+      "merged_from": "REINSTATEMENT ORDERS",
+      "merged_into": "REINSTATEMENT ORDER"
+    },
+    {
+      "merged_from": "RE-ENGAGEMENT ORDERS",
+      "merged_into": "RE-ENGAGEMENT ORDER"
+    },
+    {
+      "merged_from": "REINSTATEMENT OR RE-ENGAGEMENT ORDERS",
+      "merged_into": "REINSTATEMENT OR RE-ENGAGEMENT ORDER"
+    },
+    {
+      "merged_from": "EMPLOYMENT DISPUTES",
+      "merged_into": "EMPLOYMENT DISPUTE"
+    },
+    {
+      "merged_from": "THE EMPLOYED PERSON",
+      "merged_into": "EMPLOYED PERSON"
+    },
+    {
+      "merged_from": "EMPLOYEE BENEFITS",
+      "merged_into": "EMPLOYEE BENEFIT"
+    },
+    {
+      "merged_from": "SUPERIOR NOMINATED SUB-CONTRACTOR",
+      "merged_into": "SUPERIOR NOMINATED SUB-CONTRACTORS"
+    },
+    {
+      "merged_from": "CLAIMANTS",
+      "merged_into": "CLAIMANT"
+    },
+    {
+      "merged_from": "CONTRACT TERMS",
+      "merged_into": "CONTRACT TERM"
+    },
+    {
+      "merged_from": "EMPLOYMENT RECORDS",
+      "merged_into": "EMPLOYMENT RECORD"
+    },
+    {
+      "merged_from": "SPECIFIED EMPLOYEES",
+      "merged_into": "SPECIFIED EMPLOYEE"
+    },
+    {
+      "merged_from": "THE PROVISIONS",
+      "merged_into": "PROVISION"
+    },
+    {
+      "merged_from": "THE EMPLOYMENT (AMENDMENT) ORDINANCE 2007",
+      "merged_into": "EMPLOYMENT (AMENDMENT) ORDINANCE 2007"
+    },
+    {
+      "merged_from": "THE 2020 AMENDMENT ORDINANCE",
+      "merged_into": "2020 AMENDMENT ORDINANCE"
+    },
+    {
+      "merged_from": "A PARTY",
+      "merged_into": "PARTY"
+    },
+    {
+      "merged_from": "MAINLAND AWARDS",
+      "merged_into": "MAINLAND AWARD"
+    },
+    {
+      "merged_from": "COURT PROCEDURES",
+      "merged_into": "COURT PROCEDURE"
+    },
+    {
+      "merged_from": "CONVENTION AWARDS",
+      "merged_into": "CONVENTION AWARD"
+    },
+    {
+      "merged_from": "THE NEW YORK CONVENTION",
+      "merged_into": "NEW YORK CONVENTION"
+    },
+    {
+      "merged_from": "MACAO AWARDS",
+      "merged_into": "MACAO AWARD"
+    },
+    {
+      "merged_from": "INTERIM MEASURES",
+      "merged_into": "INTERIM MEASURE"
+    },
+    {
+      "merged_from": "THE OLD ORDINANCE",
+      "merged_into": "OLD ORDINANCE"
+    },
+    {
+      "merged_from": "THE UNCITRAL MODEL LAW",
+      "merged_into": "UNCITRAL MODEL LAW"
+    },
+    {
+      "merged_from": "PARTIES",
+      "merged_into": "THE PARTIES"
+    },
+    {
+      "merged_from": "THE ARBITRATION PROCEEDINGS",
+      "merged_into": "ARBITRATION PROCEEDINGS"
+    },
+    {
+      "merged_from": "THE TRADE FACILITATION COMMISSION示范法",
+      "merged_into": "TRADE FACILITATION COMMISSION示范法"
+    },
+    {
+      "merged_from": "EXPERT REPORTS",
+      "merged_into": "EXPERT REPORT"
+    },
+    {
+      "merged_from": "EXPERTS",
+      "merged_into": "EXPERT"
+    },
+    {
+      "merged_from": "CIVIL LAW PROCEDURES",
+      "merged_into": "CIVIL LAW PROCEDURE"
+    },
+    {
+      "merged_from": "DISPUTE RESOLUTION PROCEDURES",
+      "merged_into": "DISPUTE RESOLUTION PROCEDURE"
+    },
+    {
+      "merged_from": "LAWYERS",
+      "merged_into": "LAWYER"
+    },
+    {
+      "merged_from": "THE LEGAL PRACTITIONERS ORDINANCE (CAP. 159)",
+      "merged_into": "LEGAL PRACTITIONERS ORDINANCE (CAP. 159)"
+    },
+    {
+      "merged_from": "ARBITRAL AWARDS",
+      "merged_into": "ARBITRAL AWARD"
+    },
+    {
+      "merged_from": "THE ARBITRATION TRIBUNAL",
+      "merged_into": "ARBITRATION TRIBUNAL"
+    },
+    {
+      "merged_from": "THE HIGH COURT ORDINANCE (CAP. 4)",
+      "merged_into": "HIGH COURT ORDINANCE (CAP. 4)"
+    },
+    {
+      "merged_from": "THIRD PARTY FUNDERS",
+      "merged_into": "THIRD PARTY FUNDER"
+    },
+    {
+      "merged_from": "ORFS AGREEMENTS",
+      "merged_into": "ORFS AGREEMENT"
+    },
+    {
+      "merged_from": "IPR DISPUTES",
+      "merged_into": "IPR DISPUTE"
+    },
+    {
+      "merged_from": "THE ARBITRAL TRIBUNAL",
+      "merged_into": "ARBITRAL TRIBUNAL"
+    },
+    {
+      "merged_from": "HEARINGS",
+      "merged_into": "HEARING"
+    },
+    {
+      "merged_from": "ARBITRATION PROCEDURES",
+      "merged_into": "ARBITRATION PROCEDURE"
+    },
+    {
+      "merged_from": "SPECIFIED STRUCTURES",
+      "merged_into": "SPECIFIED STRUCTURE"
+    },
+    {
+      "merged_from": "PROGRESS PAYMENTS",
+      "merged_into": "PROGRESS PAYMENT"
+    },
+    {
+      "merged_from": "THE BUILDING ORDINANCE (CAP. 123)",
+      "merged_into": "BUILDING ORDINANCE (CAP. 123)"
+    },
+    {
+      "merged_from": "THE EMPLOYMENT ORDINANCE (CAP. 57)",
+      "merged_into": "EMPLOYMENT ORDINANCE (CAP. 57)"
+    },
+    {
+      "merged_from": "CONSTRUCTION CONTRACTS",
+      "merged_into": "CONSTRUCTION CONTRACT"
+    },
+    {
+      "merged_from": "CONDITIONAL PAYMENT PROVISIONS",
+      "merged_into": "CONDITIONAL PAYMENT PROVISION"
+    },
+    {
+      "merged_from": "A CLAIMING PARTY",
+      "merged_into": "CLAIMING PARTY"
+    },
+    {
+      "merged_from": "THE CONSTRUCTION INDUSTRY DEVELOPMENT BOARD (CIDB)",
+      "merged_into": "CONSTRUCTION INDUSTRY DEVELOPMENT BOARD (CIDB)"
+    },
+    {
+      "merged_from": "THE SALE OF GOODS ORDINANCE (CAP. 26)",
+      "merged_into": "SALE OF GOODS ORDINANCE (CAP. 26)"
+    },
+    {
+      "merged_from": "ARBITRATION AGREEMENTS",
+      "merged_into": "ARBITRATION AGREEMENT"
+    },
+    {
+      "merged_from": "EMPLOYMENT CONTRACTS",
+      "merged_into": "EMPLOYMENT CONTRACT"
+    }
+  ],
+  "pruned_noise_orphans": [
+    {
+      "pruned_id": "1 DECEMBER 2026",
+      "reason": "temporal_or_date",
+      "description": "This is the commencement date for the works as per the contract agreement."
+    },
+    {
+      "pruned_id": "30 NOVEMBER 2027",
+      "reason": "temporal_or_date",
+      "description": "This is the deadline for practical completion of all works<SEP>with MEP testing and commissioning to be completed no later than 15 July 2027 according to the contract terms.<SEP>[1 DECEMBER 2026] This is the commencement date for the works as per the contract agreement."
+    },
+    {
+      "pruned_id": "1 AUGUST 1896",
+      "reason": "temporal_or_date",
+      "description": "The date when some format changes were made, though specific details are not provided here."
+    },
+    {
+      "pruned_id": "售賣",
+      "reason": "noise_orphan",
+      "description": "售卖包括协商和交易的过程，也涵盖了交付的环节，在此上下文中指货物买卖的基本行为。"
+    },
+    {
+      "pruned_id": "SUBSECTION (17)",
+      "reason": "noise_orphan",
+      "description": "Subsection (17) is a provision that may override or modify the general rules outlined in other sections of the text."
+    },
+    {
+      "pruned_id": "附註",
+      "reason": "noise_orphan",
+      "description": "附注是用于补充解释和提供额外信息的说明文字，在这里涉及到百分率计算的具体比例和其他相关细节。"
+    },
+    {
+      "pruned_id": "1個月",
+      "reason": "temporal_or_date",
+      "description": "1個月表示一个月的期限，用于界定合同性质和续期条件。\n• The maximum interval of one month is mentioned in relation to the frequency of periodic payments, which is a numerical constraint on payment schedules."
+    },
+    {
+      "pruned_id": "24個月",
+      "reason": "temporal_or_date",
+      "description": "A period of 24 months is mentioned in relation to the duration for receiving periodic payments before losing eligibility. This is a numerical constraint on payment periods."
+    },
+    {
+      "pruned_id": "脊醫",
+      "reason": "noise_orphan",
+      "description": "脊醫是专门从事脊椎相关疾病的诊断和治疗的医疗专业人士，通常采用非药物疗法如按摩、牵引等进行治疗。"
+    },
+    {
+      "pruned_id": "病人",
+      "reason": "noise_orphan",
+      "description": "病人是指获得处方药物的人，在文本中多次提及需要显示病人的姓名。"
+    },
+    {
+      "pruned_id": "法庭",
+      "reason": "noise_orphan",
+      "description": "Court is where disputes over medical expense determinations can be resolved through legal means, ensuring the finality and enforceability of the certificates issued by the '处长'.\n• 法庭 means court, which is where legal procedures are conducted and decisions on damages are made."
+    },
+    {
+      "pruned_id": "船舶",
+      "reason": "noise_orphan",
+      "description": "船舶是海员工作的地点，并且可能发生的意外事故通常在此地发生。"
+    },
+    {
+      "pruned_id": "拇指",
+      "reason": "noise_orphan",
+      "description": "Not included in '手指', referring specifically to the thumb as an anatomical feature distinct from other fingers.\n• Refers specifically to the thumb as an anatomical feature distinct from other fingers in discussions about injuries or compensation."
+    },
+    {
+      "pruned_id": "腎炎",
+      "reason": "noise_orphan",
+      "description": "Kidney inflammation is a medical condition that can result from certain occupational exposures and may increase the penalty period for poisoning by 2 years."
+    },
+    {
+      "pruned_id": "10 YEARS",
+      "reason": "temporal_or_date",
+      "description": "A duration of 10 years is mentioned in relation to certain occupations and their associated health risks."
+    },
+    {
+      "pruned_id": "700,390",
+      "reason": "noise_orphan",
+      "description": "This amount refers to a specific monetary value used as basis for calculating specified compensation under Section 8(1)(b)."
+    },
+    {
+      "pruned_id": "47,310",
+      "reason": "noise_orphan",
+      "description": "This amount refers to a specific monetary value used as basis for calculating specified compensation under Section 36C."
+    },
+    {
+      "pruned_id": "21 DAYS",
+      "reason": "temporal_or_date",
+      "description": "21 days is the minimum period from when a notice takes effect until it becomes enforceable after being served on any person."
+    },
+    {
+      "pruned_id": "$200,000",
+      "reason": "noise_orphan",
+      "description": "$200,000是第二次或其后定罪时的固定罚金金额。"
+    },
+    {
+      "pruned_id": "煙霧",
+      "reason": "noise_orphan",
+      "description": "煙霧是指含有有害化学物质的气体悬浮颗粒，通常在职业环境中产生。"
+    },
+    {
+      "pruned_id": "蒸汽",
+      "reason": "noise_orphan",
+      "description": "蒸汽指的是含有所述化学品的气态形式，在职业环境中可能对人体造成危害。"
+    },
+    {
+      "pruned_id": "453",
+      "reason": "noise_orphan",
+      "description": "Cap. 453 refers to the Minor Employment Claims Adjudication Board Ordinance, establishing an organization for resolving employment disputes involving small claims."
+    },
+    {
+      "pruned_id": "SUBSECTION (2A)",
+      "reason": "noise_orphan",
+      "description": "The event related to subsection (2A) involves specifying the date for termination of employment in certain circumstances."
+    },
+    {
+      "pruned_id": "4 APRIL 1965",
+      "reason": "temporal_or_date",
+      "description": "The date 4 April 1965 marks a significant point where certain contracts are exempt from the provisions of section 5(3) as declared by an ordinance."
+    },
+    {
+      "pruned_id": "7天",
+      "reason": "temporal_or_date",
+      "description": "7天表示七天的期限，用于界定通知期的具体长度。"
+    },
+    {
+      "pruned_id": "1971年",
+      "reason": "temporal_or_date",
+      "description": "1971年是具体的修订时间点。"
+    },
+    {
+      "pruned_id": "1984年",
+      "reason": "temporal_or_date",
+      "description": "1984年是具体的修订时间点。"
+    },
+    {
+      "pruned_id": "1987年",
+      "reason": "temporal_or_date",
+      "description": "1987年是具体的修订时间点。"
+    },
+    {
+      "pruned_id": "首",
+      "reason": "noise_orphan",
+      "description": "首表示开始的意思，在这里指试用期内的第一个月。"
+    },
+    {
+      "pruned_id": "7 DAYS",
+      "reason": "temporal_or_date",
+      "description": "7 days is mentioned as the minimum notification period after the first month when one party wishes to terminate the contract without prior conditions."
+    },
+    {
+      "pruned_id": "懷孕",
+      "reason": "noise_orphan",
+      "description": "怀孕是指女性员工的身体状况，需要通过医生证明来确认。"
+    },
+    {
+      "pruned_id": "40 WEEKS",
+      "reason": "temporal_or_date",
+      "description": "40 weeks is a specific period of time used as a condition for female employees to be eligible for paid maternity leave under certain circumstances."
+    },
+    {
+      "pruned_id": "27 FEBRUARY 2015",
+      "reason": "temporal_or_date",
+      "description": "The date, 27 February 2015, is significant as it marks a change in paternity leave entitlements for children born on or after this date."
+    },
+    {
+      "pruned_id": "本條",
+      "reason": "noise_orphan",
+      "description": "本條是指具體規定終止僱傭金的法律或條款。"
+    },
+    {
+      "pruned_id": "年資",
+      "reason": "noise_orphan",
+      "description": "年资是衡量员工在公司工作年限的一个概念，在计算某些福利如退休金时具有重要意义。\n• 年资是衡量员工在公司工作年限的一个概念，在计算某些福利如退休金时具有重要意义，可能需要考虑其受雇于原雇主和替代雇主的时间段。"
+    },
+    {
+      "pruned_id": "2022年6月17日",
+      "reason": "temporal_or_date",
+      "description": "指明日期是2022年6月17日，这是一个具体的日期标记。"
+    },
+    {
+      "pruned_id": "農曆",
+      "reason": "noise_orphan",
+      "description": "農曆是一种传统的历法系统，在中国和其他一些亚洲国家广泛使用。"
+    },
+    {
+      "pruned_id": "1986, 1997, 2015",
+      "reason": "noise_orphan",
+      "description": "These years refer to the periods when certain statutory holiday regulations were amended or added."
+    },
+    {
+      "pruned_id": "12 MONTHS",
+      "reason": "temporal_or_date",
+      "description": "12 months is a specific period of time that defines the minimum requirement for an employee to be eligible for annual leave benefits according to the regulations."
+    },
+    {
+      "pruned_id": "1990 YEAR",
+      "reason": "temporal_or_date",
+      "description": "1990 Year refers to the year when this regulation was first implemented, marking the start date for certain provisions and definitions within the context of employment laws."
+    },
+    {
+      "pruned_id": "OCTOBER 29, 2010",
+      "reason": "temporal_or_date",
+      "description": "This is the specific date on which certain legal provisions came into effect according to the editorial note."
+    },
+    {
+      "pruned_id": "18(2)",
+      "reason": "noise_orphan",
+      "description": "Section 18(2) is part of a set of laws that may be violated by individuals with potential criminal penalties associated with it."
+    },
+    {
+      "pruned_id": "47(1)",
+      "reason": "noise_orphan",
+      "description": "Section 47(1) involves procedural or technical aspects, possibly related to information requirements or processes and could have implications for compliance and enforcement."
+    },
+    {
+      "pruned_id": "SCHEDULE 11",
+      "reason": "noise_orphan",
+      "description": "Schedule 11 is part of the Protection of Wages on Insolvency Ordinance (Cap. 380) that has been modified, as referenced in Section 67A."
+    },
+    {
+      "pruned_id": "SCHEDULE 12",
+      "reason": "noise_orphan",
+      "description": "Schedule 12 is referenced as a document that can be amended through Gazette notices, according to Section 68A."
+    },
+    {
+      "pruned_id": "19 OCTOBER 2018",
+      "reason": "temporal_or_date",
+      "description": "The date 19 October 2018 is significant as it marks the commencement of key provisions in the Employment (Amendment) Ordinance 2018."
+    },
+    {
+      "pruned_id": "手令",
+      "reason": "noise_orphan",
+      "description": "This refers to a legal order or warrant issued by a judge, likely used in apprehending absconding employers."
+    },
+    {
+      "pruned_id": "適宜",
+      "reason": "noise_orphan",
+      "description": "適宜指的是某种行为或情况对员工而言是合适的、可接受的状态，在某些情况下可能影响雇佣关系的变化和延续。"
+    },
+    {
+      "pruned_id": "3 MONTHS",
+      "reason": "temporal_or_date",
+      "description": "3 months originally referred to the period within which certain actions must be taken, such as filing a claim after death. It is amended to 6 months in section 13 of this text."
+    },
+    {
+      "pruned_id": "6 MONTHS",
+      "reason": "temporal_or_date",
+      "description": "6 months refers to the new time frame for making claims by personal representatives of deceased employees after their deaths.<SEP>[3 MONTHS] 3 months originally referred to the period within which certain actions must be taken<SEP>such as filing a claim after death. It is amended to 6 months in section 13 of this text."
+    },
+    {
+      "pruned_id": "$180,000",
+      "reason": "noise_orphan",
+      "description": "$180,000 is used as a reference amount for calculating wages earned by an employee over the preceding twelve months or serves as a cap if lower than actual earnings."
+    },
+    {
+      "pruned_id": "$210,000",
+      "reason": "noise_orphan",
+      "description": "$210,000 is one of the maximum amount thresholds for wages earned during a specific period after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$230,000",
+      "reason": "noise_orphan",
+      "description": "$230,000 is another threshold amount for wages earned over a specific period after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$250,000",
+      "reason": "noise_orphan",
+      "description": "$250,000 is a threshold amount used to determine eligibility or benefits under the Employment (Amendment) Ordinance 1995 for wages earned over specific periods after its commencement."
+    },
+    {
+      "pruned_id": "$270,000",
+      "reason": "noise_orphan",
+      "description": "$270,000 is a threshold amount for wages earned during specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$290,000",
+      "reason": "noise_orphan",
+      "description": "$290,000 is a threshold amount for determining eligibility or benefits based on the total amount of wages earned over specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$310,000",
+      "reason": "noise_orphan",
+      "description": "$310,000 is a threshold amount for determining eligibility or benefits based on the total amount of wages earned during specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$330,000",
+      "reason": "noise_orphan",
+      "description": "$330,000 is a threshold amount for determining eligibility or benefits based on the total amount of wages earned during specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$350,000",
+      "reason": "noise_orphan",
+      "description": "$350,000 is a threshold amount for determining eligibility or benefits based on the total amount of wages earned during specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$370,000",
+      "reason": "noise_orphan",
+      "description": "$370,000 is a threshold amount for determining eligibility or benefits based on the total amount of wages earned during specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "$390,000",
+      "reason": "noise_orphan",
+      "description": "$390,000 is a threshold amount for determining eligibility or benefits based on the total amount of wages earned during specific periods after the commencement of the Employment (Amendment) Ordinance 1995."
+    },
+    {
+      "pruned_id": "PART I",
+      "reason": "noise_orphan",
+      "description": "Part I is a section in a legal document that deals with specific provisions related to the death of employers and employees within the context of Employment Protection laws."
+    },
+    {
+      "pruned_id": "JANUARY 1980",
+      "reason": "temporal_or_date",
+      "description": "January 1980 marks a significant date in the context of this text where it affects the inclusion of certain periods in pre-transition employment for wage calculation purposes."
+    },
+    {
+      "pruned_id": "有",
+      "reason": "noise_orphan",
+      "description": "有是一个触发条件，可能指的是某种情况或事件的存在，但具体含义需要进一步明确。"
+    },
+    {
+      "pruned_id": "指示",
+      "reason": "noise_orphan",
+      "description": "指示 refers to directives or orders given by the arbitral tribunal during proceedings, which can be active (made on its own) or reactive (given upon request of a party), as described in sections 57(2)(a) and (b)."
+    },
+    {
+      "pruned_id": "2006年7月7日",
+      "reason": "temporal_or_date",
+      "description": "On July 7, 2006, the United Nations Commission on International Trade Law amended the UNCITRAL Model Law on International Commercial Arbitration."
+    },
+    {
+      "pruned_id": "本法",
+      "reason": "noise_orphan",
+      "description": "This term refers generally to the UNCITRAL Model Law on International Commercial Arbitration and its provisions discussed throughout the text."
+    },
+    {
+      "pruned_id": "JULY 17, 2015",
+      "reason": "temporal_or_date",
+      "description": "This date marks the commencement of the Arbitration (Amendment) Ordinance 2015, which had a significant impact on existing arbitration procedures and related proceedings."
+    },
+    {
+      "pruned_id": "8 WORKING DAYS",
+      "reason": "temporal_or_date",
+      "description": "An 8 Working Day period refers to the time frame in which selected bodies must be notified after a dispute has been formally initiated by claimants."
+    },
+    {
+      "pruned_id": "28 DAYS",
+      "reason": "temporal_or_date",
+      "description": "A period of 28 days is mentioned for Claimants to initiate new adjudications after certain events or terminations of previous ones."
+    },
+    {
+      "pruned_id": "14 DAYS",
+      "reason": "temporal_or_date",
+      "description": "An employee must be given at least 14 days' notice for annual leave, unless otherwise agreed."
+    }
+  ],
+  "sample_type_corrections": [
+    {
+      "id": "TOWER B, KOWLOON BAY TECH CENTRE, 18 WANG TAI ROAD, KOWLOON, HONG KONG",
+      "old_type": "LOCATION",
+      "new_type": "GEO"
+    },
+    {
+      "id": "HONG KONG SPECIAL ADMINISTRATIVE REGION",
+      "old_type": "LOCATION",
+      "new_type": "GEO"
+    },
+    {
+      "id": "HDIL-2026-MC-01",
+      "old_type": "EVENT",
+      "new_type": "CONTRACT"
+    },
+    {
+      "id": "CONTRACT_A_MAIN_WORKS_AGREEMENT",
+      "old_type": "PRODUCT,TECHNOLOGY",
+      "new_type": "CONTRACT"
+    },
+    {
+      "id": "PRACTICAL COMPLETION",
+      "old_type": "LOCATION",
+      "new_type": "EVENT"
+    },
+    {
+      "id": "HK$48,000,000 (HONG KONG DOLLARS FORTY-EIGHT MILLION ONLY)",
+      "old_type": "MATHEMATICS",
+      "new_type": "GEO"
+    },
+    {
+      "id": "CONSTRUCTION INDUSTRY SECURITY OF PAYMENT ORDINANCE (CAP. 652)",
+      "old_type": "LAW",
+      "new_type": "CONTRACT"
+    },
+    {
+      "id": "PROJECT SITE",
+      "old_type": "LOCATION",
+      "new_type": "GEO"
+    },
+    {
+      "id": "OCCUPATIONAL SAFETY AND HEALTH ORDINANCE (CAP. 509)",
+      "old_type": "TECHNOLOGY",
+      "new_type": "CONTRACT"
+    },
+    {
+      "id": "EXCLUSIVE COURT JURISDICTION",
+      "old_type": "EVENT",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "HKIAC (HONG KONG INTERNATIONAL ARBITRATION CENTRE)",
+      "old_type": "ORGANIZATION",
+      "new_type": "GEO"
+    },
+    {
+      "id": "SPECIAL ADMINISTRATIVE REGION",
+      "old_type": "LOCATION",
+      "new_type": "EVENT"
+    },
+    {
+      "id": "KOWLOON BAY DATA CENTRE PROJECT",
+      "old_type": "LOCATION",
+      "new_type": "GEO"
+    },
+    {
+      "id": "APEX-2026-SUB-MEP-01",
+      "old_type": "EVENT",
+      "new_type": "CONTRACT"
+    },
+    {
+      "id": "SUBCONTRACTOR",
+      "old_type": "PERSON",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "MAIN CONTRACTOR'S ENTITLEMENT",
+      "old_type": "CONCEPT",
+      "new_type": "EVENT"
+    },
+    {
+      "id": "EMPLOYEES' COMPENSATION ORDINANCE (CAP. 282) FOR WORK INJURIES SUSTAINED BY THE SUBCONTRACTOR'S WORKERS",
+      "old_type": "EVENT",
+      "new_type": "CONTRACT"
+    },
+    {
+      "id": "VENUE OF THE PRE-TENDER MEETING",
+      "old_type": "LOCATION",
+      "new_type": "EVENT"
+    },
+    {
+      "id": "TENDERER",
+      "old_type": "PERSON/ORGANIZATION",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "ENGINEER/SURVEYOR/SUPERVISING OFFICER DESIGNATE BY FAX AND POST AT THE FAX NUMBER AND ADDRESS STATED IN THE REPLY SLIP",
+      "old_type": "PERSON",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "GOVERNMENT SECRETARIAT TENDER BOX / PUBLIC WORKS TENDER BOX",
+      "old_type": "LOCATION",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "SECRETARY FOR FINANCIAL SERVICES AND THE TREASURY / CHAIRMAN OF THE PUBLIC WORKS TENDER BOARD",
+      "old_type": "PERSON",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "TENDER BOX",
+      "old_type": "LOCATION",
+      "new_type": "EVENT"
+    },
+    {
+      "id": "GOVERNMENT SECRETARIAT / PUBLIC WORKS TENDER BOX LOCATION BLOCKAGE",
+      "old_type": "EVENT",
+      "new_type": "ORGANIZATION"
+    },
+    {
+      "id": "PRESS RELEASES ON THE WEBSITE OF INFORMATION SERVICES DEPARTMENT (HTTP://WWW.INFO.GOV.HK/GIA/GENERAL/TODAY.HTM)",
+      "old_type": "TECHNOLOGY",
+      "new_type": "ORGANIZATION"
+    }
+  ]
+}
