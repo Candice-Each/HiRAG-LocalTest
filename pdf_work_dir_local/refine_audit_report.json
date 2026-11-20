@@ -14,663 +14,1845 @@
       "GCCBWT",
       "HDIL-2026-MC-01"
     ],
-    "merged_synonyms_count": 162,
-    "pruned_noise_orphans_count": 71,
-    "updated_nodes_count": 4727,
-    "added_edges_count": 3175,
-    "final_nodes_count": 9885
+    "hallucinated_gloss_fixes_count": 216,
+    "canonical_merges_count": 163,
+    "bilingual_vector_merges_count": 24,
+    "pruned_nodes_count": 80,
+    "updated_nodes_count": 4720,
+    "added_edges_count": 3128,
+    "reembedded_vectors_count": 0,
+    "final_nodes_count": 9780
   },
-  "merged_synonyms": [
+  "hallucinated_gloss_fixes": [
+    {
+      "old_id": "ANTECEDENT NEGOTIATIONS (事先商议)",
+      "new_id": "ANTECEDENT NEGOTIATIONS"
+    },
+    {
+      "old_id": "CONTRACT PERFORMANCE (合同履行)",
+      "new_id": "CONTRACT PERFORMANCE"
+    },
+    {
+      "old_id": "PERFORMANCE OF CONTRACT (合同的履行)",
+      "new_id": "PERFORMANCE OF CONTRACT"
+    },
+    {
+      "old_id": "SALE AGREEMENT TERMS (售賣合約條款)",
+      "new_id": "SALE AGREEMENT TERMS"
+    },
+    {
+      "old_id": "OWNERSHIP TRANSFER (所有权转移)",
+      "new_id": "OWNERSHIP TRANSFER"
+    },
+    {
+      "old_id": "COMMERCIAL TRANSACTION (商業交易)",
+      "new_id": "COMMERCIAL TRANSACTION"
+    },
+    {
+      "old_id": "HONG KONG LEGISLATION (香港立法)",
+      "new_id": "HONG KONG LEGISLATION"
+    },
+    {
+      "old_id": "GOOD FAITH TRANSFER (善意转让)",
+      "new_id": "GOOD FAITH TRANSFER"
+    },
+    {
+      "old_id": "OWNER CONSENT (所有人同意)",
+      "new_id": "OWNER CONSENT"
+    },
+    {
+      "old_id": "DOCUMENT OF TITLE (单据或所有权证明文件)",
+      "new_id": "DOCUMENT OF TITLE"
+    },
+    {
+      "old_id": "SALE CONTRACT (售賣合同)",
+      "new_id": "SALE CONTRACT"
+    },
+    {
+      "old_id": "PAYMENT OBLIGATION (付款义务)",
+      "new_id": "PAYMENT OBLIGATION"
+    },
+    {
+      "old_id": "GOODS DELIVERY PREPARATION (货物交付准备)",
+      "new_id": "GOODS DELIVERY PREPARATION"
+    },
+    {
+      "old_id": "BUYER ACCEPTANCE RESPONSIBILITY (买家接受责任)",
+      "new_id": "BUYER ACCEPTANCE RESPONSIBILITY"
+    },
+    {
+      "old_id": "SELLER'S DELIVERY READINESS (卖方交付准备度)",
+      "new_id": "SELLER'S DELIVERY READINESS"
+    },
+    {
+      "old_id": "PAYMENT FOR GOODS PROCESS (货物付款流程)",
+      "new_id": "PAYMENT FOR GOODS PROCESS"
+    },
+    {
+      "old_id": "處長 (CHIEF EXECUTIVE OFFICER, CEO)",
+      "new_id": "處長"
+    },
+    {
+      "old_id": "勞合社 (LLOYD'S OF LONDON)",
+      "new_id": "勞合社"
+    },
+    {
+      "old_id": "社會科學 (SOCIAL SCIENCES)",
+      "new_id": "社會科學"
+    },
+    {
+      "old_id": "數學 (MATHEMATICS)",
+      "new_id": "數學"
+    },
+    {
+      "old_id": "30-DAY PERIOD (三十天期限)",
+      "new_id": "30-DAY PERIOD"
+    },
+    {
+      "old_id": "CLAIM DETERMINATION PROCESS (索赔决定过程)",
+      "new_id": "CLAIM DETERMINATION PROCESS"
+    },
+    {
+      "old_id": "LEVEL 6 FINE (六级罚款)",
+      "new_id": "LEVEL 6 FINE"
+    },
+    {
+      "old_id": "FUNERAL ATTENDANCE EXPENSES DETERMINATION PROCESS (丧葬费用决定过程)",
+      "new_id": "FUNERAL ATTENDANCE EXPENSES DETERMINATION PROCESS"
+    },
+    {
+      "old_id": "收據 (RECEIPT)",
+      "new_id": "收據"
+    },
+    {
+      "old_id": "銷售處方藥物的人 (PRESCRIPTION DRUG SELLER)",
+      "new_id": "銷售處方藥物的人"
+    },
+    {
+      "old_id": "地址 (ADDRESS)",
+      "new_id": "地址"
+    },
+    {
+      "old_id": "日期 (DATE)",
+      "new_id": "日期"
+    },
+    {
+      "old_id": "名稱 (NAME)",
+      "new_id": "名稱"
+    },
+    {
+      "old_id": "份量 (QUANTITY)",
+      "new_id": "份量"
+    },
+    {
+      "old_id": "商品名稱 (TRADE NAME)",
+      "new_id": "商品名稱"
+    },
+    {
+      "old_id": "價錢 (PRICE)",
+      "new_id": "價錢"
+    },
+    {
+      "old_id": "銷售日期 (SALE DATE)",
+      "new_id": "銷售日期"
+    },
+    {
+      "old_id": "商品名稱及劑量 (TRADE NAME AND DOSAGE)",
+      "new_id": "商品名稱及劑量"
+    },
+    {
+      "old_id": "名稱及地址 (NAME AND ADDRESS)",
+      "new_id": "名稱及地址"
+    },
+    {
+      "old_id": "名稱及劑量 (NAME AND DOSAGE)",
+      "new_id": "名稱及劑量"
+    },
+    {
+      "old_id": "名稱及份量 (NAME AND QUANTITY)",
+      "new_id": "名稱及份量"
+    },
+    {
+      "old_id": "\"范围适用\"(RANGE APPLICABILITY)",
+      "new_id": "\"范围适用\""
+    },
+    {
+      "old_id": "PROSTHESIS (义制品人体器官)",
+      "new_id": "PROSTHESIS"
+    },
+    {
+      "old_id": "SUDDEN AND IDENTIFIABLE EVENT (突發可識別事件)",
+      "new_id": "SUDDEN AND IDENTIFIABLE EVENT"
+    },
+    {
+      "old_id": "INCAPACITIES OR DEATHS OF MORE THAN ONE EMPLOYEE (多個職工的失能或死亡)",
+      "new_id": "INCAPACITIES OR DEATHS OF MORE THAN ONE EMPLOYEE"
+    },
+    {
+      "old_id": "FOR THE AVOIDANCE OF DOUBT (為免存疑)",
+      "new_id": "FOR THE AVOIDANCE OF DOUBT"
+    },
+    {
+      "old_id": "IT IS DECLARED THAT (宣布如下)",
+      "new_id": "IT IS DECLARED THAT"
+    },
+    {
+      "old_id": "\"THE释义及通则条例\"(CHAPTER 1)",
+      "new_id": "\"THE释义及通则条例\""
+    },
+    {
+      "old_id": "穀粉或粉末的運送或貯存 (TRANSPORTATION OR STORAGE OF GRAIN FLOUR OR POWDER)",
+      "new_id": "穀粉或粉末的運送或貯存"
+    },
+    {
+      "old_id": "FLAMMABLE DUST EXPLOSION RISK (可燃性粉尘爆炸风险)",
+      "new_id": "FLAMMABLE DUST EXPLOSION RISK"
+    },
+    {
+      "old_id": "穀物 (GRAINS)",
+      "new_id": "穀物"
+    },
+    {
+      "old_id": "工作期間吸入的敏化物質 (SENSITIZING SUBSTANCES INHALED DURING WORK HOURS)",
+      "new_id": "工作期間吸入的敏化物質"
+    },
+    {
+      "old_id": "WARRANTY PERIOD DEFINITION (保固期)",
+      "new_id": "WARRANTY PERIOD DEFINITION"
+    },
+    {
+      "old_id": "IMPORTATION, MANUFACTURE OR SUPPLY ACTIVITIES DURING WARRANTY PERIOD (貿易或業務活動)",
+      "new_id": "IMPORTATION, MANUFACTURE OR SUPPLY ACTIVITIES DURING WARRANTY PERIOD"
+    },
+    {
+      "old_id": "SPECIFIED OFFENSE(S) WITH RESPECT TO A SPECIFIED PLACE (附表所指明的罪行与指定地点有关)",
+      "new_id": "SPECIFIED OFFENSE(S) WITH RESPECT TO A SPECIFIED PLACE"
+    },
+    {
+      "old_id": "NOTIFICATION FORMAT FOR SPECIFIED OFFENSE(S) WITH RESPECT TO A SPECIFIED PLACE (附表所指明的通知格式)",
+      "new_id": "NOTIFICATION FORMAT FOR SPECIFIED OFFENSE(S) WITH RESPECT TO A SPECIFIED PLACE"
+    },
+    {
+      "old_id": "NOTIFICATION SENT TO SPECIFIED PERSON (通知已送达指定人士)",
+      "new_id": "NOTIFICATION SENT TO SPECIFIED PERSON"
+    },
+    {
+      "old_id": "PROCEEDINGS HAVE BEEN INSTITUTED (已就该罪行提出投诉或告发)",
+      "new_id": "PROCEEDINGS HAVE BEEN INSTITUTED"
+    },
+    {
+      "old_id": "INCAPACITATED (丧失工作能力)",
+      "new_id": "INCAPACITATED"
+    },
+    {
+      "old_id": "FINANCIAL YEAR (財務年)",
+      "new_id": "FINANCIAL YEAR"
+    },
+    {
+      "old_id": "矽肺病(SILICOSIS)",
+      "new_id": "矽肺病"
+    },
+    {
+      "old_id": "职业性失聪(ACCOUSTIC NEUROMA)",
+      "new_id": "职业性失聪"
+    },
+    {
+      "old_id": "腕管综合症(CARPAL TUNNEL SYNDROME)",
+      "new_id": "腕管综合症"
+    },
+    {
+      "old_id": "退伍军人病(VETERAN'S DISEASE)",
+      "new_id": "退伍军人病"
+    },
+    {
+      "old_id": "严重急性呼吸系统综合症(SARS)",
+      "new_id": "严重急性呼吸系统综合症"
+    },
+    {
+      "old_id": "FINE AT LEVEL 6 (違規罰款)",
+      "new_id": "FINE AT LEVEL 6"
+    },
+    {
+      "old_id": "CONTRACTUAL TERMINATION (合同终止)",
+      "new_id": "CONTRACTUAL TERMINATION"
+    },
+    {
+      "old_id": "TERMINATION OF CONTRACT (合同終止)",
+      "new_id": "TERMINATION OF CONTRACT"
+    },
+    {
+      "old_id": "EMPLOYMENT RELATIONSHIP (僱傭關係)",
+      "new_id": "EMPLOYMENT RELATIONSHIP"
+    },
+    {
+      "old_id": "EMPLOYMENT CONTINUITY (僱傭關係連續性)",
+      "new_id": "EMPLOYMENT CONTINUITY"
+    },
+    {
+      "old_id": "PARENT COMPANY (母公司)",
+      "new_id": "PARENT COMPANY"
+    },
+    {
+      "old_id": "THIRD PARTY OWNERSHIP (第三方擁有權)",
+      "new_id": "THIRD PARTY OWNERSHIP"
+    },
+    {
+      "old_id": "CONTRACTUAL AGREEMENT (合同協議)",
+      "new_id": "CONTRACTUAL AGREEMENT"
+    },
+    {
+      "old_id": "LEGAL REGULATION (法律規範)",
+      "new_id": "LEGAL REGULATION"
+    },
+    {
+      "old_id": "EMPLOYMENT RELATIONSHIP DYNAMICS (僱傭關係動態)",
+      "new_id": "EMPLOYMENT RELATIONSHIP DYNAMICS"
+    },
+    {
+      "old_id": "LEGAL DEFINITION (法律定義)",
+      "new_id": "LEGAL DEFINITION"
+    },
+    {
+      "old_id": "留院病人 (AS A CONDITION)",
+      "new_id": "留院病人"
+    },
+    {
+      "old_id": "疾病或損傷期內任何時間 (AS A CONDITION)",
+      "new_id": "疾病或損傷期內任何時間"
+    },
+    {
+      "old_id": "《第5號》修訂 (AS A CONDITION)",
+      "new_id": "《第5號》修訂"
+    },
+    {
+      "old_id": "僱主辦有認可醫療計劃 (AS A CONDITION)",
+      "new_id": "僱主辦有認可醫療計劃"
+    },
+    {
+      "old_id": "留院病人 (AS A CONDITION) (REPEATED)",
+      "new_id": "留院病人 (AS A CONDITION)"
+    },
+    {
+      "old_id": "合理辯解而不理會 (AS AN ACTION)",
+      "new_id": "合理辯解而不理會"
+    },
+    {
+      "old_id": "疾病或損傷期內任何時間 (AS A CONDITION) (REPEATED)",
+      "new_id": "疾病或損傷期內任何時間 (AS A CONDITION)"
+    },
+    {
+      "old_id": "僱主為該醫療計劃所聘用的註冊醫生、中醫或牙醫診治 (AS AN ACTION)",
+      "new_id": "僱主為該醫療計劃所聘用的註冊醫生、中醫或牙醫診治"
+    },
+    {
+      "old_id": "合理辯解 (AS A CONDITION)",
+      "new_id": "合理辯解"
+    },
+    {
+      "old_id": "署長 (SECRETARY)",
+      "new_id": "署長"
+    },
+    {
+      "old_id": "疾病津貼 (DISEASE ALLOWANCE)",
+      "new_id": "疾病津貼"
+    },
+    {
+      "old_id": "撤销认可 (REVOCATION OF RECOGNITION)",
+      "new_id": "撤销认可"
+    },
+    {
+      "old_id": "施行 (IMPLEMENTATION)",
+      "new_id": "施行"
+    },
+    {
+      "old_id": "修订 (AMENDMENT)",
+      "new_id": "修订"
+    },
+    {
+      "old_id": "SUPERIOR SUB-CONTRACTOR (上级次承判商)",
+      "new_id": "SUPERIOR SUB-CONTRACTOR"
+    },
+    {
+      "old_id": "SUPERIOR NOMINATED SUB-CONTRACTOR (上级指定次承判商)",
+      "new_id": "SUPERIOR NOMINATED SUB-CONTRACTOR"
+    },
+    {
+      "old_id": "NEGLECT ON PART OF PARTNER IN FIRM (其他合伙人或任何其他管理该公司的人员)",
+      "new_id": "NEGLECT ON PART OF PARTNER IN FIRM"
+    },
+    {
+      "old_id": "SUFFICIENT EVIDENCE (足夠的證據)",
+      "new_id": "SUFFICIENT EVIDENCE"
+    },
+    {
+      "old_id": "PROSECUTION (檢控方)",
+      "new_id": "PROSECUTION"
+    },
+    {
+      "old_id": "LEGAL DOCUMENT CERTIFICATION PROCESS (文件核證程序)",
+      "new_id": "LEGAL DOCUMENT CERTIFICATION PROCESS"
+    },
+    {
+      "old_id": "PARTNERSHIP FIRM (合伙公司)",
+      "new_id": "PARTNERSHIP FIRM"
+    },
+    {
+      "old_id": "MANAGEMENT RESPONSIBILITY (管理責任)",
+      "new_id": "MANAGEMENT RESPONSIBILITY"
+    },
+    {
+      "old_id": "CORPORATE GOVERNANCE (公司治理)",
+      "new_id": "CORPORATE GOVERNANCE"
+    },
+    {
+      "old_id": "LEGAL PRESUMPTION (法律推定)",
+      "new_id": "LEGAL PRESUMPTION"
+    },
+    {
+      "old_id": "LEGAL OFFICER (法律官员)",
+      "new_id": "LEGAL OFFICER"
+    },
+    {
+      "old_id": "COURT OF FIRST INSTANCE (初审法院)",
+      "new_id": "COURT OF FIRST INSTANCE"
+    },
+    {
+      "old_id": "APPEALS COURT (上诉法院)",
+      "new_id": "APPEALS COURT"
+    },
+    {
+      "old_id": "CERTIFICATE OF EXEMPTION (豁免证明书)",
+      "new_id": "CERTIFICATE OF EXEMPTION"
+    },
+    {
+      "old_id": "EMPLOYMENT AGENCY (职业介绍所)",
+      "new_id": "EMPLOYMENT AGENCY"
+    },
+    {
+      "old_id": "EDUCATION INSTITUTION (教育機構)",
+      "new_id": "EDUCATION INSTITUTION"
+    },
+    {
+      "old_id": "DIRECTOR, MANAGER, SECRETARY OR OTHER SIMILAR OFFICER (董事、經理、秘書或其他類似職員)",
+      "new_id": "DIRECTOR, MANAGER, SECRETARY OR OTHER SIMILAR OFFICER"
+    },
+    {
+      "old_id": "PARTNER IN A PARTNERSHIP (合夥人)",
+      "new_id": "PARTNER IN A PARTNERSHIP"
+    },
+    {
+      "old_id": "CONTEXT (上下文)",
+      "new_id": "CONTEXT"
+    },
+    {
+      "old_id": "SECTION 54, SECTION 52, SECTION 3 OF 8 OF 2018 S. 3 (第54條、第52條及第8號法律公告第三章)",
+      "new_id": "SECTION 54, SECTION 52, SECTION 3 OF 8 OF 2018 S. 3"
+    },
+    {
+      "old_id": "APPLICATION OF PART 50 (第50部分的應用)",
+      "new_id": "APPLICATION OF PART 50"
+    },
+    {
+      "old_id": "PECUNIARY ADVANTAGE (財務利益)",
+      "new_id": "PECUNIARY ADVANTAGE"
+    },
+    {
+      "old_id": "REGULATORY DOCUMENT (規管文件)",
+      "new_id": "REGULATORY DOCUMENT"
+    },
+    {
+      "old_id": "STUDENT EMPLOYMENT ACTIVITIES (學生就業活動)",
+      "new_id": "STUDENT EMPLOYMENT ACTIVITIES"
+    },
+    {
+      "old_id": "REGULATORY FRAMEWORK (規管框架)",
+      "new_id": "REGULATORY FRAMEWORK"
+    },
+    {
+      "old_id": "EMPLOYMENT REGULATION (就業法例)",
+      "new_id": "EMPLOYMENT REGULATION"
+    },
+    {
+      "old_id": "LICENSING AUTHORITY (發牌機制)",
+      "new_id": "LICENSING AUTHORITY"
+    },
+    {
+      "old_id": "CERTIFICATE ISSUANCE PROCESS (證書發行程序)",
+      "new_id": "CERTIFICATE ISSUANCE PROCESS"
+    },
+    {
+      "old_id": "遺產代理人 (ESTATE ADMINISTRATOR / EXECUTOR)",
+      "new_id": "遺產代理人"
+    },
+    {
+      "old_id": "續訂合約 (RENEWAL OF CONTRACT)",
+      "new_id": "續訂合約"
+    },
+    {
+      "old_id": "訴訟權 (RIGHT TO SUE)",
+      "new_id": "訴訟權"
+    },
+    {
+      "old_id": "申索 (CLAIM)",
+      "new_id": "申索"
+    },
+    {
+      "old_id": "TRADE FACILITATION AND DISPUTE RESOLUTION COMMISSION (贸法委)",
+      "new_id": "TRADE FACILITATION AND DISPUTE RESOLUTION COMMISSION"
+    },
+    {
+      "old_id": "TEMPORARY MEASURES (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "TEMPORARY MEASURES"
+    },
+    {
+      "old_id": "RESOLUTION OF DISPUTES (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "RESOLUTION OF DISPUTES"
+    },
+    {
+      "old_id": "ARBITRATION PROCEDURE (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "ARBITRATION PROCEDURE"
+    },
+    {
+      "old_id": "ARBITRAL TRIBUNAL (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "ARBITRAL TRIBUNAL"
+    },
+    {
+      "old_id": "STATUS QUO MAINTENANCE (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "STATUS QUO MAINTENANCE"
+    },
+    {
+      "old_id": "PREVENTIVE MEASURES (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "PREVENTIVE MEASURES"
+    },
+    {
+      "old_id": "ASSET PRESERVATION FOR ENFORCEMENT (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "ASSET PRESERVATION FOR ENFORCEMENT"
+    },
+    {
+      "old_id": "EVIDENCE SECURING (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "EVIDENCE SECURING"
+    },
+    {
+      "old_id": "PROCEDURAL GUIDELINES (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "PROCEDURAL GUIDELINES"
+    },
+    {
+      "old_id": "ARBITRATION PROCESS (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "ARBITRATION PROCESS"
+    },
+    {
+      "old_id": "FINAL DECISION (ARTICLE 56 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "FINAL DECISION"
+    },
+    {
+      "old_id": "PROVISIONAL MEASURES (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "PROVISIONAL MEASURES"
+    },
+    {
+      "old_id": "ARBITRATION COMMISSION示范法 (MODEL LAW)",
+      "new_id": "ARBITRATION COMMISSION示范法"
+    },
+    {
+      "old_id": "COURT DECISION MAKING PROCESS (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "COURT DECISION MAKING PROCESS"
+    },
+    {
+      "old_id": "ARBITRAL TRIBUNAL'S AUTHORITY (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "ARBITRAL TRIBUNAL'S AUTHORITY"
+    },
+    {
+      "old_id": "DISPUTE RESOLUTION (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "DISPUTE RESOLUTION"
+    },
+    {
+      "old_id": "TRADE FACILITATION COMMISSION (贸法委)",
+      "new_id": "TRADE FACILITATION COMMISSION"
+    },
+    {
+      "old_id": "澳门 (MACAU)",
+      "new_id": "澳门"
+    },
+    {
+      "old_id": "第10B部 (PART 10B) (OF THE RELEVANT LEGISLATION)",
+      "new_id": "第10B部 (PART 10B)"
+    },
+    {
+      "old_id": "DISCLOSURE OF FINANCIER'S IDENTITY (披露第三者的姓名或名稱)",
+      "new_id": "DISCLOSURE OF FINANCIER'S IDENTITY"
+    },
+    {
+      "old_id": "NOTIFICATION OF ARBITRATION AGREEMENT (通知仲裁的資助協議)",
+      "new_id": "NOTIFICATION OF ARBITRATION AGREEMENT"
+    },
+    {
+      "old_id": "LEGAL PROCEEDINGS BEFORE COURT OR OTHER JUDICIAL AUTHORITY (法律程序前的法院或其他司法機構)",
+      "new_id": "LEGAL PROCEEDINGS BEFORE COURT OR OTHER JUDICIAL AUTHORITY"
+    },
+    {
+      "old_id": "GOVERNMENT BODY (政府部門)",
+      "new_id": "GOVERNMENT BODY"
+    },
+    {
+      "old_id": "REGULATORY BODY (監管機構)",
+      "new_id": "REGULATORY BODY"
+    },
+    {
+      "old_id": "PROFESSIONAL ADVISER'S ADVICE ON THIRD PARTY FUNDING (專業顧問就第三者資助提供的意見)",
+      "new_id": "PROFESSIONAL ADVISER'S ADVICE ON THIRD PARTY FUNDING"
+    },
+    {
+      "old_id": "ARBITRATION INSTITUTION'S ROLE IN NOTIFICATIONS (仲裁機構在通知中的角色)",
+      "new_id": "ARBITRATION INSTITUTION'S ROLE IN NOTIFICATIONS"
+    },
+    {
+      "old_id": "LEGAL OBLIGATION (法律義務)",
+      "new_id": "LEGAL OBLIGATION"
+    },
+    {
+      "old_id": "ARBITRATION PROCESS (仲裁程序)",
+      "new_id": "ARBITRATION PROCESS"
+    },
+    {
+      "old_id": "DISPUTE RESOLUTION (爭端解決)",
+      "new_id": "DISPUTE RESOLUTION"
+    },
+    {
+      "old_id": "FINANCIAL SUPPORT FOR ARBITRATION (仲裁的財務支援)",
+      "new_id": "FINANCIAL SUPPORT FOR ARBITRATION"
+    },
+    {
+      "old_id": "THIRD PARTY FINANCIER (第三者資助方)",
+      "new_id": "THIRD PARTY FINANCIER"
+    },
+    {
+      "old_id": "ARBITRATION AWARD (仲裁裁決)",
+      "new_id": "ARBITRATION AWARD"
+    },
+    {
+      "old_id": "LEGAL RIGHT OR INTEREST (法律權利或利益)",
+      "new_id": "LEGAL RIGHT OR INTEREST"
+    },
+    {
+      "old_id": "PROFESSIONAL ADVISER'S ROLE IN COMMUNICATIONS (專業顧問在通訊中的角色)",
+      "new_id": "PROFESSIONAL ADVISER'S ROLE IN COMMUNICATIONS"
+    },
+    {
+      "old_id": "REGULATORY REQUIREMENT (監管要求)",
+      "new_id": "REGULATORY REQUIREMENT"
+    },
+    {
+      "old_id": "COURT OR TRIBUNAL (法院或法庭)",
+      "new_id": "COURT OR TRIBUNAL"
+    },
+    {
+      "old_id": "LEGAL PROCEEDINGS (法律程序)",
+      "new_id": "LEGAL PROCEEDINGS"
+    },
+    {
+      "old_id": "ARBITRATION INSTITUTION'S ROLE IN FUNDING AGREEMENTS (仲裁機構在資助協議中的角色)",
+      "new_id": "ARBITRATION INSTITUTION'S ROLE IN FUNDING AGREEMENTS"
+    },
+    {
+      "old_id": "GEOGRAPHICAL INDICATION (地理标志)",
+      "new_id": "GEOGRAPHICAL INDICATION"
+    },
+    {
+      "old_id": "INTEGRATED CIRCUIT LAYOUT DESIGN (集成电路布图设计)",
+      "new_id": "INTEGRATED CIRCUIT LAYOUT DESIGN"
+    },
+    {
+      "old_id": "PLANT VARIETY RIGHT (植物新品种权)",
+      "new_id": "PLANT VARIETY RIGHT"
+    },
+    {
+      "old_id": "ACTION FOR COUNTERFEITING (假冒诉讼)",
+      "new_id": "ACTION FOR COUNTERFEITING"
+    },
+    {
+      "old_id": "COMMISSION (委員會)",
+      "new_id": "COMMISSION"
+    },
+    {
+      "old_id": "DISPUTE RESOLUTION MECHANISM (爭議解決機制)",
+      "new_id": "DISPUTE RESOLUTION MECHANISM"
+    },
+    {
+      "old_id": "CONTRACTUAL OBLIGATION (合同義務)",
+      "new_id": "CONTRACTUAL OBLIGATION"
+    },
+    {
+      "old_id": "COMMUNICATION PROTOCOL (通信協議)",
+      "new_id": "COMMUNICATION PROTOCOL"
+    },
+    {
+      "old_id": "INTERNATIONAL STANDARDIZATION ORGANIZATION (國際標準化組織)",
+      "new_id": "INTERNATIONAL STANDARDIZATION ORGANIZATION"
+    },
+    {
+      "old_id": "LEGAL FRAMEWORK (法律框架)",
+      "new_id": "LEGAL FRAMEWORK"
+    },
+    {
+      "old_id": "CONTRACTUAL RELATIONSHIP (合同關係)",
+      "new_id": "CONTRACTUAL RELATIONSHIP"
+    },
+    {
+      "old_id": "ARBITRATOR (仲裁員)",
+      "new_id": "ARBITRATOR"
+    },
+    {
+      "old_id": "DATA STORAGE AND RETRIEVAL MECHANISM (數據存儲和調取機制)",
+      "new_id": "DATA STORAGE AND RETRIEVAL MECHANISM"
+    },
+    {
+      "old_id": "TELECOMMUNICATION TECHNOLOGY (通信技術)",
+      "new_id": "TELECOMMUNICATION TECHNOLOGY"
+    },
+    {
+      "old_id": "EMAIL COMMUNICATION (電子郵件通信)",
+      "new_id": "EMAIL COMMUNICATION"
+    },
+    {
+      "old_id": "TELEX COMMUNICATION (電傳通信)",
+      "new_id": "TELEX COMMUNICATION"
+    },
+    {
+      "old_id": "FAX MACHINE (傳真機)",
+      "new_id": "FAX MACHINE"
+    },
+    {
+      "old_id": "DATA ELECTRIC DOCUMENT SYSTEM (數據電文系統)",
+      "new_id": "DATA ELECTRIC DOCUMENT SYSTEM"
+    },
+    {
+      "old_id": "ELECTRONIC COMMUNICATION PROTOCOL (電子通信協議)",
+      "new_id": "ELECTRONIC COMMUNICATION PROTOCOL"
+    },
+    {
+      "old_id": "ARBITRATION INSTITUTION (仲裁機構)",
+      "new_id": "ARBITRATION INSTITUTION"
+    },
+    {
+      "old_id": "TRADE FACILITATION AND ARBITRATION COMMISSION (贸法委)",
+      "new_id": "TRADE FACILITATION AND ARBITRATION COMMISSION"
+    },
+    {
+      "old_id": "地政总署 (LAND DEPARTMENT)",
+      "new_id": "地政总署"
+    },
+    {
+      "old_id": "占用许可证 (OCCUPANCY PERMIT)",
+      "new_id": "占用许可证"
+    },
+    {
+      "old_id": "仲裁员 (ARBITRATOR)",
+      "new_id": "仲裁员"
+    },
+    {
+      "old_id": "RELATED GOODS AND SERVICES (相關物料及服務)",
+      "new_id": "RELATED GOODS AND SERVICES"
+    },
+    {
+      "old_id": "FURTHER PARTY (進一步付款方)",
+      "new_id": "FURTHER PARTY"
+    },
+    {
+      "old_id": "OPERATION OF OTHER CONTRACTS OR AGREEMENTS (其他合同或協議的實施)",
+      "new_id": "OPERATION OF OTHER CONTRACTS OR AGREEMENTS"
+    },
+    {
+      "old_id": "CONSTRUCTION CONTRACT (建造合同)",
+      "new_id": "CONSTRUCTION CONTRACT"
+    },
+    {
+      "old_id": "CONSTRUCTION PROJECT PAYMENT TERMS (建造項目付款條款)",
+      "new_id": "CONSTRUCTION PROJECT PAYMENT TERMS"
+    },
+    {
+      "old_id": "CONSTRUCTION WORK COMPLETION DATE (施工完成日期)",
+      "new_id": "CONSTRUCTION WORK COMPLETION DATE"
+    },
+    {
+      "old_id": "PAYMENT OBLIGATION (付款義務)",
+      "new_id": "PAYMENT OBLIGATION"
+    },
+    {
+      "old_id": "CONSTRUCTION CONTRACT TERMS (建造合同條款)",
+      "new_id": "CONSTRUCTION CONTRACT TERMS"
+    },
+    {
+      "old_id": "PAYMENT DATE (付款日期)",
+      "new_id": "PAYMENT DATE"
+    },
+    {
+      "old_id": "LEGAL FRAMEWORK OF SET ASIDE APPLICATIONS (撤銷申請的法律框架)",
+      "new_id": "LEGAL FRAMEWORK OF SET ASIDE APPLICATIONS"
+    },
+    {
+      "old_id": "LEGAL CHALLENGE (法律挑戰)",
+      "new_id": "LEGAL CHALLENGE"
+    },
+    {
+      "old_id": "COURT DECISION ON SET ASIDE APPLICATION (撤銷申請的法院決定)",
+      "new_id": "COURT DECISION ON SET ASIDE APPLICATION"
+    },
+    {
+      "old_id": "ADJUDICATION PROCEEDINGS COSTS DETERMINATION (確定審裁程序費用的比例)",
+      "new_id": "ADJUDICATION PROCEEDINGS COSTS DETERMINATION"
+    },
+    {
+      "old_id": "適用範圍 (SCOPE OF APPLICATION)",
+      "new_id": "適用範圍"
+    },
+    {
+      "old_id": "CONTRACTUAL PROVISION (合同条款)",
+      "new_id": "CONTRACTUAL PROVISION"
+    },
+    {
+      "old_id": "PUBLIC BODY (公共机构)",
+      "new_id": "PUBLIC BODY"
+    },
+    {
+      "old_id": "CONCURRENT CONDITIONS (同时履行的条件)",
+      "new_id": "CONCURRENT CONDITIONS"
+    },
+    {
+      "old_id": "PAYMENT FOR GOODS (支付货价)",
+      "new_id": "PAYMENT FOR GOODS"
+    },
+    {
+      "old_id": "范围适用\"(RANGE APPLICABILITY)",
+      "new_id": "范围适用\""
+    },
+    {
+      "old_id": "WARRANTY PERIOD (保固期)",
+      "new_id": "WARRANTY PERIOD"
+    },
+    {
+      "old_id": "NOTIFICATION SENT TO THE SPECIFIED PERSON (通知已送达指定人士)",
+      "new_id": "NOTIFICATION SENT TO THE SPECIFIED PERSON"
+    },
+    {
+      "old_id": "僱主为该医疗计划所聘用的注册医生、中医或牙医诊治 (AS AN ACTION)",
+      "new_id": "僱主为该医疗计划所聘用的注册医生、中医或牙医诊治"
+    },
+    {
+      "old_id": "疾病或损傷期內任何时间 (AS A CONDITION)",
+      "new_id": "疾病或损傷期內任何时间"
+    },
+    {
+      "old_id": "僱主办有认可医疗计划 (AS A CONDITION)",
+      "new_id": "僱主办有认可医疗计划"
+    },
+    {
+      "old_id": "疾病或损傷期內任何时间 (AS A CONDITION) (REPEATED)",
+      "new_id": "疾病或损傷期內任何时间 (AS A CONDITION)"
+    },
+    {
+      "old_id": "《第5号》修订 (AS A CONDITION)",
+      "new_id": "《第5号》修订"
+    },
+    {
+      "old_id": "署长 (SECRETARY)",
+      "new_id": "署长"
+    },
+    {
+      "old_id": "ASSOCIATE (相关人士)",
+      "new_id": "ASSOCIATE"
+    },
+    {
+      "old_id": "RELATED PERSON (相关人士)",
+      "new_id": "RELATED PERSON"
+    },
+    {
+      "old_id": "EVIDENCE PRESERVATION (ARTICLE 17 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "EVIDENCE PRESERVATION"
+    },
+    {
+      "old_id": "FINAL AWARD (ARTICLE 56 OF THE ARBITRATION COMMISSION示范法)",
+      "new_id": "FINAL AWARD"
+    },
+    {
+      "old_id": "THIRD PARTY FUNDING OF ARBITRATION (第三方資助仲裁)",
+      "new_id": "THIRD PARTY FUNDING OF ARBITRATION"
+    },
+    {
+      "old_id": "SUCCESS FEE (成功收费)",
+      "new_id": "SUCCESS FEE"
+    },
+    {
+      "old_id": "审裁员 (ADJURICATOR)",
+      "new_id": "审裁员"
+    },
+    {
+      "old_id": "SPECIFIED PERIOD (指明期间)",
+      "new_id": "SPECIFIED PERIOD"
+    }
+  ],
+  "bilingual_vector_merges": [
+    {
+      "merged_from": "INTERIM PROGRESS PAYMENT (期進度款)",
+      "merged_into": "PROGRESS PAYMENT",
+      "cosine_sim": 0.8864,
+      "chunk": "chunk-104729af58e2197afbd033252a8317e6"
+    },
+    {
+      "merged_from": "INTERIM PROGRESS CLAIM (期進度款的申索)",
+      "merged_into": "PAYMENT CLAIM (IN RELATION TO AN INTERIM PROGRESS PAYMENT)",
+      "cosine_sim": 0.9333,
+      "chunk": "chunk-104729af58e2197afbd033252a8317e6"
+    },
+    {
+      "merged_from": "OCCUPATIONAL DISEASE (職業病)",
+      "merged_into": "OCCUPATIONAL DISEASE",
+      "cosine_sim": 0.9083,
+      "chunk": "chunk-09e282cd999f281d4422d40832df059c"
+    },
+    {
+      "merged_from": "WARRANTY PERIOD (保證期)",
+      "merged_into": "WARRANTY PERIOD DEFINITION",
+      "cosine_sim": 0.9786,
+      "chunk": "chunk-e980522a1add368d13a641e842c93a83"
+    },
+    {
+      "merged_from": "第30B条所指雇员",
+      "merged_into": "EMPLOYEE REFERRED TO IN SECTION 30B WHOSE WORK IS PERFORMED OUTSIDE HONG KONG",
+      "cosine_sim": 0.9251,
+      "chunk": "chunk-7f9b169ef4b1de04369879d234076f1c"
+    },
+    {
+      "merged_from": "EXPENSES FOR MEDICAL ATTENDANCE (醫護費)",
+      "merged_into": "MEDICAL ATTENDANCE EXPENSES",
+      "cosine_sim": 0.9146,
+      "chunk": "chunk-a2e37a06f23a289862428e2457ce5863"
+    },
+    {
+      "merged_from": "中華人民共和國仲裁法",
+      "merged_into": "ARBITRATION LAW",
+      "cosine_sim": 0.8876,
+      "chunk": "chunk-c4f6f1173170ce4ac811fedab280f3b4"
+    },
+    {
+      "merged_from": "法定假日*",
+      "merged_into": "STATUTORY HOLIDAY",
+      "cosine_sim": 0.9034,
+      "chunk": "chunk-f729e4dc4d8c13592d31110960bc5996"
+    },
+    {
+      "merged_from": "SUPER TYPHOON (超強颱風)",
+      "merged_into": "SUPER TYPHOON",
+      "cosine_sim": 0.9922,
+      "chunk": "chunk-751eea5a9359446ee65e5dee8d66e6a6"
+    },
+    {
+      "merged_from": "PAYMENT PERIOD (付款期)",
+      "merged_into": "PAYMENT PERIOD",
+      "cosine_sim": 0.8843,
+      "chunk": "chunk-ffbe5c02e6f3e1420b13f54196f78358"
+    },
+    {
+      "merged_from": "風險 (RISK)",
+      "merged_into": "RISK",
+      "cosine_sim": 0.9328,
+      "chunk": "chunk-34bc94419b349addb3ca3738887910de"
+    },
+    {
+      "merged_from": "COMPANY (公司)",
+      "merged_into": "COMPANY",
+      "cosine_sim": 0.8808,
+      "chunk": "chunk-4a12f68db2756f89b8999b59583f0a9b"
+    },
+    {
+      "merged_from": "43P条所订罪行",
+      "merged_into": "SECTION 43P",
+      "cosine_sim": 0.915,
+      "chunk": "chunk-13ee9a92c0574802dd2767b6923aabc1"
+    },
+    {
+      "merged_from": "12 MONTH PERIOD",
+      "merged_into": "12個月期間",
+      "cosine_sim": 0.9108,
+      "chunk": "chunk-b1de7cbb89da3f1adf715fabc5ea88cf"
+    },
+    {
+      "merged_from": "第7條.  仲裁協議的定義",
+      "merged_into": "ARTICLE 7. DEFINITION OF ARBITRATION AGREEMENT",
+      "cosine_sim": 0.9394,
+      "chunk": "chunk-370a790bb1d210c95f7d43dd74075952"
+    },
+    {
+      "merged_from": "EMERGENCY ARBITRATOR (緊急仲裁員)",
+      "merged_into": "EMERGENCY ARBITRATOR",
+      "cosine_sim": 0.9008,
+      "chunk": "chunk-0f7eb0e6c37c2ef17e35db1071f66982"
+    },
+    {
+      "merged_from": "死亡的雇主或雇員 (DEATH OF EMPLOYER OR EMPLOYEE)",
+      "merged_into": "DEATH OF EMPLOYER OR OF EMPLOYEE",
+      "cosine_sim": 0.9014,
+      "chunk": "chunk-1edc8d1eae523643c8ff13994558a8c8"
+    },
+    {
+      "merged_from": "第31條(4)",
+      "merged_into": "ARTICLE 31(4)",
+      "cosine_sim": 0.9031,
+      "chunk": "chunk-12bb43cc82c8c3529243d2a3c8279c60"
+    },
+    {
+      "merged_from": "第77條",
+      "merged_into": "SECTION 77",
+      "cosine_sim": 0.9084,
+      "chunk": "chunk-12bb43cc82c8c3529243d2a3c8279c60"
+    },
+    {
+      "merged_from": "THIRD PARTY FUNDING OF ARBITRATION (第三者資助仲裁)",
+      "merged_into": "THIRD PARTY FUNDER",
+      "cosine_sim": 0.8988,
+      "chunk": "chunk-6b5cecde95cc674037324a7a227c1daf"
+    },
+    {
+      "merged_from": "COST PROPORTIONS DETERMINATION BY ADJUDICATOR (裁定審裁程序費用的比例)",
+      "merged_into": "PROPORTION DETERMINATION BY ADJUDICATOR",
+      "cosine_sim": 0.9046,
+      "chunk": "chunk-c56a21239b5d0bf5cb22840251170eef"
+    },
+    {
+      "merged_from": "COST PROPORTIONS DETERMINATION FACTORS (裁定審裁程序費用的比例時須考慮的事宜)",
+      "merged_into": "ADJUDICATION PROCEEDINGS COSTS CONSIDERATIONS",
+      "cosine_sim": 0.9233,
+      "chunk": "chunk-c56a21239b5d0bf5cb22840251170eef"
+    },
+    {
+      "merged_from": "ADJUDICATOR'S DETERMINATION (審裁員在裁定某方須按何比例支付審裁程序費用時)",
+      "merged_into": "PROPORTION DETERMINATION BY ADJUDICATOR",
+      "cosine_sim": 0.8893,
+      "chunk": "chunk-c56a21239b5d0bf5cb22840251170eef"
+    },
+    {
+      "merged_from": "PROPORTION OF ADJUDICATION PROCEEDS COSTS PAYABLE BY A PARTY (某方須按何比例支付審裁程序費用時)",
+      "merged_into": "COST PROPORTIONS PAYABLE BY A PARTY",
+      "cosine_sim": 0.9132,
+      "chunk": "chunk-c56a21239b5d0bf5cb22840251170eef"
+    }
+  ],
+  "canonical_merges": [
     {
       "merged_from": "DISPUTE RESOLUTION MECHANISMS",
-      "merged_into": "DISPUTE RESOLUTION MECHANISM"
+      "merged_into": "DISPUTE RESOLUTION MECHANISM",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SUB-CONTRACTOR",
-      "merged_into": "SUBCONTRACTOR"
+      "merged_into": "SUBCONTRACTOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SUB-CONTRACTORS",
-      "merged_into": "SUBCONTRACTOR"
+      "merged_into": "SUBCONTRACTOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "TENDERERS",
-      "merged_into": "TENDERER"
+      "merged_into": "TENDERER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NOMINATED SUB-CONTRACTORS",
-      "merged_into": "NOMINATED SUB-CONTRACTOR"
+      "merged_into": "NOMINATED SUB-CONTRACTOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NOMINATED SUBCONTRACTORS",
-      "merged_into": "NOMINATED SUB-CONTRACTOR"
+      "merged_into": "NOMINATED SUB-CONTRACTOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "COMPLAINT CHITS",
-      "merged_into": "COMPLAINT CHIT"
+      "merged_into": "COMPLAINT CHIT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "GENERAL HOLIDAYS",
-      "merged_into": "GENERAL HOLIDAY"
+      "merged_into": "GENERAL HOLIDAY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "MAINTENANCE PERIODS",
-      "merged_into": "MAINTENANCE PERIOD"
+      "merged_into": "MAINTENANCE PERIOD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE LAWS OF HONG KONG",
-      "merged_into": "LAWS OF HONG KONG"
+      "merged_into": "LAWS OF HONG KONG",
+      "method": "canonical_key"
     },
     {
       "merged_from": "VARIATIONS",
-      "merged_into": "VARIATION"
+      "merged_into": "VARIATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "DESIGNS",
-      "merged_into": "DESIGN"
+      "merged_into": "DESIGN",
+      "method": "canonical_key"
     },
     {
       "merged_from": "MATERIALS",
-      "merged_into": "MATERIAL"
+      "merged_into": "MATERIAL",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CONTRACTOR",
-      "merged_into": "CONTRACTOR"
+      "merged_into": "CONTRACTOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ENACTMENTS",
-      "merged_into": "ENACTMENT"
+      "merged_into": "ENACTMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "REGULATIONS",
-      "merged_into": "REGULATION"
+      "merged_into": "REGULATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE EMPLOYER",
-      "merged_into": "EMPLOYER"
+      "merged_into": "EMPLOYER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYERS",
-      "merged_into": "EMPLOYER"
+      "merged_into": "EMPLOYER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NOTICES",
-      "merged_into": "NOTICE"
+      "merged_into": "NOTICE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "RECORDS",
-      "merged_into": "RECORD"
+      "merged_into": "RECORD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "WORKS ORDERS",
-      "merged_into": "WORKS ORDER"
+      "merged_into": "WORKS ORDER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "INTERIM PAYMENTS",
-      "merged_into": "INTERIM PAYMENT"
+      "merged_into": "INTERIM PAYMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ARBITRATORS",
-      "merged_into": "ARBITRATOR"
+      "merged_into": "ARBITRATOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONSUMER TRANSACTIONS",
-      "merged_into": "CONSUMER TRANSACTION"
+      "merged_into": "CONSUMER TRANSACTION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "BUSINESS OPERATIONS",
-      "merged_into": "BUSINESS OPERATION"
+      "merged_into": "BUSINESS OPERATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "LEGAL PROVISIONS",
-      "merged_into": "LEGAL PROVISION"
+      "merged_into": "LEGAL PROVISION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE BUYER",
-      "merged_into": "BUYER"
+      "merged_into": "BUYER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE SELLER",
-      "merged_into": "SELLER"
+      "merged_into": "SELLER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "OCCUPATIONAL DISEASES",
-      "merged_into": "OCCUPATIONAL DISEASE"
+      "merged_into": "OCCUPATIONAL DISEASE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CHINESE MEDICINE HOSPITAL OF HONG KONG",
-      "merged_into": "CHINESE MEDICINE HOSPITAL OF HONG KONG"
+      "merged_into": "CHINESE MEDICINE HOSPITAL OF HONG KONG",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE INSURANCE ORDINANCE (CAP. 41)",
-      "merged_into": "INSURANCE ORDINANCE (CAP. 41)"
+      "merged_into": "INSURANCE ORDINANCE (CAP. 41)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "FAMILY MEMBERS",
-      "merged_into": "FAMILY MEMBER"
+      "merged_into": "FAMILY MEMBER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "PERIODICAL PAYMENTS",
-      "merged_into": "PERIODICAL PAYMENT"
+      "merged_into": "PERIODICAL PAYMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE EMPLOYEES' COMPENSATION (AMENDMENT) ORDINANCE 1995",
-      "merged_into": "EMPLOYEES' COMPENSATION (AMENDMENT) ORDINANCE 1995"
+      "merged_into": "EMPLOYEES' COMPENSATION (AMENDMENT) ORDINANCE 1995",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ACCIDENTS",
-      "merged_into": "ACCIDENT"
+      "merged_into": "ACCIDENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CHINESE MEDICINE PRACTITIONERS",
-      "merged_into": "CHINESE MEDICINE PRACTITIONER"
+      "merged_into": "CHINESE MEDICINE PRACTITIONER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "WORKPLACE ACCIDENTS",
-      "merged_into": "WORKPLACE ACCIDENT"
+      "merged_into": "WORKPLACE ACCIDENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "COMPENSATION CLAIMS",
-      "merged_into": "COMPENSATION CLAIM"
+      "merged_into": "COMPENSATION CLAIM",
+      "method": "canonical_key"
     },
     {
       "merged_from": "MEDICAL EXAMINATIONS",
-      "merged_into": "MEDICAL EXAMINATION"
+      "merged_into": "MEDICAL EXAMINATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "OFFENCES",
-      "merged_into": "OFFENCE"
+      "merged_into": "OFFENCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "A FINE AT LEVEL 6",
-      "merged_into": "FINE AT LEVEL 6"
+      "merged_into": "FINE AT LEVEL 6",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE DISTRICT COURT ORDINANCE (CAP. 336)",
-      "merged_into": "DISTRICT COURT ORDINANCE (CAP. 336)"
+      "merged_into": "DISTRICT COURT ORDINANCE (CAP. 336)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "APPEALS",
-      "merged_into": "APPEAL"
+      "merged_into": "APPEAL",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NOTIFICATION REQUIREMENTS",
-      "merged_into": "NOTIFICATION REQUIREMENT"
+      "merged_into": "NOTIFICATION REQUIREMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "LEGAL PROCEDURES",
-      "merged_into": "LEGAL PROCEDURE"
+      "merged_into": "LEGAL PROCEDURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE MERCHANT SHIPPING ACT 1894",
-      "merged_into": "MERCHANT SHIPPING ACT 1894"
+      "merged_into": "MERCHANT SHIPPING ACT 1894",
+      "method": "canonical_key"
     },
     {
       "merged_from": "HONG KONG SHIPS",
-      "merged_into": "HONG KONG SHIP"
+      "merged_into": "HONG KONG SHIP",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SEAFARERS",
-      "merged_into": "SEAFARER"
+      "merged_into": "SEAFARER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "COMPENSATION FOR OCCUPATIONAL DISEASES",
-      "merged_into": "COMPENSATION FOR OCCUPATIONAL DISEASE"
+      "merged_into": "COMPENSATION FOR OCCUPATIONAL DISEASE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE COURT",
-      "merged_into": "COURT"
+      "merged_into": "COURT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SURGICAL APPLIANCES",
-      "merged_into": "SURGICAL APPLIANCE"
+      "merged_into": "SURGICAL APPLIANCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE COMPANY",
-      "merged_into": "COMPANY"
+      "merged_into": "COMPANY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE COMPANIES ORDINANCE (CAP. 622)",
-      "merged_into": "COMPANIES ORDINANCE (CAP. 622)"
+      "merged_into": "COMPANIES ORDINANCE (CAP. 622)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CHIEF EXECUTIVE IN COUNCIL",
-      "merged_into": "CHIEF EXECUTIVE IN COUNCIL"
+      "merged_into": "CHIEF EXECUTIVE IN COUNCIL",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE COMMISSIONER",
-      "merged_into": "COMMISSIONER"
+      "merged_into": "COMMISSIONER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "DOCUMENTS",
-      "merged_into": "DOCUMENT"
+      "merged_into": "DOCUMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE ORDINANCE",
-      "merged_into": "ORDINANCE"
+      "merged_into": "ORDINANCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONTRAVENTIONS",
-      "merged_into": "CONTRAVENTION"
+      "merged_into": "CONTRAVENTION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE WORKMEN'S COMPENSATION ORDINANCE",
-      "merged_into": "WORKMEN'S COMPENSATION ORDINANCE"
+      "merged_into": "WORKMEN'S COMPENSATION ORDINANCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "PUBLIC PLACES",
-      "merged_into": "PUBLIC PLACE"
+      "merged_into": "PUBLIC PLACE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "FUNCTIONS",
-      "merged_into": "FUNCTION"
+      "merged_into": "FUNCTION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONSTRUCTION SITES",
-      "merged_into": "CONSTRUCTION SITE"
+      "merged_into": "CONSTRUCTION SITE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NOISE REGULATIONS",
-      "merged_into": "NOISE REGULATION"
+      "merged_into": "NOISE REGULATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NOISE ABATEMENT NOTICES",
-      "merged_into": "NOISE ABATEMENT NOTICE"
+      "merged_into": "NOISE ABATEMENT NOTICE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE AUTHORITY",
-      "merged_into": "AUTHORITY"
+      "merged_into": "AUTHORITY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "INTRUDER ALARM SYSTEMS",
-      "merged_into": "INTRUDER ALARM SYSTEM"
+      "merged_into": "INTRUDER ALARM SYSTEM",
+      "method": "canonical_key"
     },
     {
       "merged_from": "A FINE OF $200,000",
-      "merged_into": "FINE OF $200,000"
+      "merged_into": "FINE OF $200,000",
+      "method": "canonical_key"
     },
     {
       "merged_from": "\"任何人由於生意或業務而輸入、製造或供應,或為供應而要約或展示,任何為施行本部而訂明的產品\"",
-      "merged_into": "任何人由於生意或業務而輸入、製造或供應,或為供應而要約或展示,任何為施行本部而訂明的產品"
+      "merged_into": "任何人由於生意或業務而輸入、製造或供應,或為供應而要約或展示,任何為施行本部而訂明的產品",
+      "method": "canonical_key"
     },
     {
       "merged_from": "\"監督可規定交出產品以作測試\"",
-      "merged_into": "監督可規定交出產品以作測試"
+      "merged_into": "監督可規定交出產品以作測試",
+      "method": "canonical_key"
     },
     {
       "merged_from": "PUBLIC HOLIDAYS",
-      "merged_into": "PUBLIC HOLIDAY"
+      "merged_into": "PUBLIC HOLIDAY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "APPEAL PROCEDURES",
-      "merged_into": "APPEAL PROCEDURE"
+      "merged_into": "APPEAL PROCEDURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE SECRETARY",
-      "merged_into": "SECRETARY"
+      "merged_into": "SECRETARY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE BUILDING MANAGEMENT ORDINANCE (CAP. 344)",
-      "merged_into": "BUILDING MANAGEMENT ORDINANCE (CAP. 344)"
+      "merged_into": "BUILDING MANAGEMENT ORDINANCE (CAP. 344)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE MAGISTRATES ORDINANCE (CAP. 227)",
-      "merged_into": "MAGISTRATES ORDINANCE (CAP. 227)"
+      "merged_into": "MAGISTRATES ORDINANCE (CAP. 227)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE",
-      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE"
+      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (CONTINUED)",
-      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (CONTINUED)"
+      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (CONTINUED)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (FINAL)",
-      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (FINAL)"
+      "merged_into": "CIRCUMSTANCES PLACING THE PROPERTY IN DANGER OF BEING DAMAGED COULD NOT REASONABLY HAVE BEEN FORESEEN BY THE PERSON CHARGED WITH THE OFFENCE (FINAL)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "DANGEROUS OCCURRENCES",
-      "merged_into": "DANGEROUS OCCURRENCE"
+      "merged_into": "DANGEROUS OCCURRENCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "OCCUPIERS",
-      "merged_into": "OCCUPIER"
+      "merged_into": "OCCUPIER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SUBSTANCES",
-      "merged_into": "SUBSTANCE"
+      "merged_into": "SUBSTANCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "INDUSTRIAL UNDERTAKINGS",
-      "merged_into": "INDUSTRIAL UNDERTAKING"
+      "merged_into": "INDUSTRIAL UNDERTAKING",
+      "method": "canonical_key"
     },
     {
       "merged_from": "WORKPLACE INSPECTIONS",
-      "merged_into": "WORKPLACE INSPECTION"
+      "merged_into": "WORKPLACE INSPECTION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "PUBLIC OFFICERS",
-      "merged_into": "PUBLIC OFFICER"
+      "merged_into": "PUBLIC OFFICER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "A PUBLIC OFFICER",
-      "merged_into": "PUBLIC OFFICER"
+      "merged_into": "PUBLIC OFFICER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYEES",
-      "merged_into": "EMPLOYEE"
+      "merged_into": "EMPLOYEE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "AN EMPLOYEE",
-      "merged_into": "EMPLOYEE"
+      "merged_into": "EMPLOYEE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "WORKPLACES",
-      "merged_into": "WORKPLACE"
+      "merged_into": "WORKPLACE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "OCCUPATIONAL SAFETY OFFICERS",
-      "merged_into": "OCCUPATIONAL SAFETY OFFICER"
+      "merged_into": "OCCUPATIONAL SAFETY OFFICER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE COLLAPSE OR FAILURE OF A LIFTING APPLIANCE (EXCEPT THE BREAKAGE OF CHAIN OR ROPE SLINGS)",
-      "merged_into": "COLLAPSE OR FAILURE OF A LIFTING APPLIANCE (EXCEPT THE BREAKAGE OF CHAIN OR ROPE SLINGS)"
+      "merged_into": "COLLAPSE OR FAILURE OF A LIFTING APPLIANCE (EXCEPT THE BREAKAGE OF CHAIN OR ROPE SLINGS)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE RELEVANT DATE",
-      "merged_into": "RELEVANT DATE"
+      "merged_into": "RELEVANT DATE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "HOLIDAYS",
-      "merged_into": "HOLIDAY"
+      "merged_into": "HOLIDAY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "LOCK-OUTS",
-      "merged_into": "LOCK-OUT"
+      "merged_into": "LOCK-OUT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYER-FUNDED MPFS BENEFITS",
-      "merged_into": "EMPLOYER-FUNDED MPFS BENEFIT"
+      "merged_into": "EMPLOYER-FUNDED MPFS BENEFIT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYER-FUNDED ORS BENEFITS",
-      "merged_into": "EMPLOYER-FUNDED ORS BENEFIT"
+      "merged_into": "EMPLOYER-FUNDED ORS BENEFIT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "STRIKES",
-      "merged_into": "STRIKE"
+      "merged_into": "STRIKE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "STATUTORY HOLIDAYS",
-      "merged_into": "STATUTORY HOLIDAY"
+      "merged_into": "STATUTORY HOLIDAY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ORS BENEFITS",
-      "merged_into": "ORS BENEFIT"
+      "merged_into": "ORS BENEFIT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "REST DAYS",
-      "merged_into": "REST DAY"
+      "merged_into": "REST DAY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "STATUTORY LAWS",
-      "merged_into": "STATUTORY LAW"
+      "merged_into": "STATUTORY LAW",
+      "method": "canonical_key"
     },
     {
       "merged_from": "NORMAL WORKING DAYS",
-      "merged_into": "NORMAL WORKING DAY"
+      "merged_into": "NORMAL WORKING DAY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "A PREGNANT EMPLOYEE",
-      "merged_into": "PREGNANT EMPLOYEE"
+      "merged_into": "PREGNANT EMPLOYEE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "FEMALE EMPLOYEES",
-      "merged_into": "FEMALE EMPLOYEE"
+      "merged_into": "FEMALE EMPLOYEE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYMENT REGULATIONS",
-      "merged_into": "EMPLOYMENT REGULATION"
+      "merged_into": "EMPLOYMENT REGULATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "WORKERS",
-      "merged_into": "WORKER"
+      "merged_into": "WORKER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE BANKING ORDINANCE (CAP. 155)",
-      "merged_into": "BANKING ORDINANCE (CAP. 155)"
+      "merged_into": "BANKING ORDINANCE (CAP. 155)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYER OPENING SHOPS FOR SALE OF COMMODITIES TO EMPLOYEES",
-      "merged_into": "EMPLOYER OPENING SHOPS FOR SALE OF COMMODITIES TO EMPLOYEE"
+      "merged_into": "EMPLOYER OPENING SHOPS FOR SALE OF COMMODITIES TO EMPLOYEE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SEVERANCE PAYMENTS",
-      "merged_into": "SEVERANCE PAYMENT"
+      "merged_into": "SEVERANCE PAYMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "LEGAL OBLIGATIONS",
-      "merged_into": "LEGAL OBLIGATION"
+      "merged_into": "LEGAL OBLIGATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "LONG SERVICE PAYMENTS",
-      "merged_into": "LONG SERVICE PAYMENT"
+      "merged_into": "LONG SERVICE PAYMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE EIGHTH SCHEDULE",
-      "merged_into": "EIGHTH SCHEDULE"
+      "merged_into": "EIGHTH SCHEDULE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "REINSTATEMENT ORDERS",
-      "merged_into": "REINSTATEMENT ORDER"
+      "merged_into": "REINSTATEMENT ORDER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "RE-ENGAGEMENT ORDERS",
-      "merged_into": "RE-ENGAGEMENT ORDER"
+      "merged_into": "RE-ENGAGEMENT ORDER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "REINSTATEMENT OR RE-ENGAGEMENT ORDERS",
-      "merged_into": "REINSTATEMENT OR RE-ENGAGEMENT ORDER"
+      "merged_into": "REINSTATEMENT OR RE-ENGAGEMENT ORDER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYMENT DISPUTES",
-      "merged_into": "EMPLOYMENT DISPUTE"
+      "merged_into": "EMPLOYMENT DISPUTE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE EMPLOYED PERSON",
-      "merged_into": "EMPLOYED PERSON"
+      "merged_into": "EMPLOYED PERSON",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYEE BENEFITS",
-      "merged_into": "EMPLOYEE BENEFIT"
+      "merged_into": "EMPLOYEE BENEFIT",
+      "method": "canonical_key"
     },
     {
-      "merged_from": "SUPERIOR NOMINATED SUB-CONTRACTOR",
-      "merged_into": "SUPERIOR NOMINATED SUB-CONTRACTORS"
+      "merged_from": "SUPERIOR NOMINATED SUB-CONTRACTORS",
+      "merged_into": "SUPERIOR NOMINATED SUB-CONTRACTOR",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CLAIMANTS",
-      "merged_into": "CLAIMANT"
+      "merged_into": "CLAIMANT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONTRACT TERMS",
-      "merged_into": "CONTRACT TERM"
+      "merged_into": "CONTRACT TERM",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYMENT RECORDS",
-      "merged_into": "EMPLOYMENT RECORD"
+      "merged_into": "EMPLOYMENT RECORD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SPECIFIED EMPLOYEES",
-      "merged_into": "SPECIFIED EMPLOYEE"
+      "merged_into": "SPECIFIED EMPLOYEE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE PROVISIONS",
-      "merged_into": "PROVISION"
+      "merged_into": "PROVISION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE EMPLOYMENT (AMENDMENT) ORDINANCE 2007",
-      "merged_into": "EMPLOYMENT (AMENDMENT) ORDINANCE 2007"
+      "merged_into": "EMPLOYMENT (AMENDMENT) ORDINANCE 2007",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE 2020 AMENDMENT ORDINANCE",
-      "merged_into": "2020 AMENDMENT ORDINANCE"
+      "merged_into": "2020 AMENDMENT ORDINANCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "A PARTY",
-      "merged_into": "PARTY"
+      "merged_into": "PARTY",
+      "method": "canonical_key"
     },
     {
       "merged_from": "MAINLAND AWARDS",
-      "merged_into": "MAINLAND AWARD"
+      "merged_into": "MAINLAND AWARD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "COURT PROCEDURES",
-      "merged_into": "COURT PROCEDURE"
+      "merged_into": "COURT PROCEDURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONVENTION AWARDS",
-      "merged_into": "CONVENTION AWARD"
+      "merged_into": "CONVENTION AWARD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE NEW YORK CONVENTION",
-      "merged_into": "NEW YORK CONVENTION"
+      "merged_into": "NEW YORK CONVENTION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "MACAO AWARDS",
-      "merged_into": "MACAO AWARD"
+      "merged_into": "MACAO AWARD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "INTERIM MEASURES",
-      "merged_into": "INTERIM MEASURE"
+      "merged_into": "INTERIM MEASURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE OLD ORDINANCE",
-      "merged_into": "OLD ORDINANCE"
+      "merged_into": "OLD ORDINANCE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE UNCITRAL MODEL LAW",
-      "merged_into": "UNCITRAL MODEL LAW"
+      "merged_into": "UNCITRAL MODEL LAW",
+      "method": "canonical_key"
     },
     {
       "merged_from": "PARTIES",
-      "merged_into": "THE PARTIES"
+      "merged_into": "THE PARTIES",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE ARBITRATION PROCEEDINGS",
-      "merged_into": "ARBITRATION PROCEEDINGS"
+      "merged_into": "ARBITRATION PROCEEDINGS",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE TRADE FACILITATION COMMISSION示范法",
-      "merged_into": "TRADE FACILITATION COMMISSION示范法"
+      "merged_into": "TRADE FACILITATION COMMISSION示范法",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EXPERT REPORTS",
-      "merged_into": "EXPERT REPORT"
+      "merged_into": "EXPERT REPORT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EXPERTS",
-      "merged_into": "EXPERT"
+      "merged_into": "EXPERT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CIVIL LAW PROCEDURES",
-      "merged_into": "CIVIL LAW PROCEDURE"
+      "merged_into": "CIVIL LAW PROCEDURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "DISPUTE RESOLUTION PROCEDURES",
-      "merged_into": "DISPUTE RESOLUTION PROCEDURE"
+      "merged_into": "DISPUTE RESOLUTION PROCEDURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "LAWYERS",
-      "merged_into": "LAWYER"
+      "merged_into": "LAWYER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE LEGAL PRACTITIONERS ORDINANCE (CAP. 159)",
-      "merged_into": "LEGAL PRACTITIONERS ORDINANCE (CAP. 159)"
+      "merged_into": "LEGAL PRACTITIONERS ORDINANCE (CAP. 159)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ARBITRAL AWARDS",
-      "merged_into": "ARBITRAL AWARD"
+      "merged_into": "ARBITRAL AWARD",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE ARBITRATION TRIBUNAL",
-      "merged_into": "ARBITRATION TRIBUNAL"
+      "merged_into": "ARBITRATION TRIBUNAL",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE HIGH COURT ORDINANCE (CAP. 4)",
-      "merged_into": "HIGH COURT ORDINANCE (CAP. 4)"
+      "merged_into": "HIGH COURT ORDINANCE (CAP. 4)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THIRD PARTY FUNDERS",
-      "merged_into": "THIRD PARTY FUNDER"
+      "merged_into": "THIRD PARTY FUNDER",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ORFS AGREEMENTS",
-      "merged_into": "ORFS AGREEMENT"
+      "merged_into": "ORFS AGREEMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "IPR DISPUTES",
-      "merged_into": "IPR DISPUTE"
+      "merged_into": "IPR DISPUTE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE ARBITRAL TRIBUNAL",
-      "merged_into": "ARBITRAL TRIBUNAL"
+      "merged_into": "ARBITRAL TRIBUNAL",
+      "method": "canonical_key"
     },
     {
       "merged_from": "HEARINGS",
-      "merged_into": "HEARING"
+      "merged_into": "HEARING",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ARBITRATION PROCEDURES",
-      "merged_into": "ARBITRATION PROCEDURE"
+      "merged_into": "ARBITRATION PROCEDURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "SPECIFIED STRUCTURES",
-      "merged_into": "SPECIFIED STRUCTURE"
+      "merged_into": "SPECIFIED STRUCTURE",
+      "method": "canonical_key"
     },
     {
       "merged_from": "PROGRESS PAYMENTS",
-      "merged_into": "PROGRESS PAYMENT"
+      "merged_into": "PROGRESS PAYMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE BUILDING ORDINANCE (CAP. 123)",
-      "merged_into": "BUILDING ORDINANCE (CAP. 123)"
+      "merged_into": "BUILDING ORDINANCE (CAP. 123)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE EMPLOYMENT ORDINANCE (CAP. 57)",
-      "merged_into": "EMPLOYMENT ORDINANCE (CAP. 57)"
+      "merged_into": "EMPLOYMENT ORDINANCE (CAP. 57)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONSTRUCTION CONTRACTS",
-      "merged_into": "CONSTRUCTION CONTRACT"
+      "merged_into": "CONSTRUCTION CONTRACT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "CONDITIONAL PAYMENT PROVISIONS",
-      "merged_into": "CONDITIONAL PAYMENT PROVISION"
+      "merged_into": "CONDITIONAL PAYMENT PROVISION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "A CLAIMING PARTY",
-      "merged_into": "CLAIMING PARTY"
+      "merged_into": "CLAIMING PARTY",
+      "method": "canonical_key"
+    },
+    {
+      "merged_from": "CONTRACTUAL OBLIGATIONS",
+      "merged_into": "CONTRACTUAL OBLIGATION",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE CONSTRUCTION INDUSTRY DEVELOPMENT BOARD (CIDB)",
-      "merged_into": "CONSTRUCTION INDUSTRY DEVELOPMENT BOARD (CIDB)"
+      "merged_into": "CONSTRUCTION INDUSTRY DEVELOPMENT BOARD (CIDB)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "THE SALE OF GOODS ORDINANCE (CAP. 26)",
-      "merged_into": "SALE OF GOODS ORDINANCE (CAP. 26)"
+      "merged_into": "SALE OF GOODS ORDINANCE (CAP. 26)",
+      "method": "canonical_key"
     },
     {
       "merged_from": "ARBITRATION AGREEMENTS",
-      "merged_into": "ARBITRATION AGREEMENT"
+      "merged_into": "ARBITRATION AGREEMENT",
+      "method": "canonical_key"
     },
     {
       "merged_from": "EMPLOYMENT CONTRACTS",
-      "merged_into": "EMPLOYMENT CONTRACT"
+      "merged_into": "EMPLOYMENT CONTRACT",
+      "method": "canonical_key"
     }
   ],
-  "pruned_noise_orphans": [
+  "pruned_nodes": [
     {
       "pruned_id": "1 DECEMBER 2026",
       "reason": "temporal_or_date",
@@ -1025,6 +2207,51 @@
       "pruned_id": "14 DAYS",
       "reason": "temporal_or_date",
       "description": "An employee must be given at least 14 days' notice for annual leave, unless otherwise agreed."
+    },
+    {
+      "pruned_id": "數學",
+      "reason": "noise_orphan",
+      "description": "數學在法律文本中的应用主要体现在数字和计算上，但在此段落中未有明确的数学概念或公式出现。"
+    },
+    {
+      "pruned_id": "收據",
+      "reason": "noise_orphan",
+      "description": "收據指的是銷售處方藥物時出具的憑證，顯示銷售日期及所售藥品名稱、份量和價格等信息。"
+    },
+    {
+      "pruned_id": "地址",
+      "reason": "noise_orphan",
+      "description": "地址是指销售处方药物的人或开具处方医生的工作地点或其他联系方式。"
+    },
+    {
+      "pruned_id": "日期",
+      "reason": "noise_orphan",
+      "description": "日期指的是在文本中多次提及的事件发生时间，如开出处方、销售药品等的时间点。\n• 日期指的是在文本中多次提及的时间点，如开出处方、销售药品等时间。"
+    },
+    {
+      "pruned_id": "名稱",
+      "reason": "noise_orphan",
+      "description": "名稱是指在文本中提到的各种实体名称或标识符，如医生姓名、病人姓名、药物名称等。"
+    },
+    {
+      "pruned_id": "份量",
+      "reason": "noise_orphan",
+      "description": "份量指的是中药材的重量或其他计量单位，用于描述处方中的药材用量。"
+    },
+    {
+      "pruned_id": "價錢",
+      "reason": "noise_orphan",
+      "description": "價錢指的是销售处方药时所标示的价格信息。"
+    },
+    {
+      "pruned_id": "穀物",
+      "reason": "noise_orphan",
+      "description": "Grains such as oats, barley, wheat, or corn are primary products processed and stored by this industry."
+    },
+    {
+      "pruned_id": "署長",
+      "reason": "noise_orphan",
+      "description": "The Secretary is an individual responsible for recognizing and approving schemes of medical treatment as well as potentially revoking such recognitions based on certain conditions."
     }
   ],
   "sample_type_corrections": [
