@@ -17,11 +17,11 @@
     "hallucinated_gloss_fixes_count": 216,
     "canonical_merges_count": 163,
     "bilingual_vector_merges_count": 24,
-    "pruned_nodes_count": 80,
-    "updated_nodes_count": 4720,
-    "added_edges_count": 3128,
+    "pruned_nodes_count": 111,
+    "updated_nodes_count": 4713,
+    "added_edges_count": 3125,
     "reembedded_vectors_count": 0,
-    "final_nodes_count": 9780
+    "final_nodes_count": 9749
   },
   "hallucinated_gloss_fixes": [
     {
@@ -1874,6 +1874,46 @@
       "description": "售卖包括协商和交易的过程，也涵盖了交付的环节，在此上下文中指货物买卖的基本行为。"
     },
     {
+      "pruned_id": "編輯修訂——2018年第1號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "\"编辑修订——2018年第1号编辑修订记录\"指的是对相关法律法规的具体修改历史和版本信息。"
+    },
+    {
+      "pruned_id": "由2006年第16號第12條代替",
+      "reason": "noise_orphan",
+      "description": "由2006年第16号第12条规定取代了之前的规定，表示法律条文的更新或修订。"
+    },
+    {
+      "pruned_id": "由2000年第52號第3條修訂",
+      "reason": "noise_orphan",
+      "description": "由2000年第52号第3条规定进行了修改，表明对相关条款的具体调整和修正。"
+    },
+    {
+      "pruned_id": "由1980年第44號第15條修訂",
+      "reason": "noise_orphan",
+      "description": "由1980年第44号第15条修订\"表示该法律或规定在特定时间进行了修改，反映了历史上的立法变化。"
+    },
+    {
+      "pruned_id": "由2006年第16號第12條修訂",
+      "reason": "noise_orphan",
+      "description": "由2006年第16号第12条规定进行了修订，表明对相关条款的具体调整和修正。"
+    },
+    {
+      "pruned_id": "由1995年第1號第2條代替。<BR>編輯修訂——2018年第1號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "由1995年第1号第2条规定进行了修订，表示对相关条款的具体调整和修正。"
+    },
+    {
+      "pruned_id": "由2004年第28號第35條修訂",
+      "reason": "noise_orphan",
+      "description": "由2004年第28号第35条修订\"表示该法律或规定在特定时间进行了修改，反映了历史上的立法变化。"
+    },
+    {
+      "pruned_id": "由2000年第52號第3條增補",
+      "reason": "noise_orphan",
+      "description": "由2000年第52号第3条规定增加了补充内容，表明对相关条款的具体调整和修正。"
+    },
+    {
       "pruned_id": "SUBSECTION (17)",
       "reason": "noise_orphan",
       "description": "Subsection (17) is a provision that may override or modify the general rules outlined in other sections of the text."
@@ -1924,9 +1964,24 @@
       "description": "Kidney inflammation is a medical condition that can result from certain occupational exposures and may increase the penalty period for poisoning by 2 years."
     },
     {
+      "pruned_id": "OCCUPATIONAL DISEASES (編輯修訂——2018年第1號編輯修訂紀錄)",
+      "reason": "noise_orphan",
+      "description": "The term 'Occupational Diseases' is updated and revised according to the 2018 Edition, indicating ongoing updates in occupational health regulations."
+    },
+    {
+      "pruned_id": "OCCUPATIONAL DISEASES (FORMAT CHANGES—E.R. 1 OF 2018)",
+      "reason": "noise_orphan",
+      "description": "This disease is caused by subjection to compressed or rarefied air or other gases or gaseous mixtures."
+    },
+    {
       "pruned_id": "10 YEARS",
       "reason": "temporal_or_date",
       "description": "A duration of 10 years is mentioned in relation to certain occupations and their associated health risks."
+    },
+    {
+      "pruned_id": "FORMAT CHANGES—E.R. 1 OF 2018",
+      "reason": "noise_orphan",
+      "description": "The technology refers to the updated format and rules for distributing compensation, specifically E.R. 1 of 2018 which modifies how compensation is apportioned among eligible family members.\n• These are notes indicating format changes made in a document as per E.R. 1 of 2018."
     },
     {
       "pruned_id": "700,390",
@@ -1942,6 +1997,11 @@
       "pruned_id": "21 DAYS",
       "reason": "temporal_or_date",
       "description": "21 days is the minimum period from when a notice takes effect until it becomes enforceable after being served on any person."
+    },
+    {
+      "pruned_id": "編輯修訂——2021年第2號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "This indicates a further edit or revision in 2021 that updates previous regulations regarding non-compliant products and their misuse."
     },
     {
       "pruned_id": "$200,000",
@@ -1972,6 +2032,11 @@
       "pruned_id": "4 APRIL 1965",
       "reason": "temporal_or_date",
       "description": "The date 4 April 1965 marks a significant point where certain contracts are exempt from the provisions of section 5(3) as declared by an ordinance."
+    },
+    {
+      "pruned_id": "FORMAT CHANGES (2015)",
+      "reason": "noise_orphan",
+      "description": "Format changes to contracts of employment are noted, specifically mentioned as E.R. 3 of 2015 according to the text provided."
     },
     {
       "pruned_id": "7天",
@@ -2019,6 +2084,16 @@
       "description": "The date, 27 February 2015, is significant as it marks a change in paternity leave entitlements for children born on or after this date."
     },
     {
+      "pruned_id": "FORMAT CHANGES—2017年第3號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "The format change recorded by E.R. 3 of 2017 is mentioned as an update to the payment rules."
+    },
+    {
+      "pruned_id": "2013年第1號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "The 2013 Year 1 Edition Revision Record refers to an amendment made in 2013 that has edited the text, but no specific changes are detailed here."
+    },
+    {
       "pruned_id": "本條",
       "reason": "noise_orphan",
       "description": "本條是指具體規定終止僱傭金的法律或條款。"
@@ -2032,6 +2107,16 @@
       "pruned_id": "2022年6月17日",
       "reason": "temporal_or_date",
       "description": "指明日期是2022年6月17日，这是一个具体的日期标记。"
+    },
+    {
+      "pruned_id": "2012年第2號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "Format changes—E.R. 2 of 2012 refers to an official document that records and documents any modifications or updates made to the legislation, including formatting adjustments for better readability and organization."
+    },
+    {
+      "pruned_id": "格式變更—2012年第2號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "Format changes—E.R. 2 of 2012 refers to an official document that records and documents any modifications or updates made to the legislation, including formatting adjustments for better readability and organization."
     },
     {
       "pruned_id": "農曆",
@@ -2059,6 +2144,16 @@
       "description": "This is the specific date on which certain legal provisions came into effect according to the editorial note."
     },
     {
+      "pruned_id": "FORMAT CHANGES—2015年第3號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "These are the records of format revisions and edits to a document from 2015, suggesting ongoing updates to legal documents or procedures."
+    },
+    {
+      "pruned_id": "FORMAT CHANGES—E.R. 3 OF 2015",
+      "reason": "noise_orphan",
+      "description": "A specific event or update in the format requirements for record-keeping as per a government directive."
+    },
+    {
       "pruned_id": "18(2)",
       "reason": "noise_orphan",
       "description": "Section 18(2) is part of a set of laws that may be violated by individuals with potential criminal penalties associated with it."
@@ -2084,6 +2179,16 @@
       "description": "The date 19 October 2018 is significant as it marks the commencement of key provisions in the Employment (Amendment) Ordinance 2018."
     },
     {
+      "pruned_id": "格式變更——2017年第3號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "The formatting changes recorded by the 3rd Amendment of 2017 indicate updates to legal documents that can be studied within social science research on law and policy evolution.\n• This is a record of changes made in 2017 to the format and content of legal documents, indicating updates or revisions that affect how laws are presented and applied."
+    },
+    {
+      "pruned_id": "FORMAT CHANGES—E.R. 3 OF 2017",
+      "reason": "noise_orphan",
+      "description": "Format changes indicate modifications or updates to how certain information is presented, which can be part of technological advancements in document management and regulation.\n• This is an event indicating format changes made in the third edition record of 2017."
+    },
+    {
       "pruned_id": "手令",
       "reason": "noise_orphan",
       "description": "This refers to a legal order or warrant issued by a judge, likely used in apprehending absconding employers."
@@ -2102,6 +2207,21 @@
       "pruned_id": "6 MONTHS",
       "reason": "temporal_or_date",
       "description": "6 months refers to the new time frame for making claims by personal representatives of deceased employees after their deaths.<SEP>[3 MONTHS] 3 months originally referred to the period within which certain actions must be taken<SEP>such as filing a claim after death. It is amended to 6 months in section 13 of this text."
+    },
+    {
+      "pruned_id": "DEATH OF EMPLOYER—LONG SERVICE PAYMENTS (FORMAT CHANGES—E.R. 3 OF 2017)",
+      "reason": "noise_orphan",
+      "description": "The Death of Employer—Long Service Payments ordinance, with format changes effective from E.R. 3 of 2017, deals with long service payments to employees in the event of their employer's death."
+    },
+    {
+      "pruned_id": "EMPLOYER'S DEATH (FORMAT CHANGES)",
+      "reason": "noise_orphan",
+      "description": "The event refers to the legal provisions related to handling situations where an employer dies, including changes made in 2017 regarding format and payment procedures for long service payments."
+    },
+    {
+      "pruned_id": "\"格式變更——2017年第3號編輯修訂紀錄\"|",
+      "reason": "noise_orphan",
+      "description": "This refers to a specific format change made in the third edition of 2017, indicating updates or revisions to existing documents and regulations."
     },
     {
       "pruned_id": "$180,000",
@@ -2174,9 +2294,34 @@
       "description": "有是一个触发条件，可能指的是某种情况或事件的存在，但具体含义需要进一步明确。"
     },
     {
+      "pruned_id": "2018年第1號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "E.R. 1 of 2018 is an editorial revision record from 2018 that made format changes to the ordinance.\n• E.R. 1 of 2018 refers to an editorial revision record from 2018 that made format changes to the ordinance."
+    },
+    {
+      "pruned_id": "FORMAT CHANGES— E.R. 1 OF 2018",
+      "reason": "noise_orphan",
+      "description": "This phrase indicates a provision was changed in format as recorded by E.R. 1 of 2018, affecting how certain sections are presented or structured."
+    },
+    {
+      "pruned_id": "2014年第2號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "E.R. 2 of 2014 is an editorial revision record from 2014 that made significant changes or deletions to the ordinance."
+    },
+    {
       "pruned_id": "指示",
       "reason": "noise_orphan",
       "description": "指示 refers to directives or orders given by the arbitral tribunal during proceedings, which can be active (made on its own) or reactive (given upon request of a party), as described in sections 57(2)(a) and (b)."
+    },
+    {
+      "pruned_id": "由2021年第1號第5條廢除 (REPEALED BY 2021 NO. 1, ARTICLE 5)",
+      "reason": "noise_orphan",
+      "description": "This clause was repealed and no longer applies to the legal framework discussed in the text."
+    },
+    {
+      "pruned_id": "2015年第3號編輯修訂紀錄",
+      "reason": "noise_orphan",
+      "description": "This is a record of editorial amendments from 2015, indicating changes or updates to laws and regulations."
     },
     {
       "pruned_id": "2006年7月7日",
@@ -2207,6 +2352,16 @@
       "pruned_id": "14 DAYS",
       "reason": "temporal_or_date",
       "description": "An employee must be given at least 14 days' notice for annual leave, unless otherwise agreed."
+    },
+    {
+      "pruned_id": "格式變更——E.R. 3 OF 2017",
+      "reason": "noise_orphan",
+      "description": "The procedure for apprehension as per section 67 has format changes documented in E.R. 3 of 2017."
+    },
+    {
+      "pruned_id": "THE PARTIES'<BR>RIGHT TO AUTHORIZE THIRD PARTY",
+      "reason": "noise_orphan",
+      "description": "The parties have the right under Article 11(2) to authorize a third party, such as an institution like HKIAC, to determine the number of arbitrators."
     },
     {
       "pruned_id": "數學",

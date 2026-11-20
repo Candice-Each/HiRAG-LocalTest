@@ -1135,7 +1135,6 @@
     const AGNES_MODEL = "agnes-2.5-flash";
     const STORAGE_KEY = "HIRAG_API_KEY";
 
-    // 清洗並校驗密匙：剝離複製貼上帶入的零寬字元與全形符號，攔截誤貼入的中文內容
     function sanitizeApiKey(raw) {
       if (!raw) return "";
       let s = String(raw)
@@ -1297,7 +1296,6 @@
       return "EVENT";
     }
 
-    // 精簡冗長短語：剝離文檔前綴與法例指代外殼
     function compactClausePhrase(rawPhrase) {
       let s = cleanStr(rawPhrase)
         .replace(/^\[([A-Z0-9_\-]+)\]\s*/i, "")
@@ -1323,7 +1321,6 @@
       return s;
     }
 
-    // 依文檔內容推斷法例章號或文檔簡稱（防止跨法例引用造成污染）
     function inferDocShortTag(docChunks) {
       if (!docChunks || docChunks.length === 0) return "";
       const sampleText = docChunks.slice(0, 4).map(c => c.content).join("\n");
@@ -1352,7 +1349,6 @@
         return "CAP. 652";
       }
 
-      // 剝離跨法例引用後再匹配章號
       const strippedText = sampleText.replace(/(?:meaning given to it by|referred to in|under)\s+[^.;\n]{0,80}\(Cap\.?\s*\d+[A-Z]?\)/gi, "");
       const capMatch = strippedText.match(/\bCap\.?\s*(\d+[A-Z]?)\b/i);
       if (capMatch) return `CAP. ${capMatch[1].toUpperCase()}`;
@@ -1360,14 +1356,12 @@
       return "";
     }
 
-    // 修復括號截斷的半截描述並清理多段重複套話
     function repairTruncatedDesc(nodeId, rawDesc, neighbors) {
       let desc = cleanStr(rawDesc);
       const openCnt = (desc.match(/\(/g) || []).length;
       const closeCnt = (desc.match(/\)/g) || []).length;
       if (openCnt > closeCnt) desc += ")";
 
-      // 若描述含多段拼接，優先保留具體段落並剔除空泛套話
       if (desc.includes("\n• ")) {
         const parts = desc
           .split("\n• ")
@@ -1588,7 +1582,6 @@
             n.label = `${prefix}第${secNum}條`;
           }
         }
-        // 0C. 中文條文子款（如 "第(1)(B)(III)" / "第(4)(C)"）：依條文結構自動回溯所屬條號，零主題硬編碼
         else if (zhSubClauseMatch) {
           const subCode = zhSubClauseMatch[1].toLowerCase();
           const prefix = docCapTag ? `${docCapTag} ` : "";
@@ -2103,9 +2096,6 @@
       }
     }
 
-    /* ============ 瀏覽器內置圖譜檢索引擎 ============ */
-
-    /* ============ 語料驅動的零窮舉分詞與 IDF 索引 ============ */
     let corpusIDF = null; // Map<tokenUpper, idfWeight>
     let corpusMaxIDF = 6.0;
 
@@ -2122,7 +2112,6 @@
           if (w.length >= 2) tokens.push(w);
         }
       } else {
-        // 降級兜底：中英文邊界切分與中文 2-gram 滑動視窗
         const spaced = s
           .replace(/([\u4e00-\u9fa5])([A-Z0-9])/g, "$1 $2")
           .replace(/([A-Z0-9])([\u4e00-\u9fa5])/g, "$1 $2");
@@ -2156,7 +2145,6 @@
       }
       corpusMaxIDF = Math.log((N + 1) / 1) + 1.0;
       for (const [tk, count] of df.entries()) {
-        // 標準平滑 IDF：泛詞權重自動趨低，稀有專有名詞權重更高
         const idf = Math.log((N + 1) / (count + 1)) + 1.0;
         corpusIDF.set(tk, idf);
       }
@@ -2164,8 +2152,28 @@
 
     function getTokenIDF(tk) {
       ensureCorpusIDF();
-      // 未在任何原文切片出現的詞賦予最高未知實體權重
       return corpusIDF.has(tk) ? corpusIDF.get(tk) : corpusMaxIDF;
+    }
+
+    function extractEnglishBigrams(str) {
+      const stop = new Set(["THE", "AND", "FOR", "WITH", "THAT", "THIS", "FROM", "SHALL", "UNDER", "SUCH", "ANY", "NOT", "ALL", "ARE", "WAS", "WERE", "HAVE", "HAS", "BEEN", "WHICH", "WHO", "WHERE", "WHEN", "UPON", "INTO", "OVER", "OTHER", "THEIR", "THERE", "HEREOF", "THEREOF"]);
+      const words = String(str || "").toUpperCase().match(/[A-Z][A-Z\-]{2,}/g) || [];
+      const bigrams = new Set();
+      for (let i = 0; i < words.length - 1; i++) {
+        const w1 = words[i];
+        const w2 = words[i + 1];
+        if (!stop.has(w1) && !stop.has(w2) && w1.length >= 4 && w2.length >= 4) {
+          bigrams.add(`${w1} ${w2}`);
+        }
+      }
+      return [...bigrams];
+    }
+
+    function detectEffectiveLang(query, mode) {
+      if (mode === "zh" || mode === "en") return mode;
+      if (/[\u4e00-\u9fa5]/.test(query)) return "zh";
+      const isEnglishSentence = /\b(?:WHAT|HOW|WHY|WHO|WHEN|WHERE|WHICH|DOES|DO|IS|ARE|CAN|SHOULD|WILL|CHECK|REVIEW|COMPARE|EXPLAIN|LIST|SUMMARIZE|ANALYZE|DESCRIBE|TELL|FIND|VIOLATE|VIOLATES|COMPLY|COMPLIES|BETWEEN|UNDER|ABOUT|REGARDING)\b/i.test(query);
+      return isEnglishSentence ? "en" : "zh";
     }
 
     async function runStaticBrowserRAG(query, currentApiKey) {
@@ -2173,11 +2181,19 @@
       const qUpper = query.toUpperCase().trim();
       const tokens = tokenizeTextZeroEnum(qUpper);
       const totalQueryIDF = tokens.reduce((sum, tk) => sum + getTokenIDF(tk), 0) || 1;
+      const effectiveLang = detectEffectiveLang(query, responseLang);
 
       const docGroups = {};
+      const docMeta = {};
       const targetDocIds = new Set();
-      const statuteDocIds = new Set();
       const chunkHitTokens = new Set();
+
+      const queryCaps = new Set(
+        [...qUpper.matchAll(/(?:CAP\.?\s*|第\s*)(\d{2,3}[A-Z]?)(?:\s*章)?/g)].map(m => m[1])
+      );
+      const queryNtts = new Set(
+        [...qUpper.matchAll(/\bNTT[\s_\-]*([A-Z]\d+)\b/g)].map(m => m[1])
+      );
 
       for (const [cid, cdata] of Object.entries(textChunksMap)) {
         if (!cdata || !cdata.content) continue;
@@ -2190,28 +2206,42 @@
           if (cUpper.includes(tk)) chunkHitTokens.add(tk);
         }
 
-        const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
-        const isContractOrNtt = /CONTRACT_A|CONTRACT_B|GCCBWT|GCC_NTT/i.test(srcHeader);
-
-        if (
-          !isContractOrNtt &&
-          (cUpper.includes("HK-STATUTES-BASELINE") ||
-            cUpper.includes("STATUTORY BASELINE CORPUS") ||
-            /(?:CAP|ORDINANCE|STATUTE|LAW|法例|條例|条例|\.RTF)/i.test(srcHeader))
-        ) {
-          statuteDocIds.add(docId);
+        if (!docMeta[docId]) {
+          const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
+          if (srcHeader) {
+            const capM = srcHeader.match(/CAP[\s_\-]*(\d{2,3}[A-Z]?)/);
+            const nttM = srcHeader.match(/NTT[\s_\-]*([A-Z]\d+)/);
+            docMeta[docId] = {
+              srcHeader,
+              capNum: capM ? capM[1] : "",
+              nttCode: nttM ? nttM[1] : "",
+              isContractA: /CONTRACT_A/.test(srcHeader),
+              isContractB: /CONTRACT_B/.test(srcHeader),
+              isGccbwt: /GCCBWT/.test(srcHeader)
+            };
+          }
         }
 
+        const meta = docMeta[docId] || {};
         if (
           (qUpper.includes("樣本A") || qUpper.includes("樣本 A") || qUpper.includes("样本A") || qUpper.includes("样本 A") || qUpper.includes("合同A") || qUpper.includes("主合同") || qUpper.includes("HDIL-2026-MC-01") || qUpper.includes("CONTRACT A") || qUpper.includes("HARBOURFRONT") || qUpper.includes("APEX BUILDERS")) &&
-          (cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT") || (cUpper.includes("HDIL-2026-MC-01") && !cUpper.includes("DOMESTIC SUBCONTRACT")))
+          (meta.isContractA || (cUpper.includes("HDIL-2026-MC-01") && !cUpper.includes("DOMESTIC SUBCONTRACT")))
         ) {
           targetDocIds.add(docId);
         }
         if (
           (qUpper.includes("樣本B") || qUpper.includes("樣本 B") || qUpper.includes("样本B") || qUpper.includes("样本 B") || qUpper.includes("合同B") || qUpper.includes("分包") || qUpper.includes("APEX-2026-SUB-MEP-01") || qUpper.includes("CONTRACT B") || qUpper.includes("VANGUARD") || qUpper.includes("APEX BUILDERS")) &&
-          (cUpper.includes("CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT") || cUpper.includes("APEX-2026-SUB-MEP-01"))
+          (meta.isContractB || cUpper.includes("APEX-2026-SUB-MEP-01"))
         ) {
+          targetDocIds.add(docId);
+        }
+        if (qUpper.includes("GCCBWT") && meta.isGccbwt) {
+          targetDocIds.add(docId);
+        }
+        if (meta.nttCode && queryNtts.has(meta.nttCode)) {
+          targetDocIds.add(docId);
+        }
+        if (meta.capNum && queryCaps.has(meta.capNum)) {
           targetDocIds.add(docId);
         }
       }
@@ -2223,19 +2253,19 @@
       const groundedIDF = [...chunkHitTokens].reduce((sum, tk) => sum + getTokenIDF(tk), 0);
       const idfCoverage = groundedIDF / totalQueryIDF;
 
-      // 僅當通過語料 IDF 覆蓋率校驗或有明確條款／合同指代時，才回退載入合同切片
-      if (targetDocIds.size === 0 && (flatClauses.length > 0 || idfCoverage >= 0.40)) {
-        for (const [docId, arr] of Object.entries(docGroups)) {
-          if (arr.length <= 12 && !statuteDocIds.has(docId)) {
-            const firstUpper = arr[0].content.toUpperCase();
-            if (firstUpper.includes("CONTRACT_A") || firstUpper.includes("CONTRACT_B")) {
-              targetDocIds.add(docId);
-            }
-          }
-        }
+      const hasExplicitRef = flatClauses.length > 0 || targetDocIds.size > 0;
+      if (!hasExplicitRef && idfCoverage < 0.40) {
+        const oodMsg =
+          effectiveLang === "en"
+            ? `**No relevant records found in the knowledge base**\n\nNo matching entities, clauses, or source excerpts were found for "${query}".`
+            : `**當前知識庫中無相關內容**\n\n資料庫中未收錄與「${query}」相關的實體、條款或原文切片。`;
+        return {
+          answer: oodMsg,
+          evidence: effectiveLang === "en" ? "No matching source excerpts." : "無匹配的底層原文切片。",
+          matched_nodes: []
+        };
       }
 
-      // 1. 定位命中的目標條款切片
       const matchedChunkBlocks = [];
       const siblingChunkBlocks = [];
       const hitChunkIds = new Set();
@@ -2244,26 +2274,49 @@
 
       for (const docId of targetDocIds) {
         const list = (docGroups[docId] || []).sort((a, b) => a.order - b.order);
+        const docLabel = (docMeta[docId] && docMeta[docId].srcHeader) || docId;
+        const isShortDoc = list.length <= 12;
+        const longDocScored = [];
+
         for (const item of list) {
           targetDocChunkIds.add(item.cid);
+          const cU = item.content.toUpperCase();
           let hitCl = null;
           for (const cl of flatClauses) {
-            const re = new RegExp(`(?:^|\\n)\\s*(?:\\[[^\\]]+\\]\\s*)?(?:CLAUSE\\s+|ARTICLE\\s+|SECTION\\s+)?${cl.replace(".", "\\.")}(?:\\.\\d+)?[.\\s:]|CLAUSE\\s+${cl.replace(".", "\\.")}\\b`, "i");
+            const re = new RegExp(`(?:^|\\n|\\|\\|?)\\s*(?:\\[[^\\]]+\\]\\s*)?(?:CLAUSE\\s+|ARTICLE\\s+|SECTION\\s+)?${cl.replace(".", "\\.")}(?:\\.\\d+)?[.\\s:]|CLAUSE\\s+${cl.replace(".", "\\.")}\\b`, "i");
             if (re.test(item.content)) {
               hitCl = cl;
               break;
             }
           }
-          if (!hitCl && flatClauses.length === 0 && tokens.some(tk => tk.length >= 3 && item.content.toUpperCase().includes(tk))) {
-            hitChunkIds.add(item.cid);
-            hitClauseTextUpper += "\n" + item.content.toUpperCase();
-            matchedChunkBlocks.push(`<!-- 🎯 TARGET ENTITY HIT (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
-          } else if (hitCl) {
-            hitChunkIds.add(item.cid);
-            hitClauseTextUpper += "\n" + item.content.toUpperCase();
-            matchedChunkBlocks.push(`<!-- 🎯 TARGET CLAUSE ${hitCl} HIT (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+
+          if (isShortDoc) {
+            if (hitCl) {
+              hitChunkIds.add(item.cid);
+              hitClauseTextUpper += "\n" + cU;
+              matchedChunkBlocks.push(`<!-- [${docLabel} | 🎯 TARGET CLAUSE ${hitCl} HIT | ${item.cid} | part ${item.order + 1}/${list.length}] -->\n${item.content}`);
+            } else if (flatClauses.length === 0 && tokens.some(tk => tk.length >= 2 && cU.includes(tk))) {
+              hitChunkIds.add(item.cid);
+              hitClauseTextUpper += "\n" + cU;
+              matchedChunkBlocks.push(`<!-- [${docLabel} | 🎯 TARGET ENTITY HIT | ${item.cid} | part ${item.order + 1}/${list.length}] -->\n${item.content}`);
+            } else {
+              siblingChunkBlocks.push(`<!-- [${docLabel} | Context | ${item.cid} | part ${item.order + 1}/${list.length}] -->\n${item.content}`);
+            }
           } else {
-            siblingChunkBlocks.push(`<!-- Contract Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`);
+            let score = hitCl ? 60 : 0;
+            for (const tk of tokens) {
+              if (cU.includes(tk)) score += getTokenIDF(tk) * 3;
+            }
+            if (score > 0) longDocScored.push({ score, item, hitCl });
+          }
+        }
+
+        if (!isShortDoc && longDocScored.length > 0) {
+          longDocScored.sort((a, b) => b.score - a.score);
+          for (const entry of longDocScored.slice(0, 4)) {
+            hitChunkIds.add(entry.item.cid);
+            hitClauseTextUpper += "\n" + entry.item.content.toUpperCase();
+            matchedChunkBlocks.push(`<!-- [${docLabel} | 🎯 TARGET ${entry.hitCl ? "CLAUSE " + entry.hitCl : "SECTION"} HIT | ${entry.item.cid} | part ${entry.item.order + 1}/${list.length}] -->\n${entry.item.content}`);
           }
         }
       }
@@ -2312,31 +2365,10 @@
       }
       scoredNodes.sort((a, b) => b.score - a.score);
 
-      // 【語料 IDF 防越界門控】：
-      // 若查詢詞在原文切片中的 IDF 覆蓋率低於 0.40 且無明確條款指代，直接判定為資料庫外問題
-      // 直接攔截並零高亮返回
-      const hasExplicitRef = flatClauses.length > 0 || targetDocIds.size > 0;
-      const isQueryZh = /[\u4e00-\u9fa5]/.test(query);
-      const effectiveLang = responseLang === "auto" ? (isQueryZh ? "zh" : "en") : responseLang;
-
-      if (!hasExplicitRef && idfCoverage < 0.40) {
-        const oodMsg =
-          effectiveLang === "en"
-            ? `**No relevant records found in the knowledge base**\n\nNo matching entities, clauses, or source excerpts were found for "${query}".`
-            : `**當前知識庫中無相關內容**\n\n資料庫中未收錄與「${query}」相關的實體、條款或原文切片。`;
-        return {
-          answer: oodMsg,
-          evidence: effectiveLang === "en" ? "No matching source excerpts." : "無匹配的底層原文切片。",
-          matched_nodes: []
-        };
-      }
-
-      // 3. 構建確定性連通高亮子圖：
-      // 確保相同查詢結果一致，且所有高亮節點在圖上連通
+      // 3. 構建確定性連通高亮子圖
       const connectedHighlightIds = [];
       const connectedSet = new Set();
 
-      // 優先加入直接命中的錨點實體及其相連鄰居
       for (const anchor of directAnchorNodes) {
         if (!connectedSet.has(anchor.id)) {
           connectedSet.add(anchor.id);
@@ -2347,8 +2379,7 @@
           const nbId = nb.targetId;
           const nbNode = nodeMap.get(nbId);
           if (!nbNode || STOP_ENTITIES.has(nbId.toUpperCase()) || isTemporalOrNumericEntity(nbId)) continue;
-          // 排除無關條例節點
-          if (/CAP\.?\s*400|NOISE/i.test(nbNode.label || nbId)) continue;
+          if (/CAP\.?\s*400|NOISE/i.test(nbNode.label || nbId) && !/噪音|NOISE|400/i.test(qUpper)) continue;
           if (!connectedSet.has(nbId)) {
             connectedSet.add(nbId);
             connectedHighlightIds.push(nbId);
@@ -2357,7 +2388,6 @@
         }
       }
 
-      // 若按條款號查詢，補充該條款切片內連通的高分節點
       for (const item of scoredNodes) {
         if (connectedHighlightIds.length >= 9) break;
         const nid = item.node.id;
@@ -2391,44 +2421,86 @@
         const repStr = (rep && (rep.report_string || rep.content)) || "";
         if (!repStr) continue;
         const repUpper = repStr.toUpperCase();
-        const hitByEntity = topEntities.slice(0, 5).some(n => n.id.length >= 6 && repUpper.includes(n.id.toUpperCase()));
-        if (
-          hitByEntity ||
-          (targetDocIds.size > 0 && (repUpper.includes("KOWLOON BAY DATA CENTRE") || repUpper.includes("HDIL-2026-MC-01") || repUpper.includes("APEX-2026-SUB-MEP-01")))
-        ) {
+        if (topEntities.slice(0, 6).some(n => n.id.length >= 5 && repUpper.includes(n.id.toUpperCase()))) {
           communityLines.push(repStr.slice(0, 650));
           if (communityLines.length >= 2) break;
         }
       }
 
-      // 5. 按相關性對法例切片打分排序
-      const scoredStatuteChunks = [];
-      for (const sDocId of statuteDocIds) {
-        if (targetDocIds.has(sDocId)) continue;
-        const list = (docGroups[sDocId] || []).sort((a, b) => a.order - b.order);
+      const clauseExpansionTokens = hitClauseTextUpper
+        ? tokenizeTextZeroEnum(hitClauseTextUpper)
+            .filter(tk => tk.length >= 4 && !/^(?:SHALL|UNDER|WITHIN|CONTRACT|EMPLOYER|CONTRACTOR|SUBCONTRACTOR|WORKS|CLAUSE|SECTION|AGREEMENT|THEREFORE|HOWEVER)$/.test(tk))
+            .sort((a, b) => getTokenIDF(b) - getTokenIDF(a))
+            .slice(0, 26)
+        : [];
+
+      const clauseBigrams = hitClauseTextUpper
+        ? extractEnglishBigrams(hitClauseTextUpper).slice(0, 40)
+        : [];
+      const queryBigrams = extractEnglishBigrams(qUpper);
+      const allBigrams = [...new Set([...queryBigrams, ...clauseBigrams])];
+
+      const citedCapsInClause = new Set([
+        ...queryCaps,
+        ...[...hitClauseTextUpper.matchAll(/\bCAP\.?\s*(\d{2,3}[A-Z]?)\b/g)].map(m => m[1])
+      ]);
+
+      const scoredSupportChunks = [];
+      for (const [docId, list] of Object.entries(docGroups)) {
+        if (targetDocIds.has(docId)) continue;
+        const meta = docMeta[docId] || {};
+        const docLabel = meta.srcHeader || docId;
+        const isCitedCap = Boolean(meta.capNum && citedCapsInClause.has(meta.capNum));
+
         for (const item of list) {
           const cU = item.content.toUpperCase();
+          if (/TABLE OF CONTENTS/.test(cU) || item.content.length < 120) continue;
+
           let sScore = 0;
-          if (list.length <= 6) sScore += 20;
+          let matchedTerms = 0;
+          let matchedPhrases = 0;
+
           for (const tk of tokens) {
-            if (tk.length >= 2 && cU.includes(tk)) sScore += 12;
+            if (cU.includes(tk)) {
+              sScore += getTokenIDF(tk) * 2.5;
+              matchedTerms++;
+            }
           }
-          if (hitClauseTextUpper) {
-            if (/PAYMENT|PAY WHEN PAID|SET-OFF|DEDUCT|ADJUDICATION|SUSPEND/.test(hitClauseTextUpper) && /CAP\.?\s*652|PAYMENT|ADJUDICATION|付款保障/.test(cU)) sScore += 30;
-            if (/WAGE|SALARY|DEDUCTION|LATE|SUBCONTRACTOR'S EMPLOYEES/.test(hitClauseTextUpper) && /CAP\.?\s*57|WAGES|工資|扣薪/.test(cU)) sScore += 30;
-            if (/INJURY|COMPENSATION|ACCIDENT|DEATH/.test(hitClauseTextUpper) && /CAP\.?\s*282|COMPENSATION|僱員補償/.test(cU)) sScore += 30;
-            if (/ARBITRATION|SUBCONTRACT/.test(hitClauseTextUpper) && /CAP\.?\s*609|ARBITRATION|仲裁/.test(cU)) sScore += 25;
+          for (const etk of clauseExpansionTokens) {
+            if (cU.includes(etk)) {
+              sScore += getTokenIDF(etk) * 1.0;
+              matchedTerms++;
+            }
           }
-          if (sScore > 0) {
-            scoredStatuteChunks.push({
+          for (const bg of allBigrams) {
+            if (cU.includes(bg)) {
+              sScore += 18;
+              matchedPhrases++;
+            }
+          }
+
+          if (matchedPhrases >= 1 || matchedTerms >= 2) {
+            // 僅對已匹配實質術語/短語的切片施加引用章號乘法加成，防止整部法例的空泛前言切片佔位
+            if (isCitedCap) sScore *= 1.35;
+            scoredSupportChunks.push({
+              docId,
               sScore,
-              block: `<!-- ⚖️ Database Statute Chunk (${item.cid}, part ${item.order + 1}/${list.length}) -->\n${item.content}`
+              block: `<!-- [${docLabel} | ⚖️ Supporting Statute/Standard | ${item.cid} | part ${item.order + 1}/${list.length}] -->\n${item.content}`
             });
           }
         }
       }
-      scoredStatuteChunks.sort((a, b) => b.sScore - a.sScore);
-      const statuteBlocks = scoredStatuteChunks.slice(0, 6).map(x => x.block);
+
+      scoredSupportChunks.sort((a, b) => b.sScore - a.sScore);
+      const supportBlocks = [];
+      const perDocCount = {};
+      for (const sc of scoredSupportChunks) {
+        if (supportBlocks.length >= 12) break;
+        const cnt = perDocCount[sc.docId] || 0;
+        if (cnt >= 2) continue;
+        perDocCount[sc.docId] = cnt + 1;
+        supportBlocks.push(sc.block);
+      }
 
       const evidenceText = [
         "-----Retrieved Community Reports-----",
@@ -2437,18 +2509,75 @@
         entityLines.join("\n") || "(No direct entity hit)",
         "\n-----Retrieved Knowledge Graph Relations-----",
         edgeLines.join("\n") || "(No direct relation hit)",
-        "\n-----Complete Target Contract & Database Statute Chunks-----",
+        "\n-----Retrieved Source Contract & Statute Chunks-----",
         ...matchedChunkBlocks,
         ...siblingChunkBlocks,
-        ...statuteBlocks
+        ...supportBlocks
       ].join("\n\n");
 
-      const langDirective =
-        effectiveLang === "en"
-          ? "Output Language: Respond strictly in formal English."
-          : "輸出語言：嚴格使用繁體中文作答（專有名詞與條款編號可保留英文對照）。";
+      const topicContextU = `${qUpper}\n${hitClauseTextUpper}`;
+      const statCardLines = [];
+      const isEn = effectiveLang === "en";
 
-      const systemPrompt = `${evidenceText}\n\n---合規檢索分析規則---\n1. ${langDirective}\n2. 嚴格依據上方檢索出的實體、關係與原文切片作答。若問題超出資料範圍，僅回覆「當前知識庫中無相關內容」（英文模式回覆 "No relevant records found in the knowledge base."）。\n3. 準確區分主合同 HDIL-2026-MC-01 總承建商（Apex Builders (HK) Limited）與分包合同 APEX-2026-SUB-MEP-01 分包商（Vanguard MEP Engineering Limited）。\n4. 香港法例基準：Cap. 652（第 11(2)、15-16、17、18-20、24、57-61 條）、Cap. 57（第 32、43C、70 條）、Cap. 282（第 24、31 條）、Cap. 71（第 7(1) 條）。\n5. 直接列出結論，包含【條款編號／實體角色、原文規定、相關法例合規分析】。`;
+      if (/PAYMENT|PAY[\s\-]WHEN[\s\-]PAID|SET[\s\-]OFF|DEDUCT|WITHHOLD|ADJUDICATION|SUSPEND|CAP\.?\s*652|付款|扣款|審裁|停工|背靠背/.test(topicContextU)) {
+        statCardLines.push(
+          isEn
+            ? "- Construction Industry Security of Payment Ordinance (Cap. 652): s.11(2) voids any contracting-out term; ss.15-16 cap progress payment settlement at 60 calendar days after Payment Claim; s.17 prohibits Pay-When-Paid clauses and shifting Employer insolvency risk; ss.18-20 cap Payment Response at 30 calendar days and require any set-off/deduction to be stated with reasons in a written Payment Response; s.24 grants a mandatory right to adjudicate within 28 days; ss.57-61 grant a right to suspend/reduce progress after at least 5 working days' written notice."
+            : "- 《建造業付款保障條例》(Cap. 652)：第 11(2) 條禁止契約排除（排除條款無效）；第 15–16 條規定進度款法定最長付款期限為送達付款申索後 60 個日曆日；第 17 條嚴禁「先收款後付款」(Pay-When-Paid) 及轉嫁業主破產風險；第 18–20 條規定付款回應法定最長期限為 30 個日曆日，且任何扣款須於書面付款回應中列明金額與理由；第 24 條賦予 28 日內啟動法定審裁權；第 57–61 條賦予欠款時提前至少 5 個工作日書面通知後暫停工程或減緩進度的權利。"
+        );
+      }
+      if (/WAGE|SALARY|PAYROLL|LATE|DEDUCT|CAP\.?\s*57|43C|工資|扣薪|欠薪|薪酬|僱傭/.test(topicContextU)) {
+        statCardLines.push(
+          isEn
+            ? "- Employment Ordinance (Cap. 57): s.32 strictly restricts unauthorized wage deductions (illegal deduction is a criminal offence); ss.43C & 70 impose non-excludable statutory liability on a principal contractor for up to 2 months of unpaid wages of a subcontractor's employees."
+            : "- 《僱傭條例》(Cap. 57)：第 32 條嚴格限制扣除工資（未經法定許可扣薪屬刑事罪行，切勿誤引第 23/29/30 條）；第 43C 及 70 條規定總承建商須對分包商拖欠工人的首 2 個月工資承擔不可免除的法定代償責任。"
+        );
+      }
+      if (/INJURY|WORKMEN|WORKERS|COMPENSATION|CAP\.?\s*282|工傷|僱員補償|受傷/.test(topicContextU)) {
+        statCardLines.push(
+          isEn
+            ? "- Employees' Compensation Ordinance (Cap. 282): ss.24 & 31 impose non-excludable statutory liability on a principal contractor for work injuries sustained by a subcontractor's employees."
+            : "- 《僱員補償條例》(Cap. 282)：第 24 及 31 條規定總承建商須對分包商僱員工傷承擔不可免除的法定代償責任。"
+        );
+      }
+      if (/DEATH|PERSONAL\s+INJURY|NEGLIGENCE|EXCLUSION|EXEMPTION|LIMITATION\s+OF\s+LIABILITY|CAP\.?\s*71|疏忽|死傷|人身傷害|免責/.test(topicContextU)) {
+        statCardLines.push(
+          isEn
+            ? "- Control of Exemption Clauses Ordinance (Cap. 71): s.7(1) strictly voids any contractual term purporting to exclude or restrict liability for death or personal injury resulting from negligence."
+            : "- 《管制免責條款條例》(Cap. 71)：第 7(1) 條嚴格禁止以合約免除或限制因疏忽引致的死亡或人身傷害責任（自始無效）。"
+        );
+      }
+      if (/CRIMINAL|FINE|PENALT|CAP\.?\s*509|CAP\.?\s*59|刑事|罰款|職安健/.test(topicContextU)) {
+        statCardLines.push(
+          isEn
+            ? "- Occupational Safety and Health Ordinance (Cap. 509) & Factories and Industrial Undertakings Ordinance (Cap. 59): criminal fines are personal punitive sanctions imposed by the State; contractual indemnities shifting criminal fines are unenforceable as contrary to public policy."
+            : "- 《職業安全及健康條例》(Cap. 509) 及《工廠及工業經營條例》(Cap. 59)：刑事罰款屬國家施加的個人公法懲罰，以私法合約彌償條款轉嫁刑事罰款違反公共政策而不可強制執行。"
+        );
+      }
+
+      const statCardSection = statCardLines.length
+        ? (isEn
+            ? `\n\n---Relevant Hong Kong Statutory Reference Index---\n${statCardLines.join("\n")}`
+            : `\n\n---相關香港成文法例客觀條號索引---\n${statCardLines.join("\n")}`)
+        : "";
+
+      const systemPrompt = isEn
+        ? `${evidenceText}${statCardSection}
+
+---Evidence-Grounded Analysis Guidelines (STRICT ENGLISH ONLY)---
+1. Output Language: Write the ENTIRE response strictly in formal English (including all headings, table headers, and analysis). Do NOT output any Chinese characters or Chinese punctuation/brackets, even if the query or source excerpts contain Chinese.
+2. Strict Evidence Grounding: Base every clause number, statutory section number, figure, deadline, and legal conclusion strictly on the retrieved source excerpts and the Statutory Reference Index above. Never invent unrelated ordinances or foreign statutory time limits.
+3. Comprehensive Cross-Checking: When reviewing a contract for internal contradictions or comparing contracts, systematically inspect ALL retrieved chunks from start to finish (including later clauses and schedules) covering price, retention, completion/liquidated damages, working hours, equipment/title, sub-subcontracting, and dispute resolution—do not omit any conflicting clause.
+4. Adaptive Structure: Use concise English Markdown tables for compliance reviews, conflict checks, or comparisons; use clear bullet points or concise prose for factual lookups, definitions, or procedural questions.
+5. Dataset Boundary: If the query cannot be answered from the retrieved evidence above, reply only: "No relevant records found in the knowledge base."`
+        : `${evidenceText}${statCardSection}
+
+---證據溯源分析規則（嚴格繁體中文）---
+1. 輸出語言：全程嚴格使用**繁體中文**作答（專有名詞、公司名與條款編號可保留英文對照），即使用戶以簡體中文提問，亦絕不得輸出簡體字。
+2. 嚴格依據檢索證據：所有條款編號、法例條號、金額、期限與合規結論必須嚴格源自上方檢索切片與法例條號索引。嚴禁猜測或編造無關法例名稱（切勿憑空引用無關條例或外地天數）。
+3. 全面逐段核查：審查合同內部自相矛盾或跨合同衝突時，務必通讀全部檢索切片（含後半部條款及附表 Schedule），完整比對金額、保留金、**竣工日期與違約金**、施工時段、設備與所有權、轉判限制及爭議解決條款，切勿遺漏任何衝突。
+4. 自適應表達格式：面對合規審查、條款衝突或跨文檔對比類問題，使用結構化繁體中文表格搭配簡明總結；面對事實查詢、實體概覽、定義解釋或程序類問題，直接以清晰條列或簡潔段落回覆。
+5. 資料庫邊界：若問題超出上方檢索證據範圍，僅回覆「當前知識庫中無相關內容」。`;
 
       const cleanKey = sanitizeApiKey(currentApiKey);
       if (!cleanKey) {
@@ -2458,29 +2587,42 @@
         throw new Error("密匙格式無效，已自動清除，請重新輸入。");
       }
 
-      const llmResp = await fetch(AGNES_CHAT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${cleanKey}`
-        },
-        body: JSON.stringify({
-          model: AGNES_MODEL,
-          temperature: 0.0,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: query }
-          ]
-        })
-      });
+      let answer = "";
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const llmResp = await fetch(AGNES_CHAT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${cleanKey}`
+          },
+          body: JSON.stringify({
+            model: AGNES_MODEL,
+            temperature: attempt === 0 ? 0.0 : 0.15,
+            max_tokens: 4096,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: query }
+            ]
+          })
+        });
 
-      if (!llmResp.ok) {
-        const errJson = await llmResp.json().catch(() => ({}));
-        throw new Error(`檢索服務暫時無法連線 (代碼 ${llmResp.status})`);
+        if (!llmResp.ok) {
+          throw new Error(`檢索服務暫時無法連線 (代碼 ${llmResp.status})`);
+        }
+
+        const llmData = await llmResp.json();
+        const msg = llmData.choices && llmData.choices[0] && llmData.choices[0].message;
+        answer = ((msg && (msg.content || msg.reasoning_content)) || "").trim();
+        if (answer) break;
       }
 
-      const llmData = await llmResp.json();
-      const answer = (llmData.choices && llmData.choices[0] && llmData.choices[0].message && llmData.choices[0].message.content) || "";
+      if (!answer) {
+        throw new Error(
+          effectiveLang === "en"
+            ? "The analysis service returned an empty response. Please try submitting the query again."
+            : "檢索服務回傳內容為空，請重新點擊「檢索」再試一次。"
+        );
+      }
 
       return {
         answer,
