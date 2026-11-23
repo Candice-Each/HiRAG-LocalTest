@@ -1831,7 +1831,8 @@
       "SUB-CLAUSE (B)", "SUB-CLAUSE (C)", "PAYMENT", "CLAIM", "CLAIMS", "NOTICE",
       "CALENDAR MONTH", "RATE OF PROGRESS", "ENGINEER", "EMPLOYER'S ENGINEER",
       "CONTRACT REFERENCE", "PARTIES", "AGREEMENT", "DATE OF AGREEMENT", "TIME", "DAYS",
-      "百分率", "慣用的手", "慣用手"
+      "百分率", "慣用的手", "慣用手",
+      "CONTRACT_A_MAIN_WORKS_AGREEMENT", "CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT"
     ]);
 
     function cleanStr(val) {
@@ -2455,12 +2456,10 @@
         const idU = (n.id || "").toUpperCase();
         const isA =
           idU === "HDIL-2026-MC-01" ||
-          idU === "CONTRACT_A_MAIN_WORKS_AGREEMENT" ||
-          /^HDIL-2026-MC-01/.test(idU);
+          /^HDIL-2026-MC-01\b/.test(idU);
         const isB =
           idU === "APEX-2026-SUB-MEP-01" ||
-          idU === "CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT" ||
-          /^APEX-2026-SUB-MEP-01/.test(idU);
+          /^APEX-2026-SUB-MEP-01\b/.test(idU);
 
         n._contractRole = isA ? "A" : isB ? "B" : null;
         n._isContractCenter = isA || isB;
@@ -2497,16 +2496,15 @@
         const touchesB = contractBIds.has(sId) || contractBIds.has(tId);
 
         if (touchesA && touchesB) {
-          link._abTier = "AB"; // 合同 A 與 B 直接橋接關係線（最亮）
+          link._abTier = "AB";
         } else if (touchesA) {
-          link._abTier = "A"; // 合同 A 中心發散線（琥珀橘）
+          link._abTier = "A";
         } else if (touchesB) {
-          link._abTier = "B"; // 合同 B 中心發散線（電光青）
+          link._abTier = "B";
         } else {
           link._abTier = null;
         }
 
-        // 其餘線條嚴格按端點「有其他鄰居的鄰居 y 之數目（deg(y) > 1）」歸一化，並預計算靜態顏色字串避免每幀 GC 卡頓
         const peakBranch = Math.max(
           (sNode && sNode._branchingNbCount) || 0,
           (tNode && tNode._branchingNbCount) || 0
@@ -2516,25 +2514,22 @@
         link._branchProminence = bp;
 
         if (link._abTier === "AB") {
-          // AB 之間的連線使用合同 A 的顏色（琥珀橘最亮）
           link._idleColor = "rgba(251, 146, 60, 0.90)";
           link._idleWidth = 2.2;
-          link._dimColor = "rgba(251, 146, 60, 0.22)";
+          link._dimColor = "rgba(251, 146, 60, 0.10)";
         } else if (link._abTier === "A") {
           link._idleColor = "rgba(251, 146, 60, 0.66)";
           link._idleWidth = 1.55;
-          link._dimColor = "rgba(251, 146, 60, 0.16)";
+          link._dimColor = "rgba(251, 146, 60, 0.085)";
         } else if (link._abTier === "B") {
           link._idleColor = "rgba(34, 211, 238, 0.66)";
           link._idleWidth = 1.55;
-          link._dimColor = "rgba(34, 211, 238, 0.16)";
+          link._dimColor = "rgba(34, 211, 238, 0.085)";
         } else {
-          // 除 AB 相關外其餘線條色相完全一致（148, 163, 184），僅以亮度／透明度區分（高發散樞紐最亮 0.22，普通葉邊更暗 0.032）
           const idleAlpha = (0.032 + bp * 0.188).toFixed(3);
-          const dimAlpha = (0.105 + bp * 0.065).toFixed(3);
+          const dimAlpha = (0.045 + bp * 0.045).toFixed(3);
           link._idleColor = `rgba(148, 163, 184, ${idleAlpha})`;
           link._idleWidth = 0.32 + bp * 0.68;
-          // 檢索高亮時其餘線條仍保留隱約可見的背景結構亮度（0.105 ~ 0.17），不完全消失
           link._dimColor = `rgba(148, 163, 184, ${dimAlpha})`;
         }
       });
@@ -2553,7 +2548,7 @@
         .linkWidth(link => {
           if (highlightedLinks.has(link)) return 2.8;
           if (secondaryLinks.has(link)) return 1.45;
-          if (highlightedNodes.size > 0) return 0.52;
+          if (highlightedNodes.size > 0) return 0.38;
           return link._idleWidth || 0.45;
         })
         .linkColor(link => {
@@ -2562,9 +2557,8 @@
               const pal = highlightedLinkColors.get(link) || TURN_PALETTE[0];
               return pal.linkRgba;
             }
-            if (secondaryLinks.has(link)) return "rgba(148, 163, 184, 0.42)";
-            // 檢索時非高亮線條保留隱約可見的背景亮度（0.105 ~ 0.17）
-            return link._dimColor || "rgba(148, 163, 184, 0.12)";
+            if (secondaryLinks.has(link)) return "rgba(148, 163, 184, 0.28)";
+            return link._dimColor || "rgba(148, 163, 184, 0.06)";
           }
           return link._idleColor || "rgba(148, 163, 184, 0.08)";
         })
@@ -2644,7 +2638,7 @@
           } else if (isSelected || isHovered) {
             ctx.fillStyle = "#f8fafc";
           } else {
-            ctx.fillStyle = dimmed ? "rgba(100, 116, 139, 0.28)" : getNodeColor(node);
+            ctx.fillStyle = dimmed ? "rgba(100, 116, 139, 0.20)" : getNodeColor(node);
           }
           ctx.fill();
 
@@ -2714,17 +2708,13 @@
         })
         .onNodeClick(node => {
           openNodeDrawer(node);
-          graphInstance.centerAt(node.x, node.y, 500);
-          if (graphInstance.zoom() < 2.0) {
-            graphInstance.zoom(2.2, 500);
-          }
+          focusSingleNodeVisible(node, Math.max(2.2, graphInstance.zoom() || 1), 500);
         })
         .onBackgroundClick(() => {
           selectedNode = null;
           document.getElementById("node-drawer").classList.remove("open");
         })
         .onEngineStop(() => {
-          // 回退最初原生爆發效果，僅刪除爆發結束後的自動收縮（zoomToFit）
           hasAutoFit = true;
         });
 
@@ -2736,7 +2726,6 @@
       });
     }
 
-    // 取消爆發預載：等待用戶輸入密匙後再啟動圖譜自然爆發展開（且爆發結束後不自動縮小）
     function maybeStartSimulation() {
       if (simulationStarted) return;
       if (!pendingGraphData) return;
@@ -2830,8 +2819,8 @@
       const isAnsOpen = isDesktop && ansDrawer && ansDrawer.classList.contains("open");
       const isAnsExpanded = isAnsOpen && ansDrawer.classList.contains("expanded");
       const isNodeOpen = isDesktop && nodeDrawer && nodeDrawer.classList.contains("open");
-      const rightOccupied = isAnsOpen ? ((isAnsExpanded ? Math.min(W * 0.6, 860) : Math.min(500, W - 32)) + 24) : 20;
-      const leftOccupied = isNodeOpen ? (Math.min(320, W - 32) + 24) : 20;
+      const rightOccupied = isAnsOpen ? ((isAnsExpanded ? Math.min(W * 0.6, 860) : Math.min(500, W - 32)) + 28) : 24;
+      const leftOccupied = isNodeOpen ? (Math.min(320, W - 32) + 28) : 24;
       const visCenterX = leftOccupied + Math.max(200, W - leftOccupied - rightOccupied) / 2;
       const visCenterY = H / 2;
       const wx = target.x - (visCenterX - W / 2) / targetZoom;
@@ -2846,8 +2835,6 @@
       focusSingleNodeVisible(target, 2.3, 520);
     };
 
-
-    // 單一 RAF 同時插值縮放與平移：先 zoom 再 centerAt，徹底消除 d3-transition 互相取消與縮放中心偏移
     function animateCameraTo(targetWx, targetWy, targetZoom, duration = 680) {
       if (!graphInstance) return;
       if (cameraAnimFrame) cancelAnimationFrame(cameraAnimFrame);
@@ -2866,11 +2853,10 @@
       const t0 = performance.now();
       function step(now) {
         const p = Math.min(1, (now - t0) / duration);
-        const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        const eased = 1 - Math.pow(1 - p, 3);
         const curZoom = startZoom + (targetZoom - startZoom) * eased;
         const curX = startX + (targetWx - startX) * eased;
         const curY = startY + (targetWy - startY) * eased;
-        // 關鍵順序：先設定目標倍率，再定位該倍率下的世界座標中心
         graphInstance.zoom(curZoom, 0);
         graphInstance.centerAt(curX, curY, 0);
         if (p < 1) {
@@ -2882,7 +2868,6 @@
       cameraAnimFrame = requestAnimationFrame(step);
     }
 
-    // 精準計算扣除左側點詳情框與右側問答框後的「無遮擋可見畫布區域」，並以數學閉環確保至少 80%（通常 100%）亮點落於安全可見區內
     function focusHighlightedSubgraph(duration = 680) {
       if (!graphInstance || highlightedNodes.size === 0) return;
 
@@ -2915,7 +2900,6 @@
       const visCenterX = safeLeft + safeW / 2;
       const visCenterY = safeTop + safeH / 2;
 
-      // 內部工具：計算給定節點子集剛好落入無遮擋安全區的相機參數
       function fitSubset(nodesSubset) {
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         for (const n of nodesSubset) {
@@ -2930,7 +2914,6 @@
         const padY = Math.min(56, safeH * 0.14);
         const scaleX = Math.max(0.05, (safeW - padX * 2) / spanX);
         const scaleY = Math.max(0.05, (safeH - padY * 2) / spanY);
-        // 移除過高的 0.32 縮放下限，允許大跨度子圖縮小至 0.06 以完整落入無遮擋視窗
         const k = Math.min(2.4, Math.max(0.06, Math.min(scaleX, scaleY)));
         const cx = (minX + maxX) / 2;
         const cy = (minY + maxY) / 2;
@@ -2951,7 +2934,6 @@
         return inside;
       }
 
-      // 優先嘗試容納 100% 亮點；若個別離群點過遠導致縮放比極小 (<0.14)，改取距離中位中心最近的 >=85% 核心聚類（嚴格保證 >=80% 在安全區內）
       let bestCam = fitSubset(primaryList);
       if (bestCam.k < 0.14 && primaryList.length >= 5) {
         const xs = primaryList.map(n => n.x).sort((a, b) => a - b);
@@ -2968,7 +2950,6 @@
         }
       }
 
-      // 最終閉環校驗：確保至少 80% 亮點落於無遮擋安全區
       if (countInsideSafeBox(bestCam) < Math.ceil(primaryList.length * 0.8)) {
         bestCam = fitSubset(primaryList);
       }
@@ -2998,7 +2979,6 @@
         }
       });
 
-      // 全對組 1-hop 橋接補齊：凡任意兩個高亮點在圖譜中存在共同鄰居（2-hop 路徑），自動點亮該橋接節點與連邊（上限 3 個）
       const allPrimary = Array.from(highlightedNodes);
       if (allPrimary.length >= 2) {
         const nbSets = new Map(allPrimary.map(id => [id, new Set((neighborMap.get(id) || []).map(nb => nb.targetId))]));
@@ -3023,7 +3003,6 @@
         }
       }
 
-      // 第二層輔助節點（上限 6 個，保持柔和灰藍不搶戲）
       for (const hid of highlightedNodes) {
         const nbs = neighborMap.get(hid) || [];
         for (const nb of nbs) {
@@ -3060,8 +3039,7 @@
 
     /* ============ 瀏覽器內置圖譜檢索引擎 ============ */
 
-    /* ============ 語料驅動的零窮舉分詞與 IDF 索引 ============ */
-    let corpusIDF = null; // Map<tokenUpper, idfWeight>
+    let corpusIDF = null;
     let corpusMaxIDF = 6.0;
 
     function tokenizeTextZeroEnum(str) {
@@ -3073,11 +3051,9 @@
         for (const seg of segmenter.segment(s)) {
           const w = seg.segment.trim();
           if (!w || /^[\s\p{P}\p{S}]+$/u.test(w)) continue;
-          // 過濾單字虛詞，保留實義詞
           if (w.length >= 2) tokens.push(w);
         }
       } else {
-        // 降級兜底：中英文邊界切分與中文 2-gram 滑動視窗
         const spaced = s
           .replace(/([\u4e00-\u9fa5])([A-Z0-9])/g, "$1 $2")
           .replace(/([A-Z0-9])([\u4e00-\u9fa5])/g, "$1 $2");
@@ -3111,7 +3087,6 @@
       }
       corpusMaxIDF = Math.log((N + 1) / 1) + 1.0;
       for (const [tk, count] of df.entries()) {
-        // 標準平滑 IDF：泛詞權重自動趨低，稀有專有名詞權重更高
         const idf = Math.log((N + 1) / (count + 1)) + 1.0;
         corpusIDF.set(tk, idf);
       }
@@ -3119,11 +3094,9 @@
 
     function getTokenIDF(tk) {
       ensureCorpusIDF();
-      // 未在任何原文切片出現的詞賦予最高未知實體權重
       return corpusIDF.has(tk) ? corpusIDF.get(tk) : corpusMaxIDF;
     }
 
-    // 自動提取英文相鄰雙詞短語（Bigram，如 "PERSONAL INJURY"、"PAYMENT RESPONSE"、"PAY WHEN PAID"），零人工詞表窮舉
     function extractEnglishBigrams(str) {
       const stop = new Set(["THE", "AND", "FOR", "WITH", "THAT", "THIS", "FROM", "SHALL", "UNDER", "SUCH", "ANY", "NOT", "ALL", "ARE", "WAS", "WERE", "HAVE", "HAS", "BEEN", "WHICH", "WHO", "WHERE", "WHEN", "UPON", "INTO", "OVER", "OTHER", "THEIR", "THERE", "HEREOF", "THEREOF"]);
       const words = String(str || "").toUpperCase().match(/[A-Z][A-Z\-]{2,}/g) || [];
@@ -3138,7 +3111,6 @@
       return [...bigrams];
     }
 
-    // 語句級自動語言偵測：純英文專有名詞／合同編號／縮寫（如 APEX BUILDERS (HK) LIMITED、HDIL-2026-MC-01、CEO）預設配合繁體介面輸出繁體中文；完整英文問句或指令才自動切換英文
     function detectEffectiveLang(query, mode) {
       if (mode === "zh" || mode === "en") return mode;
       if (/[\u4e00-\u9fa5]/.test(query)) return "zh";
@@ -3160,7 +3132,6 @@
       const targetDocIds = new Set();
       const chunkHitTokens = new Set();
 
-      // 偵測查詢中明確提及的法例章號（如 Cap. 652 / 第652章）或 NTT 編號（如 NTT A5）
       const queryCaps = new Set(
         [...qUpper.matchAll(/(?:CAP\.?\s*|第\s*)(\d{2,3}[A-Z]?)(?:\s*章)?/g)].map(m => m[1])
       );
@@ -3168,6 +3139,7 @@
         [...qUpper.matchAll(/\bNTT[\s_\-]*([A-Z]\d+)\b/g)].map(m => m[1])
       );
 
+      // Pass 1: 完整歸組每個文檔的所有切片並建立準確的 docMeta，避免切片遍歷順序導致合同 B 漏判定
       for (const [cid, cdata] of Object.entries(textChunksMap)) {
         if (!cdata || !cdata.content) continue;
         const docId = cdata.full_doc_id || "unknown";
@@ -3178,57 +3150,45 @@
         for (const tk of tokens) {
           if (chunkHitTokens.has(tk)) continue;
           if (/^[A-Z0-9\-]+$/.test(tk)) {
-            if (new RegExp(`\b${escapeRegExp(tk)}\b`).test(cUpper)) chunkHitTokens.add(tk);
+            if (new RegExp(`\\b${escapeRegExp(tk)}\\b`).test(cUpper)) chunkHitTokens.add(tk);
           } else if (cUpper.includes(tk)) {
             chunkHitTokens.add(tk);
           }
         }
 
         if (!docMeta[docId]) {
-          const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
-          if (srcHeader) {
-            const capM = srcHeader.match(/CAP[\s_\-]*(\d{2,3}[A-Z]?)/);
-            const nttM = srcHeader.match(/NTT[\s_\-]*([A-Z]\d+)/);
-            docMeta[docId] = {
-              srcHeader,
-              capNum: capM ? capM[1] : "",
-              nttCode: nttM ? nttM[1] : "",
-              isContractA: /CONTRACT_A/.test(srcHeader),
-              isContractB: /CONTRACT_B/.test(srcHeader),
-              isGccbwt: /GCCBWT/.test(srcHeader)
-            };
-          }
+          docMeta[docId] = { srcHeader: "", capNum: "", nttCode: "", isContractA: false, isContractB: false, isGccbwt: false };
         }
+        const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
+        if (srcHeader) {
+          const capM = srcHeader.match(/CAP[\s_\-]*(\d{2,3}[A-Z]?)/);
+          const nttM = srcHeader.match(/NTT[\s_\-]*([A-Z]\d+)/);
+          docMeta[docId].srcHeader = srcHeader;
+          if (capM) docMeta[docId].capNum = capM[1];
+          if (nttM) docMeta[docId].nttCode = nttM[1];
+          if (/CONTRACT_A/.test(srcHeader)) docMeta[docId].isContractA = true;
+          if (/CONTRACT_B/.test(srcHeader)) docMeta[docId].isContractB = true;
+          if (/GCCBWT/.test(srcHeader)) docMeta[docId].isGccbwt = true;
+        }
+        if (cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT") || (cUpper.includes("HDIL-2026-MC-01") && !cUpper.includes("DOMESTIC SUBCONTRACT") && !cUpper.includes("APEX-2026-SUB-MEP-01"))) {
+          docMeta[docId].isContractA = true;
+        }
+        if (cUpper.includes("CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT") || cUpper.includes("APEX-2026-SUB-MEP-01")) {
+          docMeta[docId].isContractB = true;
+        }
+      }
 
-        // 動態匹配查詢所指涉的任意入庫文檔（合同 A/B、GCCBWT、GCC_NTT_A2~A9、Cap. 26~652）
-        const meta = docMeta[docId] || {};
-        const asksCrossAB = /(?:跨合同|跨合約|跨合约|AB|A\s*(?:與|和|對比|对比|VS|\/|↔)\s*B)/i.test(qUpper);
-        const asksContractA = asksCrossAB || /(?:(?:樣本|样本|合同|合約|合约)\s*[（(]?\s*A\s*[）)]?|主合同|主合約|主合约|HDIL-2026-MC-01|CONTRACT[\s_]+A|HARBOURFRONT|APEX\s+BUILDERS)/i.test(qUpper);
-        const asksContractB = asksCrossAB || /(?:(?:樣本|样本|合同|合約|合约)\s*[（(]?\s*B\s*[）)]?|分包|APEX-2026-SUB-MEP-01|CONTRACT[\s_]+B|VANGUARD|APEX\s+BUILDERS)/i.test(qUpper);
+      // Pass 2: 基於完整 docMeta 精準鎖定目標文檔（確保跨合同對比時合同 A 5/5 與合同 B 5/5 切片全部命中）
+      const asksCrossAB = /(?:跨合同|跨合約|跨合约|\bAB\b|A\s*(?:與|和|對比|对比|VS|\/|↔)\s*B)/i.test(qUpper);
+      const asksContractA = asksCrossAB || /(?:(?:樣本|样本|合同|合約|合约)\s*[（(]?\s*A\s*[）)]?|主合同|主合約|主合约|HDIL-2026-MC-01|CONTRACT[\s_]+A|HARBOURFRONT|APEX\s+BUILDERS)/i.test(qUpper);
+      const asksContractB = asksCrossAB || /(?:(?:樣本|样本|合同|合約|合约)\s*[（(]?\s*B\s*[）)]?|分包|APEX-2026-SUB-MEP-01|CONTRACT[\s_]+B|VANGUARD|APEX\s+BUILDERS)/i.test(qUpper);
 
-        if (
-          asksContractA &&
-          !meta.isContractB &&
-          (meta.isContractA || (cUpper.includes("HDIL-2026-MC-01") && !cUpper.includes("DOMESTIC SUBCONTRACT") && !cUpper.includes("APEX-2026-SUB-MEP-01")))
-        ) {
-          targetDocIds.add(docId);
-        }
-        if (
-          asksContractB &&
-          !meta.isContractA &&
-          (meta.isContractB || cUpper.includes("APEX-2026-SUB-MEP-01"))
-        ) {
-          targetDocIds.add(docId);
-        }
-        if (qUpper.includes("GCCBWT") && meta.isGccbwt) {
-          targetDocIds.add(docId);
-        }
-        if (meta.nttCode && queryNtts.has(meta.nttCode)) {
-          targetDocIds.add(docId);
-        }
-        if (meta.capNum && queryCaps.has(meta.capNum)) {
-          targetDocIds.add(docId);
-        }
+      for (const [docId, meta] of Object.entries(docMeta)) {
+        if (asksContractA && meta.isContractA && !meta.isContractB) targetDocIds.add(docId);
+        if (asksContractB && meta.isContractB && !meta.isContractA) targetDocIds.add(docId);
+        if (qUpper.includes("GCCBWT") && meta.isGccbwt) targetDocIds.add(docId);
+        if (meta.nttCode && queryNtts.has(meta.nttCode)) targetDocIds.add(docId);
+        if (meta.capNum && queryCaps.has(meta.capNum)) targetDocIds.add(docId);
       }
 
       const clauseMatches = [...retrievalQuery.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*[条條]|CLAUSE\s+(\d+(?:\.\d+)?)|SECTION\s+(\d+[A-Z]?))/gi)];
@@ -3935,8 +3895,8 @@
     function extractAnchorFromQuery(q) {
       const hits = [];
       const u = String(q || "").toUpperCase();
-      if (/HDIL-2026-MC-01|樣本\s*A|样本\s*A|合同\s*A|主合同|CONTRACT\s*A|HARBOURFRONT|AB|A\s*(?:與|和|對比|对比|VS)\s*B/.test(u)) hits.push("HDIL-2026-MC-01");
-      if (/APEX-2026-SUB-MEP-01|樣本\s*B|样本\s*B|合同\s*B|分包|CONTRACT\s*B|VANGUARD|AB|A\s*(?:與|和|對比|对比|VS)\s*B/.test(u)) hits.push("APEX-2026-SUB-MEP-01");
+      if (/HDIL-2026-MC-01|樣本\s*A|样本\s*A|合同\s*A|主合同|CONTRACT\s*A|HARBOURFRONT|\bAB\b|A\s*(?:與|和|對比|对比|VS)\s*B/.test(u)) hits.push("HDIL-2026-MC-01");
+      if (/APEX-2026-SUB-MEP-01|樣本\s*B|样本\s*B|合同\s*B|分包|CONTRACT\s*B|VANGUARD|\bAB\b|A\s*(?:與|和|對比|对比|VS)\s*B/.test(u)) hits.push("APEX-2026-SUB-MEP-01");
       const caps = [...u.matchAll(/(?:CAP\.?\s*|第\s*)(\d{2,3}[A-Z]?)(?:\s*章)?/g)].map(m => `Cap. ${m[1]}`);
       hits.push(...caps);
       return [...new Set(hits)].join(" ");
@@ -4006,10 +3966,10 @@
       const rawTotalIDF = rawTokens.reduce((s, tk) => s + getTokenIDF(tk), 0) || 1;
       const rawKnownIDF = rawTokens.reduce((s, tk) => s + (corpusIDF && corpusIDF.has(tk) ? getTokenIDF(tk) : 0), 0);
       const rawIdfRatio = rawKnownIDF / rawTotalIDF;
-      const hasFollowUpCue = /(?:第\s*\d+(?:\.\d+)?\s*[条條款]|CLAUSE\s+\d|SECTION\s+\d|條款|条款|合同|合約|合约|法例|條例|条例|衝突|冲突|對比|对比|比較|比较|修改|修正|建議|建议|風險|风险|違約|违约|罰款|罚款|付款|扣款|停工|工傷|工伤|工資|工资|夜勤|噪音|仲裁|它|這|这|該|该|上述|前面|上文|補充|补充|總結|总结|總體|总体|怎麼改|怎么改|AB|VS|COMPARE|CLAUSE|CONTRACT|IT|THIS|THESE|ABOVE)/i.test(query);
+      const hasFollowUpCue = /(?:第\s*\d+(?:\.\d+)?\s*[条條款]|CLAUSE\s+\d|SECTION\s+\d|條款|条款|合同|合約|合约|法例|條例|条例|衝突|冲突|對比|对比|比較|比较|修改|修正|建議|建议|風險|风险|違約|违约|罰款|罚款|付款|扣款|停工|工傷|工伤|工資|工资|夜勤|噪音|仲裁|它|這|这|該|该|上述|前面|上文|補充|补充|總結|总结|總體|总体|怎麼改|怎么改|\bAB\b|\bVS\b|\bCOMPARE\b|\bCLAUSE\b|\bCONTRACT\b|\bIT\b|\bTHIS\b|\bTHESE\b|\bABOVE\b)/i.test(query);
 
       const ownAnchor = extractAnchorFromQuery(query);
-      const isAdditiveFollowUp = isFollowUp && /對比|对比|比較|比较|衝突|冲突|補充|补充|加上|結合|结合|同時|同时|以及|還有|还有|VS|COMPARE|BOTH|ALSO|AB/i.test(query);
+      const isAdditiveFollowUp = isFollowUp && /對比|对比|比較|比较|衝突|冲突|補充|补充|加上|結合|结合|同時|同时|以及|還有|还有|\bVS\b|\bCOMPARE\b|\bBOTH\b|\bALSO\b|\bAB\b/i.test(query);
       const shouldInheritAnchor = isFollowUp && activeThreadAnchor && (Boolean(ownAnchor) || hasFollowUpCue || rawIdfRatio >= 0.45);
 
       if (shouldInheritAnchor && ownAnchor && isAdditiveFollowUp) {
