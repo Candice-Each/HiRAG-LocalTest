@@ -1558,6 +1558,143 @@
       color: #34d399;
     }
 
+    
+    /* 問答框右側多輪問題刻度條（Turn Ruler） */
+    .drawer-body-wrap {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .drawer-body-wrap .drawer-body {
+      flex: 1;
+      min-width: 0;
+      scroll-behavior: smooth;
+    }
+
+    .turn-ruler {
+      display: none;
+      width: 28px;
+      flex-shrink: 0;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 3px;
+      gap: 7px;
+      border-left: 1px solid rgba(148, 163, 184, 0.10);
+      background: rgba(7, 11, 20, 0.34);
+      overflow-y: auto;
+      overflow-x: visible;
+      z-index: 4;
+    }
+
+    .turn-ruler.visible {
+      display: flex;
+    }
+
+    .turn-ruler::-webkit-scrollbar { width: 0; height: 0; }
+
+    .ruler-tick {
+      position: relative;
+      width: 20px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-3);
+      font-size: 10.5px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.16s var(--ease), background 0.16s var(--ease),
+                  border-color 0.16s var(--ease), color 0.16s var(--ease), box-shadow 0.16s var(--ease);
+    }
+
+    .ruler-tick::before {
+      content: "";
+      position: absolute;
+      left: -3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5px;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--tick-color, #60a5fa);
+      opacity: 0.45;
+      transition: height 0.16s var(--ease), opacity 0.16s var(--ease);
+    }
+
+    .ruler-tick:hover {
+      color: #fff;
+      background: var(--tick-soft, rgba(59, 130, 246, 0.2));
+      border-color: var(--tick-border, rgba(96, 165, 250, 0.5));
+      transform: scale(1.06);
+    }
+
+    .ruler-tick.active {
+      color: var(--tick-text, #fcd34d);
+      background: var(--tick-soft, rgba(245, 158, 11, 0.18));
+      border-color: var(--tick-border, rgba(251, 191, 36, 0.55));
+      box-shadow: 0 0 10px -2px var(--tick-color, #fbbf24);
+    }
+
+    .ruler-tick.active::before {
+      height: 16px;
+      opacity: 1;
+    }
+
+    /* 懸浮於刻度左側的問題預覽氣泡 */
+    .ruler-floating-tip {
+      position: fixed;
+      z-index: 60;
+      max-width: 260px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(11, 17, 30, 0.96);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.85);
+      color: var(--text);
+      font-size: 11.5px;
+      line-height: 1.45;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(4px);
+      transition: opacity 0.14s var(--ease), transform 0.14s var(--ease);
+      word-break: break-word;
+    }
+
+    .ruler-floating-tip.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .chat-turn.turn-flash .user-bubble {
+      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.72), 0 0 22px -4px rgba(251, 191, 36, 0.55);
+      transition: box-shadow 0.3s var(--ease);
+    }
+
+    .history-item.active-session {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(96, 165, 250, 0.48);
+    }
+
+    .turn-count-pill {
+      display: inline-flex;
+      align-items: center;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.14);
+      border: 1px solid rgba(96, 165, 250, 0.28);
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
     @media (max-width: 720px) {
       .command-bar {
         width: calc(100vw - 20px);
@@ -1599,7 +1736,7 @@
     <input
       id="search-input"
       type="text"
-      placeholder="輸入問題檢索知識圖譜，自動提取證據鏈進行合規分析…"
+      placeholder="輸入問題檢索知識圖譜…"
       autocomplete="off"
       spellcheck="false"
     />
@@ -1690,24 +1827,25 @@
         <button class="close-btn" id="close-answer-btn" title="關閉">×</button>
       </div>
     </div>
-    <div class="drawer-body" id="answer-drawer-body"></div>
+    <div class="drawer-body-wrap">
+      <div class="drawer-body" id="answer-drawer-body"></div>
+      <nav class="turn-ruler" id="turn-ruler" aria-label="每輪問題位置刻度"></nav>
+    </div>
     <div class="drawer-composer" id="drawer-composer">
       <div class="composer-box">
         <textarea
           id="followup-input"
           rows="1"
-          placeholder="繼續追問（承接當前對話上下文，Enter 送出 · Shift+Enter 換行）…"
+          placeholder="繼續追問…"
           autocomplete="off"
           spellcheck="false"
         ></textarea>
         <button type="button" id="followup-send-btn" class="composer-send-btn">追問</button>
       </div>
-      <div class="composer-hint">
-        <span>已啟用多輪上下文與頁面內快取</span>
-        <span id="cache-stats-hint">快取 0 筆</span>
-      </div>
     </div>
   </aside>
+
+  <div id="ruler-floating-tip" class="ruler-floating-tip"></div>
 
   <div id="apikey-modal" class="modal-backdrop hidden">
     <div class="modal-card">
@@ -1733,7 +1871,6 @@
         spellcheck="false"
       />
       <button id="save-apikey-btn" class="modal-btn">進入系統</button>
-      <div class="modal-hint">按 Enter 鍵確認</div>
     </div>
   </div>
 
@@ -1763,7 +1900,8 @@
     let activeTypeFilter = null;
     let lastAnswerMarkdown = "";
     const queryCache = new Map(); // 頁面刷新前快取: key -> { query, effectiveLang, answer, evidence, matched_nodes, chunkCount, retrievalMs, totalSec, timestamp }
-    const queryHistory = []; // 當前頁面工作階段歷史紀錄（最新在前）
+    const queryHistory = []; // 每個「新對話」儲存為一筆獨立會話，並隨追問即時更新為最新一輪問題（最新在前）
+    let activeSessionId = null;
     let conversationMessages = []; // 當前多輪對話上下文 [{ role, content }]
     let activeThreadAnchor = ""; // 記錄當前對話涉及的合同/實體錨點，供短追問繼承檢索目標
     let currentAbortController = null;
@@ -3139,7 +3277,7 @@
         [...qUpper.matchAll(/\bNTT[\s_\-]*([A-Z]\d+)\b/g)].map(m => m[1])
       );
 
-      // Pass 1: 完整歸組每個文檔的所有切片並建立準確的 docMeta，避免切片遍歷順序導致合同 B 漏判定
+      // Pass 1: 完整歸組每個文檔的所有切片並建立嚴格互斥的 docMeta（杜絕合同 B 因提及主合同編號而被誤標為合同 A）
       for (const [cid, cdata] of Object.entries(textChunksMap)) {
         if (!cdata || !cdata.content) continue;
         const docId = cdata.full_doc_id || "unknown";
@@ -3157,7 +3295,7 @@
         }
 
         if (!docMeta[docId]) {
-          docMeta[docId] = { srcHeader: "", capNum: "", nttCode: "", isContractA: false, isContractB: false, isGccbwt: false };
+          docMeta[docId] = { srcHeader: "", capNum: "", nttCode: "", contractRole: "", isGccbwt: false };
         }
         const srcHeader = (cdata.content.match(/\[DOCUMENT_SOURCE:\s*([^\]]+)\]/i) || ["", ""])[1].toUpperCase();
         if (srcHeader) {
@@ -3166,33 +3304,48 @@
           docMeta[docId].srcHeader = srcHeader;
           if (capM) docMeta[docId].capNum = capM[1];
           if (nttM) docMeta[docId].nttCode = nttM[1];
-          if (/CONTRACT_A/.test(srcHeader)) docMeta[docId].isContractA = true;
-          if (/CONTRACT_B/.test(srcHeader)) docMeta[docId].isContractB = true;
+          if (/CONTRACT_B|SUBCONTRACT/.test(srcHeader)) docMeta[docId].contractRole = "B";
+          else if (/CONTRACT_A|MAIN_WORKS/.test(srcHeader)) docMeta[docId].contractRole = "A";
           if (/GCCBWT/.test(srcHeader)) docMeta[docId].isGccbwt = true;
         }
-        if (cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT") || (cUpper.includes("HDIL-2026-MC-01") && !cUpper.includes("DOMESTIC SUBCONTRACT") && !cUpper.includes("APEX-2026-SUB-MEP-01"))) {
-          docMeta[docId].isContractA = true;
-        }
-        if (cUpper.includes("CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT") || cUpper.includes("APEX-2026-SUB-MEP-01")) {
-          docMeta[docId].isContractB = true;
+        if (cUpper.includes("CONTRACT_B_MEP_SUBCONTRACT_AGREEMENT") || cUpper.includes("APEX-2026-SUB-MEP-01") || cUpper.includes("DOMESTIC SUBCONTRACT AGREEMENT")) {
+          docMeta[docId].contractRole = "B";
+        } else if (!docMeta[docId].contractRole && (cUpper.includes("CONTRACT_A_MAIN_WORKS_AGREEMENT") || cUpper.includes("MAIN CONTRACT AGREEMENT FOR DATA CENTRE"))) {
+          docMeta[docId].contractRole = "A";
         }
       }
 
-      // Pass 2: 基於完整 docMeta 精準鎖定目標文檔（確保跨合同對比時合同 A 5/5 與合同 B 5/5 切片全部命中）
-      const asksCrossAB = /(?:跨合同|跨合約|跨合约|\bAB\b|A\s*(?:與|和|對比|对比|VS|\/|↔)\s*B)/i.test(qUpper);
+      // Pass 2: 基於嚴格互斥的 contractRole 鎖定目標文檔（確保單合同或跨合同對比時 5/5 切片 100% 召回）
+      const asksCrossAB = /(?:跨合同|跨合約|跨合约|對比\s*AB|对比\s*AB|\bAB\b|A\s*(?:與|和|對比|对比|VS|\/|↔)\s*B)/i.test(qUpper);
       const asksContractA = asksCrossAB || /(?:(?:樣本|样本|合同|合約|合约)\s*[（(]?\s*A\s*[）)]?|主合同|主合約|主合约|HDIL-2026-MC-01|CONTRACT[\s_]+A|HARBOURFRONT|APEX\s+BUILDERS)/i.test(qUpper);
       const asksContractB = asksCrossAB || /(?:(?:樣本|样本|合同|合約|合约)\s*[（(]?\s*B\s*[）)]?|分包|APEX-2026-SUB-MEP-01|CONTRACT[\s_]+B|VANGUARD|APEX\s+BUILDERS)/i.test(qUpper);
 
       for (const [docId, meta] of Object.entries(docMeta)) {
-        if (asksContractA && meta.isContractA && !meta.isContractB) targetDocIds.add(docId);
-        if (asksContractB && meta.isContractB && !meta.isContractA) targetDocIds.add(docId);
+        if (asksContractA && meta.contractRole === "A") targetDocIds.add(docId);
+        if (asksContractB && meta.contractRole === "B") targetDocIds.add(docId);
         if (qUpper.includes("GCCBWT") && meta.isGccbwt) targetDocIds.add(docId);
         if (meta.nttCode && queryNtts.has(meta.nttCode)) targetDocIds.add(docId);
         if (meta.capNum && queryCaps.has(meta.capNum)) targetDocIds.add(docId);
       }
 
-      const clauseMatches = [...retrievalQuery.matchAll(/(?:第\s*(\d+(?:\.\d+)?)\s*[条條]|CLAUSE\s+(\d+(?:\.\d+)?)|SECTION\s+(\d+[A-Z]?))/gi)];
-      const flatClauses = clauseMatches.map(m => m[1] || m[2] || m[3]).filter(Boolean);
+      // 支援單條、並列列舉（第 4、5、6、7 條 / Clauses 4 and 8）與區間（第 4–7 條）提取
+      const flatClauseSet = new Set();
+      for (const m of retrievalQuery.matchAll(/(?:第\s*([0-9.,、，和與及\-\–\—\s]+?)\s*[条條]|CLAUSES?\s+([0-9.,\s&/\-\–\—]+(?:AND\s+\d+(?:\.\d+)?)?)|SECTIONS?\s+(\d+[A-Z]?))/gi)) {
+        const rawSpec = (m[1] || m[2] || m[3] || "").trim();
+        const rangeM = rawSpec.match(/^(\d+)\s*[\-\–\—~至到]\s*(\d+)$/);
+        if (rangeM) {
+          const a = parseInt(rangeM[1], 10);
+          const b = parseInt(rangeM[2], 10);
+          if (b >= a && b - a <= 15) {
+            for (let k = a; k <= b; k++) flatClauseSet.add(String(k));
+          }
+        } else {
+          for (const numM of rawSpec.matchAll(/\d+(?:\.\d+)?[A-Z]?/gi)) {
+            flatClauseSet.add(numM[0]);
+          }
+        }
+      }
+      const flatClauses = [...flatClauseSet];
 
       // 計算查詢詞在原文切片中的 IDF 加權覆蓋率
       const groundedIDF = [...chunkHitTokens].reduce((sum, tk) => sum + getTokenIDF(tk), 0);
@@ -3687,51 +3840,163 @@
         badge.classList.toggle("visible", queryHistory.length > 0);
       }
       if (cacheHint) {
-        cacheHint.textContent = `快取 ${queryCache.size} 筆`;
+        cacheHint.textContent = `已存 ${queryHistory.length} 組對話 · 快取 ${queryCache.size} 筆`;
       }
       if (!listEl) return;
 
       if (!queryHistory.length) {
-        listEl.innerHTML = `<div class="empty-hint">尚無檢索紀錄，提問後將自動於本頁快取。</div>`;
+        listEl.innerHTML = `<div class="empty-hint">尚無對話紀錄，每次新對話將自動存檔並同步最新一輪問題。</div>`;
         return;
       }
 
       listEl.innerHTML = queryHistory
-        .map((item, idx) => `
-          <button type="button" class="history-item" data-history-idx="${idx}">
-            <div class="history-item-q">${escapeHtml(item.query)}</div>
+        .map((sess, idx) => {
+          const isCurrent = sess.id === activeSessionId;
+          const lastTurn = sess.turns[sess.turns.length - 1] || {};
+          const nodeCnt = (lastTurn.matched_nodes || []).length;
+          return `
+          <button type="button" class="history-item ${isCurrent ? "active-session" : ""}" data-history-idx="${idx}">
+            <div class="history-item-q">${escapeHtml(sess.latestQuery || sess.firstQuery || "")}</div>
             <div class="history-item-meta">
-              <span>${escapeHtml(item.timeStr)}</span>
-              <span>· ${item.matched_nodes.length} 節點</span>
-              <span>· ${item.effectiveLang === "en" ? "EN" : "繁體"}</span>
-              <span class="cache-pill">⚡ 已快取</span>
+              ${sess.turns.length > 1 ? `<span class="turn-count-pill">${sess.turns.length} 問</span>` : ""}
+              <span>${escapeHtml(sess.timeStr || "")}</span>
+              <span>· ${nodeCnt} 節點</span>
+              ${isCurrent ? `<span class="cache-pill">目前對話</span>` : `<span class="cache-pill">⚡ 已快取</span>`}
             </div>
           </button>
-        `)
+        `;
+        })
         .join("");
 
       listEl.querySelectorAll(".history-item").forEach(btn => {
         btn.addEventListener("click", () => {
           const idx = parseInt(btn.dataset.historyIdx, 10);
-          const rec = queryHistory[idx];
-          if (!rec) return;
+          const sess = queryHistory[idx];
+          if (!sess) return;
           document.getElementById("history-popover").classList.remove("open");
-          restoreFromHistoryRecord(rec);
+          restoreSessionFromHistory(sess);
         });
       });
     }
 
-    function recordQueryToCacheAndHistory(entry) {
-      const cKey = normalizeCacheKey(entry.query, entry.effectiveLang);
-      queryCache.set(cKey, entry);
+    function upsertSessionTurn(turnRecord, isFollowUp) {
+      // 同步寫入單輪快取（供新對話重複問同題時 0ms 命中）
+      const cKey = normalizeCacheKey(turnRecord.query, turnRecord.effectiveLang);
+      queryCache.set(cKey, turnRecord);
 
-      const existIdx = queryHistory.findIndex(
-        h => normalizeCacheKey(h.query, h.effectiveLang) === cKey
-      );
-      if (existIdx >= 0) queryHistory.splice(existIdx, 1);
-      queryHistory.unshift(entry);
-      if (queryHistory.length > 30) queryHistory.pop();
+      let sess = isFollowUp && activeSessionId
+        ? queryHistory.find(s => s.id === activeSessionId)
+        : null;
+
+      if (!sess) {
+        const newId = `sess_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+        sess = {
+          id: newId,
+          firstQuery: turnRecord.query,
+          latestQuery: turnRecord.query,
+          effectiveLang: turnRecord.effectiveLang,
+          anchor: turnRecord.anchor || turnRecord.query,
+          timeStr: turnRecord.timeStr,
+          turns: [turnRecord]
+        };
+        activeSessionId = newId;
+        queryHistory.unshift(sess);
+        if (queryHistory.length > 30) queryHistory.pop();
+      } else {
+        sess.turns.push(turnRecord);
+        // 每次追問自動將該歷史紀錄標題更新為對應對話的最新一輪問題，並置頂
+        sess.latestQuery = turnRecord.query;
+        sess.effectiveLang = turnRecord.effectiveLang;
+        sess.anchor = turnRecord.anchor || sess.anchor;
+        sess.timeStr = turnRecord.timeStr;
+        const pos = queryHistory.indexOf(sess);
+        if (pos > 0) {
+          queryHistory.splice(pos, 1);
+          queryHistory.unshift(sess);
+        }
+      }
       updateHistoryUI();
+    }
+
+    // 重建問答框右側多輪刻度條，點擊任意刻度即平滑跳轉至對應輪次問題位置
+    function updateTurnRuler() {
+      const ruler = document.getElementById("turn-ruler");
+      const body = document.getElementById("answer-drawer-body");
+      const tip = document.getElementById("ruler-floating-tip");
+      if (!ruler || !body) return;
+
+      const turns = Array.from(body.querySelectorAll(".chat-turn"));
+      if (!turns.length) {
+        ruler.innerHTML = "";
+        ruler.classList.remove("visible");
+        if (tip) tip.classList.remove("visible");
+        return;
+      }
+
+      ruler.classList.add("visible");
+      ruler.innerHTML = turns
+        .map((el, idx) => {
+          const pal = TURN_PALETTE[idx % TURN_PALETTE.length];
+          return `<button type="button" class="ruler-tick" data-turn-idx="${idx}"
+            style="--tick-color:${pal.hex};--tick-soft:${pal.soft};--tick-border:${pal.border};--tick-text:${pal.text};"
+            aria-label="跳轉至問題 ${idx + 1}">${idx + 1}</button>`;
+        })
+        .join("");
+
+      const ticks = Array.from(ruler.querySelectorAll(".ruler-tick"));
+      ticks.forEach((tickBtn, idx) => {
+        const targetTurn = turns[idx];
+        const qText = (targetTurn && targetTurn.dataset.query) || `第 ${idx + 1} 輪問題`;
+
+        tickBtn.addEventListener("mouseenter", () => {
+          if (!tip) return;
+          const rect = tickBtn.getBoundingClientRect();
+          tip.innerHTML = `<strong style="color:${TURN_PALETTE[idx % TURN_PALETTE.length].text};">#${idx + 1}</strong> ${escapeHtml(truncateLabel(qText, 56))}`;
+          tip.style.top = `${Math.max(12, Math.min(window.innerHeight - 64, rect.top - 4))}px`;
+          tip.style.right = `${window.innerWidth - rect.left + 10}px`;
+          tip.classList.add("visible");
+        });
+
+        tickBtn.addEventListener("mouseleave", () => {
+          if (tip) tip.classList.remove("visible");
+        });
+
+        tickBtn.addEventListener("click", () => {
+          if (!targetTurn) return;
+          const targetTop = Math.max(0, targetTurn.offsetTop - 12);
+          body.scrollTo({ top: targetTop, behavior: "smooth" });
+          targetTurn.classList.remove("turn-flash");
+          void targetTurn.offsetWidth;
+          targetTurn.classList.add("turn-flash");
+          setTimeout(() => targetTurn.classList.remove("turn-flash"), 950);
+          syncActiveRulerTick(idx);
+        });
+      });
+
+      syncActiveRulerTick();
+    }
+
+    function syncActiveRulerTick(forcedIdx = null) {
+      const ruler = document.getElementById("turn-ruler");
+      const body = document.getElementById("answer-drawer-body");
+      if (!ruler || !body) return;
+      const ticks = Array.from(ruler.querySelectorAll(".ruler-tick"));
+      if (!ticks.length) return;
+
+      let activeIdx = forcedIdx;
+      if (activeIdx === null) {
+        const turns = Array.from(body.querySelectorAll(".chat-turn"));
+        const viewAnchor = body.scrollTop + Math.min(110, body.clientHeight * 0.25);
+        activeIdx = 0;
+        for (let i = 0; i < turns.length; i++) {
+          if (turns[i].offsetTop <= viewAnchor) {
+            activeIdx = i;
+          } else {
+            break;
+          }
+        }
+      }
+      ticks.forEach((t, i) => t.classList.toggle("active", i === activeIdx));
     }
 
     function smartScrollDrawerToBottom(bodyEl) {
@@ -3770,13 +4035,15 @@
 
       const turnEl = document.createElement("div");
       turnEl.className = "chat-turn";
+      turnEl.dataset.query = query;
+      turnEl.dataset.turnIdx = String(turnIdx);
       turnEl.innerHTML = `
         <div class="user-bubble-wrap">
           <div class="user-bubble">${escapeHtml(query)}</div>
         </div>
         <div class="assistant-card">
           <div class="assistant-meta">
-            <span class="assistant-badge"><span class="assistant-spark" style="color:${TURN_PALETTE[turnIdx % TURN_PALETTE.length].text};background:${TURN_PALETTE[turnIdx % TURN_PALETTE.length].soft};border-color:${TURN_PALETTE[turnIdx % TURN_PALETTE.length].border};">✦</span>合規檢索分析 · 第 ${turnIdx + 1} 輪</span>
+            <span class="assistant-badge"><span class="assistant-spark" style="color:${TURN_PALETTE[turnIdx % TURN_PALETTE.length].text};background:${TURN_PALETTE[turnIdx % TURN_PALETTE.length].soft};border-color:${TURN_PALETTE[turnIdx % TURN_PALETTE.length].border};">✦</span>合規檢索分析</span>
             <span class="latency-tag js-latency">檢索中…</span>
           </div>
           <details class="trace-box" open>
@@ -3801,7 +4068,9 @@
         </div>
       `;
       body.appendChild(turnEl);
+      updateTurnRuler();
       body.scrollTop = body.scrollHeight;
+      syncActiveRulerTick(turnIdx);
       return turnEl;
     }
 
@@ -3818,7 +4087,7 @@
           const pal = highlightedNodeColors.get(id) || fallbackPal;
           const chipLabel = (nodeMap.get(id) && nodeMap.get(id).label) || id;
           return `<span class="node-chip" style="background:${pal.soft};color:${pal.text};border-color:${pal.border};" onclick="window.focusEntity('${escapeHtml(
-            id.replace(/'/g, "\'")
+            id.replace(/'/g, "\\'")
           )}')">✦ ${escapeHtml(truncateLabel(chipLabel, 28))}</span>`;
         })
         .join("");
@@ -3844,11 +4113,7 @@
       }
     }
 
-    function restoreFromHistoryRecord(rec) {
-      const body = document.getElementById("answer-drawer-body");
-      body.innerHTML = "";
-      currentTurnColorIdx = 0;
-      const turnEl = createChatTurn(rec.query, 0);
+    function populateCompletedTurnEl(turnEl, rec, turnIdx, isCachedRestore = true) {
       const latencyEl = turnEl.querySelector(".js-latency");
       const traceBox = turnEl.querySelector(".trace-box");
       const traceDot = turnEl.querySelector(".js-trace-dot");
@@ -3860,36 +4125,67 @@
       const evidenceBox = turnEl.querySelector(".js-evidence-box");
       const evidencePre = turnEl.querySelector(".js-evidence-pre");
 
-      lastTurnMatchedNodes = rec.matched_nodes || [];
-      autoShowPrimaryNodeOnLeft(rec.matched_nodes || []);
-      highlightMatchedNodes(rec.matched_nodes || [], { preservePrev: false, turnIndex: 0 });
-      renderChipsInto(chipsEl, rec.matched_nodes || [], 0);
-      currentTurnColorIdx = 1;
-      lastAnswerMarkdown = rec.answer || "";
-
+      renderChipsInto(chipsEl, rec.matched_nodes || [], turnIdx);
       traceDot.classList.remove("pulse");
       traceDot.classList.add("done");
-      traceTitle.textContent = `⚡ 已從頁面快取瞬間載入（命中 ${(rec.matched_nodes || []).length} 個核心節點）`;
+      traceTitle.textContent = isCachedRestore
+        ? `⚡ 已從頁面快取瞬間載入（命中 ${(rec.matched_nodes || []).length} 個核心節點）`
+        : `已完成圖譜檢索與合規分析（耗時 ${rec.totalSec || "0.0"}s · 命中 ${(rec.matched_nodes || []).length} 個核心節點）`;
       traceSteps.innerHTML = `
         <div class="trace-step done">快取命中（0ms · 頁面刷新前有效）</div>
-        <div class="trace-step done">已同步恢復雙層證據圖譜與原文切片</div>
+        <div class="trace-step done">已同步恢復證據圖譜與原文切片</div>
       `;
       traceBox.removeAttribute("open");
-      latencyEl.textContent = "⚡ 快取 0ms";
-      proseEl.innerHTML = renderMarkdownClean(lastAnswerMarkdown, false);
+      latencyEl.textContent = isCachedRestore ? "⚡ 快取 0ms" : `${rec.totalSec || "0.0"}s`;
+      proseEl.innerHTML = renderMarkdownClean(rec.answer || "", false);
       footerEl.style.display = "flex";
-      bindTurnFooterActions(turnEl, rec.query, lastAnswerMarkdown, { isFollowUp: false });
-
+      bindTurnFooterActions(turnEl, rec.query, rec.answer || "", { isFollowUp: turnIdx > 0 });
       evidencePre.textContent = rec.evidence || "無證據內容";
       evidenceBox.style.display = "block";
-      body.scrollTop = body.scrollHeight;
+    }
 
-      // 同步上下文錨點，方便直接於底部追問
-      activeThreadAnchor = rec.anchor || rec.query;
-      conversationMessages = [
-        { role: "user", content: rec.query },
-        { role: "assistant", content: lastAnswerMarkdown }
-      ];
+    // 完整恢復整個多輪歷史會話（嚴格按輪次固定色序 0, 1, 2... 還原圖譜高亮與右側刻度條）
+    function restoreSessionFromHistory(sess) {
+      if (!sess || !sess.turns || !sess.turns.length) return;
+      const body = document.getElementById("answer-drawer-body");
+      body.innerHTML = "";
+      activeSessionId = sess.id;
+      conversationMessages = [];
+      currentTurnColorIdx = 0;
+
+      let latestMatched = [];
+      sess.turns.forEach((rec, idx) => {
+        const rawIds = rec.rawNodes || rec.matched_nodes || [];
+        highlightMatchedNodes(rawIds, {
+          preservePrev: idx > 0 && Boolean(rec.isAdditiveFollowUp),
+          turnIndex: idx
+        });
+        const turnEl = createChatTurn(rec.query, idx);
+        populateCompletedTurnEl(turnEl, rec, idx, true);
+        conversationMessages.push({ role: "user", content: rec.query });
+        conversationMessages.push({ role: "assistant", content: rec.answer || "" });
+        latestMatched = rec.matched_nodes || rawIds;
+        lastAnswerMarkdown = rec.answer || "";
+      });
+
+      currentTurnColorIdx = sess.turns.length;
+      lastTurnMatchedNodes = latestMatched;
+      activeThreadAnchor = sess.anchor || sess.latestQuery || "";
+      autoShowPrimaryNodeOnLeft(latestMatched);
+      updateTurnRuler();
+      body.scrollTop = body.scrollHeight;
+      syncActiveRulerTick(sess.turns.length - 1);
+      updateHistoryUI();
+    }
+
+    function restoreFromHistoryRecord(rec) {
+      // 單輪快取命中時，建立一筆對應的新對話會話並還原
+      const timeStr = new Date().toLocaleTimeString("zh-HK", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      const turnRec = { ...rec, timeStr };
+      activeSessionId = null;
+      upsertSessionTurn(turnRec, false);
+      const sess = queryHistory.find(s => s.id === activeSessionId);
+      if (sess) restoreSessionFromHistory(sess);
     }
 
     function extractAnchorFromQuery(q) {
@@ -3905,7 +4201,6 @@
     function autoShowPrimaryNodeOnLeft(matchedIds) {
       if (!matchedIds || !matchedIds.length) return;
       const ansDrawer = document.getElementById("answer-drawer");
-      // 僅在桌面端且右側未切至 60% 超寬屏時自動在左側展開最主要節點詳情，避免過度擠壓中間畫布
       if (window.innerWidth <= 960) return;
       if (ansDrawer && ansDrawer.classList.contains("expanded")) return;
       const primaryNode = nodeMap.get(matchedIds[0]);
@@ -3949,18 +4244,22 @@
       const effectiveLang = detectEffectiveLang(query, responseLang);
       const cacheKey = normalizeCacheKey(query, effectiveLang);
 
-      // 若非追問且未強制重新生成，優先檢查頁面內快取（0ms 瞬間回傳）
-      if (!forceRefresh && !isFollowUp && queryCache.has(cacheKey)) {
-        const cached = queryCache.get(cacheKey);
-        recordQueryToCacheAndHistory({
-          ...cached,
-          timeStr: new Date().toLocaleTimeString("zh-HK", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" })
-        });
-        restoreFromHistoryRecord(cached);
-        return;
+      // 若非追問且未強制重新生成，優先檢查是否已有相同起始問題的歷史會話或單輪快取（0ms 瞬間回傳）
+      if (!forceRefresh && !isFollowUp) {
+        const matchedSess = queryHistory.find(
+          s => s.turns.length === 1 && normalizeCacheKey(s.firstQuery, s.effectiveLang) === cacheKey
+        );
+        if (matchedSess) {
+          restoreSessionFromHistory(matchedSess);
+          return;
+        }
+        if (queryCache.has(cacheKey)) {
+          restoreFromHistoryRecord(queryCache.get(cacheKey));
+          return;
+        }
       }
 
-      // 追問錨點繼承與防越界校驗：先檢查原始提問是否屬於追問語境或命中語料，防止無關提問（如「英偉達CEO是誰」）在追問欄借殼繞過防線
+      // 追問錨點繼承與防越界校驗
       ensureCorpusIDF();
       const rawTokens = tokenizeTextZeroEnum(query);
       const rawTotalIDF = rawTokens.reduce((s, tk) => s + getTokenIDF(tk), 0) || 1;
@@ -3969,7 +4268,7 @@
       const hasFollowUpCue = /(?:第\s*\d+(?:\.\d+)?\s*[条條款]|CLAUSE\s+\d|SECTION\s+\d|條款|条款|合同|合約|合约|法例|條例|条例|衝突|冲突|對比|对比|比較|比较|修改|修正|建議|建议|風險|风险|違約|违约|罰款|罚款|付款|扣款|停工|工傷|工伤|工資|工资|夜勤|噪音|仲裁|它|這|这|該|该|上述|前面|上文|補充|补充|總結|总结|總體|总体|怎麼改|怎么改|\bAB\b|\bVS\b|\bCOMPARE\b|\bCLAUSE\b|\bCONTRACT\b|\bIT\b|\bTHIS\b|\bTHESE\b|\bABOVE\b)/i.test(query);
 
       const ownAnchor = extractAnchorFromQuery(query);
-      const isAdditiveFollowUp = isFollowUp && /對比|对比|比較|比较|衝突|冲突|補充|补充|加上|結合|结合|同時|同时|以及|還有|还有|\bVS\b|\bCOMPARE\b|\bBOTH\b|\bALSO\b|\bAB\b/i.test(query);
+      const isAdditiveFollowUp = isFollowUp && /對比|对比|比較|比较|衝突|冲突|補充|补充|加上|結合|结合|同時|同时|以及|還有|還有|\bVS\b|\bCOMPARE\b|\bBOTH\b|\bALSO\b|\bAB\b/i.test(query);
       const shouldInheritAnchor = isFollowUp && activeThreadAnchor && (Boolean(ownAnchor) || hasFollowUpCue || rawIdfRatio >= 0.45);
 
       if (shouldInheritAnchor && ownAnchor && isAdditiveFollowUp) {
@@ -3991,6 +4290,7 @@
         conversationMessages = [];
         lastTurnMatchedNodes = [];
         currentTurnColorIdx = 0;
+        activeSessionId = null;
       }
       currentTurnColorIdx = turnIndex + 1;
 
@@ -4010,7 +4310,7 @@
 
       let lastRenderTs = 0;
       let latestPartial = "";
-      let retrievedInfo = { retrievalMs: 0, chunkCount: 0 };
+      let retrievedInfo = { retrievalMs: 0, chunkCount: 0, rawNodes: [] };
 
       try {
         let data = null;
@@ -4041,6 +4341,7 @@
               const mergedNodes = isAdditiveFollowUp && lastTurnMatchedNodes.length
                 ? [...new Set([...rawNodes, ...lastTurnMatchedNodes])].slice(0, 12)
                 : rawNodes;
+              info.rawNodes = rawNodes;
               info.mergedNodes = mergedNodes;
               autoShowPrimaryNodeOnLeft(rawNodes.length ? rawNodes : mergedNodes);
               highlightMatchedNodes(rawNodes, { preservePrev: isAdditiveFollowUp, turnIndex });
@@ -4048,7 +4349,7 @@
               latencyEl.textContent = `檢索 ${info.retrievalMs}ms`;
               traceTitle.textContent = `圖譜定位完成（${info.retrievalMs}ms），流式生成分析中…`;
               traceSteps.innerHTML = `
-                <div class="trace-step done">知識圖譜拓撲檢索完成（${info.retrievalMs}ms · 鎖定 ${(info.matchedNodes || []).length} 個核心節點）</div>
+                <div class="trace-step done">知識圖譜拓撲檢索完成（${info.retrievalMs}ms · 鎖定 ${rawNodes.length} 個核心節點）</div>
                 <div class="trace-step done">跨文檔證據鏈提取完成（召回 ${info.chunkCount} 塊合同與法例原文切片）</div>
                 <div class="trace-step running">正在流式撰寫結構化分析報告…</div>
               `;
@@ -4066,11 +4367,14 @@
             }
           });
         } else {
-          highlightMatchedNodes(data.matched_nodes || []);
-          renderChipsInto(chipsEl, data.matched_nodes || []);
+          highlightMatchedNodes(data.matched_nodes || [], { preservePrev: false, turnIndex });
+          renderChipsInto(chipsEl, data.matched_nodes || [], turnIndex);
         }
 
         const totalSec = ((performance.now() - startTs) / 1000).toFixed(1);
+        const rawNodes = (retrievedInfo && retrievedInfo.rawNodes && retrievedInfo.rawNodes.length)
+          ? retrievedInfo.rawNodes
+          : (data.matched_nodes || []);
         const matched = (retrievedInfo && retrievedInfo.mergedNodes) || data.matched_nodes || [];
         lastTurnMatchedNodes = matched;
         lastAnswerMarkdown = data.answer || "";
@@ -4100,26 +4404,26 @@
         evidenceBox.style.display = "block";
         smartScrollDrawerToBottom(body);
 
-        // 更新多輪對話上下文
         conversationMessages.push({ role: "user", content: query });
         conversationMessages.push({ role: "assistant", content: lastAnswerMarkdown });
         if (conversationMessages.length > 10) {
           conversationMessages = conversationMessages.slice(-10);
         }
 
-        // 寫入頁面內快取與歷史紀錄
-        recordQueryToCacheAndHistory({
+        upsertSessionTurn({
           query,
           effectiveLang,
           answer: lastAnswerMarkdown,
           evidence: data.evidence || "",
           matched_nodes: matched,
+          rawNodes,
+          isAdditiveFollowUp,
           chunkCount: retrievedInfo.chunkCount || 0,
           retrievalMs: retrievedInfo.retrievalMs || 0,
           totalSec,
           anchor: activeThreadAnchor || ownAnchor || query,
           timeStr: new Date().toLocaleTimeString("zh-HK", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" })
-        });
+        }, isFollowUp);
       } catch (err) {
         traceDot.classList.remove("pulse");
         if (err && err.name === "AbortError") {
@@ -4142,6 +4446,7 @@
       } finally {
         currentAbortController = null;
         updateBusyUI(false);
+        syncActiveRulerTick(turnIndex);
       }
     }
 
@@ -4288,6 +4593,7 @@
         document.getElementById("clear-history-btn").addEventListener("click", () => {
           queryCache.clear();
           queryHistory.length = 0;
+          activeSessionId = null;
           updateHistoryUI();
         });
         document.addEventListener("click", e => {
@@ -4333,12 +4639,20 @@
         setTimeout(() => focusHighlightedSubgraph(450), 300);
       });
 
+      const answerBodyEl = document.getElementById("answer-drawer-body");
+      if (answerBodyEl) {
+        answerBodyEl.addEventListener("scroll", () => syncActiveRulerTick(), { passive: true });
+      }
+
       document.getElementById("clear-thread-btn").addEventListener("click", () => {
         if (isQueryRunning && currentAbortController) currentAbortController.abort();
         document.getElementById("answer-drawer-body").innerHTML = "";
         lastAnswerMarkdown = "";
         conversationMessages = [];
         activeThreadAnchor = "";
+        activeSessionId = null;
+        updateTurnRuler();
+        updateHistoryUI();
         highlightedNodes.clear();
         highlightedLinks.clear();
         highlightedNodeColors.clear();
